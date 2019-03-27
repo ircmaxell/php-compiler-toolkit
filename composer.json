@@ -20,7 +20,11 @@
     "autoload": {
         "psr-4": {
             "PHPCompilerToolkit\\": "lib/"
-        }
+        },
+        "files": [
+            "ffi/libgccjit.php",
+            "ffi/libjit.php"
+        ]
     }
 
 }

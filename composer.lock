@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/FFIMe.git",
-                "reference": "404e922aecdbef3e0f33bf00bf9bf9cb9ca0502a"
+                "reference": "613a8ddd2162a78f5e187cae8b250c45e83f7f41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/404e922aecdbef3e0f33bf00bf9bf9cb9ca0502a",
-                "reference": "404e922aecdbef3e0f33bf00bf9bf9cb9ca0502a",
+                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/613a8ddd2162a78f5e187cae8b250c45e83f7f41",
+                "reference": "613a8ddd2162a78f5e187cae8b250c45e83f7f41",
                 "shasum": ""
             },
             "type": "library",
@@ -37,7 +37,7 @@
                 }
             ],
             "description": "Make life easy when working with 7.4's FFI",
-            "time": "2019-02-19 12:35:38"
+            "time": "2019-03-21 22:01:05"
         },
         {
             "name": "ircmaxell/libgccjit",
@@ -134,7 +134,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2019-03-17T17:37:11+00:00"
+            "time": "2019-03-17 17:37:11"
         },
         {
             "name": "myclabs/deep-copy",
@@ -182,7 +182,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2018-06-11T23:09:50+00:00"
+            "time": "2018-06-11 23:09:50"
         },
         {
             "name": "phar-io/manifest",
@@ -237,7 +237,7 @@
                 }
             ],
             "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
-            "time": "2018-07-08T19:23:20+00:00"
+            "time": "2018-07-08 19:23:20"
         },
         {
             "name": "phar-io/version",
@@ -499,7 +499,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2018-12-18T15:40:51+00:00"
+            "time": "2018-12-18 15:40:51"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -562,7 +562,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-26T07:38:26+00:00"
+            "time": "2019-02-26 07:38:26"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -612,7 +612,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2019-02-11T12:49:18+00:00"
+            "time": "2019-02-11 12:49:18"
         },
         {
             "name": "phpunit/php-text-template",
@@ -702,7 +702,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2019-02-20T14:16:29+00:00"
+            "time": "2019-02-20 14:16:29"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -751,7 +751,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2019-02-11T12:50:48+00:00"
+            "time": "2019-02-11 12:50:48"
         },
         {
             "name": "phpunit/phpunit",
@@ -759,12 +759,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "856f2136bcd3a7c49013e152f5c04b8f6d9c58fe"
+                "reference": "dc23a96ef3f006d47817749396586454b62d8bb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/856f2136bcd3a7c49013e152f5c04b8f6d9c58fe",
-                "reference": "856f2136bcd3a7c49013e152f5c04b8f6d9c58fe",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dc23a96ef3f006d47817749396586454b62d8bb9",
+                "reference": "dc23a96ef3f006d47817749396586454b62d8bb9",
                 "shasum": ""
             },
             "require": {
@@ -833,7 +833,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-03-18T12:49:55+00:00"
+            "time": "2019-03-26 14:05:35"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -878,7 +878,7 @@
             ],
             "description": "Looks up which function or method a line of code belongs to",
             "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
-            "time": "2019-02-11T12:48:46+00:00"
+            "time": "2019-02-11 12:48:46"
         },
         {
             "name": "sebastian/comparator",
@@ -942,7 +942,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2019-02-11T12:51:04+00:00"
+            "time": "2019-02-11 12:51:04"
         },
         {
             "name": "sebastian/diff",
@@ -998,7 +998,7 @@
                 "unidiff",
                 "unified diff"
             ],
-            "time": "2019-02-11T12:50:35+00:00"
+            "time": "2019-02-11 12:50:35"
         },
         {
             "name": "sebastian/environment",
@@ -1051,7 +1051,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2019-02-11T12:51:52+00:00"
+            "time": "2019-02-11 12:51:52"
         },
         {
             "name": "sebastian/exporter",
@@ -1118,7 +1118,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2019-02-11T12:49:46+00:00"
+            "time": "2019-02-11 12:49:46"
         },
         {
             "name": "sebastian/global-state",
@@ -1172,7 +1172,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2019-02-11T12:52:08+00:00"
+            "time": "2019-02-11 12:52:08"
         },
         {
             "name": "sebastian/object-enumerator",
@@ -1219,7 +1219,7 @@
             ],
             "description": "Traverses array structures and object graphs to enumerate all referenced objects",
             "homepage": "https://github.com/sebastianbergmann/object-enumerator/",
-            "time": "2019-02-11T12:50:05+00:00"
+            "time": "2019-02-11 12:50:05"
         },
         {
             "name": "sebastian/object-reflector",
@@ -1264,7 +1264,7 @@
             ],
             "description": "Allows reflection of object attributes, including inherited and non-public ones",
             "homepage": "https://github.com/sebastianbergmann/object-reflector/",
-            "time": "2019-02-11T12:48:12+00:00"
+            "time": "2019-02-11 12:48:12"
         },
         {
             "name": "sebastian/recursion-context",
@@ -1317,7 +1317,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2019-02-11T12:48:28+00:00"
+            "time": "2019-02-11 12:48:28"
         },
         {
             "name": "sebastian/resource-operations",
@@ -1359,7 +1359,7 @@
             ],
             "description": "Provides a list of PHP built-in functions that operate on resources",
             "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
-            "time": "2018-10-04T04:07:39+00:00"
+            "time": "2018-10-04 04:07:39"
         },
         {
             "name": "sebastian/version",
@@ -1460,7 +1460,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2019-02-06T07:57:58+00:00"
+            "time": "2019-02-06 07:57:58"
         },
         {
             "name": "theseer/tokenizer",
