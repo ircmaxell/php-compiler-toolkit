@@ -4,81 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d47341bfc0763397054157a0f1e9a918",
-    "packages": [
-        {
-            "name": "ircmaxell/ffime",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ircmaxell/FFIMe.git",
-                "reference": "613a8ddd2162a78f5e187cae8b250c45e83f7f41"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/613a8ddd2162a78f5e187cae8b250c45e83f7f41",
-                "reference": "613a8ddd2162a78f5e187cae8b250c45e83f7f41",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "FFIMe\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Ferrara",
-                    "email": "ircmaxell@gmail.com"
-                }
-            ],
-            "description": "Make life easy when working with 7.4's FFI",
-            "time": "2019-03-21 22:01:05"
-        },
-        {
-            "name": "ircmaxell/libgccjit",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ircmaxell/libgccffi.git",
-                "reference": "770b9d83af8c0ed92896da1eaf34f22fa3e16119"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/libgccffi/zipball/770b9d83af8c0ed92896da1eaf34f22fa3e16119",
-                "reference": "770b9d83af8c0ed92896da1eaf34f22fa3e16119",
-                "shasum": ""
-            },
-            "require": {
-                "ircmaxell/ffime": "master@dev"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "libgccjit\\": "lib/"
-                },
-                "files": [
-                    "lib/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Ferrara",
-                    "email": "ircmaxell@gmail.com"
-                }
-            ],
-            "description": "A wrapper for FFI with libgccjit",
-            "time": "2019-03-06 03:15:47"
-        }
-    ],
+    "content-hash": "47abbd86a3889c1c1d5ed1ff638a8842",
+    "packages": [],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -135,6 +62,83 @@
                 "instantiate"
             ],
             "time": "2019-03-17 17:37:11"
+        },
+        {
+            "name": "ircmaxell/ffime",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/FFIMe.git",
+                "reference": "0bc7e2758b6e2261777fffbbdf4236e93cf0e3b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/0bc7e2758b6e2261777fffbbdf4236e93cf0e3b0",
+                "reference": "0bc7e2758b6e2261777fffbbdf4236e93cf0e3b0",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/php-c-parser": "dev-master",
+                "php": ">=7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FFIMe\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@gmail.com"
+                }
+            ],
+            "description": "Make life easy when working with 7.4's FFI",
+            "time": "2019-03-28T18:48:01+00:00"
+        },
+        {
+            "name": "ircmaxell/php-c-parser",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/php-c-parser.git",
+                "reference": "817f7faea5c83b0167bb9d93d2620ee0c9d2ec1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/php-c-parser/zipball/817f7faea5c83b0167bb9d93d2620ee0c9d2ec1f",
+                "reference": "817f7faea5c83b0167bb9d93d2620ee0c9d2ec1f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "ircmaxell/php-yacc": "dev-master",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPCParser\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@gmail.com"
+                }
+            ],
+            "description": "Parse C when using PHP",
+            "time": "2019-03-28T18:37:22+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -759,12 +763,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "dc23a96ef3f006d47817749396586454b62d8bb9"
+                "reference": "aed4efca869c86f7e118e47120ae18a2e8aac944"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dc23a96ef3f006d47817749396586454b62d8bb9",
-                "reference": "dc23a96ef3f006d47817749396586454b62d8bb9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/aed4efca869c86f7e118e47120ae18a2e8aac944",
+                "reference": "aed4efca869c86f7e118e47120ae18a2e8aac944",
                 "shasum": ""
             },
             "require": {
@@ -833,7 +837,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-03-26 14:05:35"
+            "time": "2019-03-27 15:11:08"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1557,7 +1561,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "ircmaxell/libgccjit": 20
+        "ircmaxell/ffime": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

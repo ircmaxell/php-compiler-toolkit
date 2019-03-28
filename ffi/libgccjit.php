@@ -40,7 +40,7 @@ typedef long int __suseconds_t;
 typedef int __daddr_t;
 typedef int __key_t;
 typedef int __clockid_t;
-typedef void* __timer_t;
+typedef void * __timer_t;
 typedef long int __blksize_t;
 typedef long int __blkcnt_t;
 typedef long int __blkcnt64_t;
@@ -53,8 +53,8 @@ typedef long int __ssize_t;
 typedef long int __syscall_slong_t;
 typedef unsigned long int __syscall_ulong_t;
 typedef __off64_t __loff_t;
-typedef __quad_t* __qaddr_t;
-typedef char* __caddr_t;
+typedef __quad_t * __qaddr_t;
+typedef char * __caddr_t;
 typedef long int __intptr_t;
 typedef unsigned int __socklen_t;
 struct _IO_FILE;
@@ -64,7 +64,7 @@ typedef unsigned int wint_t;
 typedef struct {
   int __count;
   union {
-    wint_t __wch;
+    unsigned int __wch;
     char __wchb[4];
   } __value;
 } __mbstate_t;
@@ -80,8 +80,8 @@ struct _IO_jump_t;
 struct _IO_FILE;
 typedef void _IO_lock_t;
 struct _IO_marker {
-  struct _IO_marker* _next;
-  struct _IO_FILE* _sbuf;
+  struct _IO_marker *_next;
+  struct _IO_FILE *_sbuf;
   int _pos;
 };
 enum __codecvt_result {
@@ -92,149 +92,142 @@ enum __codecvt_result {
 };
 struct _IO_FILE {
   int _flags;
-  char* _IO_read_ptr;
-  char* _IO_read_end;
-  char* _IO_read_base;
-  char* _IO_write_base;
-  char* _IO_write_ptr;
-  char* _IO_write_end;
-  char* _IO_buf_base;
-  char* _IO_buf_end;
-  char* _IO_save_base;
-  char* _IO_backup_base;
-  char* _IO_save_end;
-  struct _IO_marker* _markers;
-  struct _IO_FILE* _chain;
+  char *_IO_read_ptr;
+  char *_IO_read_end;
+  char *_IO_read_base;
+  char *_IO_write_base;
+  char *_IO_write_ptr;
+  char *_IO_write_end;
+  char *_IO_buf_base;
+  char *_IO_buf_end;
+  char *_IO_save_base;
+  char *_IO_backup_base;
+  char *_IO_save_end;
+  struct _IO_marker *_markers;
+  struct _IO_FILE *_chain;
   int _fileno;
   int _flags2;
   __off_t _old_offset;
   unsigned short _cur_column;
   signed char _vtable_offset;
   char _shortbuf[1];
-  _IO_lock_t* _lock;
+  _IO_lock_t *_lock;
   __off64_t _offset;
-  void* __pad1;
-  void* __pad2;
-  void* __pad3;
-  void* __pad4;
+  void *__pad1;
+  void *__pad2;
+  void *__pad3;
+  void *__pad4;
   size_t __pad5;
   int _mode;
-  char _unused2[(((15 * (sizeof (int))) - (4 * (sizeof (void*)))) - (sizeof (size_t)))];
+  char _unused2[(((15 * (sizeof (int))) - (4 * (sizeof (void *)))) - (sizeof (size_t)))];
 };
 typedef struct _IO_FILE _IO_FILE;
-
-int __underflow(_IO_FILE*);
-int __uflow(_IO_FILE*);
-int __overflow(_IO_FILE*, int);
-int _IO_getc(_IO_FILE*);
-int _IO_putc(int, _IO_FILE*);
-int _IO_feof(_IO_FILE*);
-int _IO_ferror(_IO_FILE*);
-int _IO_peekc_locked(_IO_FILE*);
-void _IO_flockfile(_IO_FILE*);
-void _IO_funlockfile(_IO_FILE*);
-int _IO_ftrylockfile(_IO_FILE*);
-int _IO_vfscanf(_IO_FILE*, char*, __gnuc_va_list, int*);
-int _IO_vfprintf(_IO_FILE*, char*, __gnuc_va_list);
-__ssize_t _IO_padn(_IO_FILE*, int, __ssize_t);
-size_t _IO_sgetn(_IO_FILE*, void*, size_t);
-__off64_t _IO_seekoff(_IO_FILE*, __off64_t, int, int);
-__off64_t _IO_seekpos(_IO_FILE*, __off64_t, int);
-void _IO_free_backup_area(_IO_FILE*);
+typedef __ssize_t __io_read_fn(void *__cookie, char *__buf, size_t __nbytes);
+typedef __ssize_t __io_write_fn(void *__cookie, char *__buf, size_t __n);
+typedef int __io_seek_fn(void *__cookie, __off64_t *__pos, int __w);
+typedef int __io_close_fn(void *__cookie);
+extern int _IO_getc(_IO_FILE *__fp);
+extern int _IO_putc(int __c, _IO_FILE *__fp);
+extern int _IO_feof(_IO_FILE *__fp);
+extern int _IO_ferror(_IO_FILE *__fp);
+extern int _IO_peekc_locked(_IO_FILE *__fp);
+extern void _IO_flockfile(_IO_FILE *);
+extern void _IO_funlockfile(_IO_FILE *);
+extern int _IO_ftrylockfile(_IO_FILE *);
+extern int _IO_vfscanf(_IO_FILE *, char *, __gnuc_va_list, int *);
+extern int _IO_vfprintf(_IO_FILE *, char *, __gnuc_va_list);
+extern __ssize_t _IO_padn(_IO_FILE *, int, __ssize_t);
+extern size_t _IO_sgetn(_IO_FILE *, void *, size_t);
+extern __off64_t _IO_seekoff(_IO_FILE *, __off64_t, int, int);
+extern __off64_t _IO_seekpos(_IO_FILE *, __off64_t, int);
+extern void _IO_free_backup_area(_IO_FILE *);
 typedef _G_fpos_t fpos_t;
-struct _IO_FILE* stdin;
-struct _IO_FILE* stdout;
-struct _IO_FILE* stderr;
-int remove(char*);
-int rename(char*, char*);
-int renameat(int, char*, int, char*);
-FILE* tmpfile(void);
-char* tmpnam(char*);
-char* tmpnam_r(char*);
-char* tempnam(char*, char*);
-int fclose(FILE*);
-int fflush(FILE*);
-int fflush_unlocked(FILE*);
-FILE* fopen(char*, char*);
-FILE* freopen(char*, char*, FILE*);
-FILE* fdopen(int, char*);
-FILE* fmemopen(void*, size_t, char*);
-FILE* open_memstream(char**, size_t*);
-void setbuf(FILE*, char*);
-int setvbuf(FILE*, char*, int, size_t);
-void setbuffer(FILE*, char*, size_t);
-void setlinebuf(FILE*);
-int fprintf(FILE*, char*, ...);
-int printf(char*, ...);
-int sprintf(char*, char*, ...);
-int vfprintf(FILE*, char*, __gnuc_va_list);
-int vprintf(char*, __gnuc_va_list);
-int vsprintf(char*, char*, __gnuc_va_list);
-int snprintf(char*, size_t, char*, ...);
-int vsnprintf(char*, size_t, char*, __gnuc_va_list);
-int vdprintf(int, char*, __gnuc_va_list);
-int dprintf(int, char*, ...);
-int fscanf(FILE*, char*, ...);
-int scanf(char*, ...);
-int sscanf(char*, char*, ...);
-int __isoc99_fscanf(FILE*, char*, ...);
-int __isoc99_scanf(char*, ...);
-int __isoc99_sscanf(char*, char*, ...);
-int vfscanf(FILE*, char*, __gnuc_va_list);
-int vscanf(char*, __gnuc_va_list);
-int vsscanf(char*, char*, __gnuc_va_list);
-int __isoc99_vfscanf(FILE*, char*, __gnuc_va_list);
-int __isoc99_vscanf(char*, __gnuc_va_list);
-int __isoc99_vsscanf(char*, char*, __gnuc_va_list);
-int fgetc(FILE*);
-int getc(FILE*);
-int getchar(void);
-int getc_unlocked(FILE*);
-int getchar_unlocked(void);
-int fgetc_unlocked(FILE*);
-int fputc(int, FILE*);
-int putc(int, FILE*);
-int putchar(int);
-int fputc_unlocked(int, FILE*);
-int putc_unlocked(int, FILE*);
-int putchar_unlocked(int);
-int getw(FILE*);
-int putw(int, FILE*);
-char* fgets(char*, int, FILE*);
-char* gets(char*);
-__ssize_t __getdelim(char**, size_t*, int, FILE*);
-__ssize_t getdelim(char**, size_t*, int, FILE*);
-__ssize_t getline(char**, size_t*, FILE*);
-int fputs(char*, FILE*);
-int puts(char*);
-int ungetc(int, FILE*);
-size_t fread(void*, size_t, size_t, FILE*);
-size_t fwrite(void*, size_t, size_t, FILE*);
-size_t fread_unlocked(void*, size_t, size_t, FILE*);
-size_t fwrite_unlocked(void*, size_t, size_t, FILE*);
-int fseek(FILE*, long int, int);
-long int ftell(FILE*);
-void rewind(FILE*);
-int fseeko(FILE*, __off_t, int);
-__off_t ftello(FILE*);
-int fgetpos(FILE*, fpos_t*);
-int fsetpos(FILE*, fpos_t*);
-void clearerr(FILE*);
-int feof(FILE*);
-int ferror(FILE*);
-void clearerr_unlocked(FILE*);
-int feof_unlocked(FILE*);
-int ferror_unlocked(FILE*);
-void perror(char*);
-int sys_nerr;
-int fileno(FILE*);
-int fileno_unlocked(FILE*);
-FILE* popen(char*, char*);
-int pclose(FILE*);
-char* ctermid(char*);
-void flockfile(FILE*);
-int ftrylockfile(FILE*);
-void funlockfile(FILE*);
+extern struct _IO_FILE *stdin;
+extern struct _IO_FILE *stdout;
+extern struct _IO_FILE *stderr;
+extern int remove(char *__filename);
+extern int rename(char *__old, char *__new);
+extern int renameat(int __oldfd, char *__old, int __newfd, char *__new);
+extern FILE * tmpfile(void);
+extern char * tmpnam(char *__s);
+extern char * tmpnam_r(char *__s);
+extern char * tempnam(char *__dir, char *__pfx);
+extern int fclose(FILE *__stream);
+extern int fflush(FILE *__stream);
+extern int fflush_unlocked(FILE *__stream);
+extern FILE * fopen(char *__filename, char *__modes);
+extern FILE * freopen(char *__filename, char *__modes, FILE *__stream);
+extern FILE * fdopen(int __fd, char *__modes);
+extern FILE * fmemopen(void *__s, size_t __len, char *__modes);
+extern FILE * open_memstream(char **__bufloc, size_t *__sizeloc);
+extern void setbuf(FILE *__stream, char *__buf);
+extern int setvbuf(FILE *__stream, char *__buf, int __modes, size_t __n);
+extern void setbuffer(FILE *__stream, char *__buf, size_t __size);
+extern void setlinebuf(FILE *__stream);
+extern int fprintf(FILE *__stream, char *__format, ...);
+extern int printf(char *__format, ...);
+extern int sprintf(char *__s, char *__format, ...);
+extern int vfprintf(FILE *__s, char *__format, __gnuc_va_list __arg);
+extern int vprintf(char *__format, __gnuc_va_list __arg);
+extern int vsprintf(char *__s, char *__format, __gnuc_va_list __arg);
+extern int snprintf(char *__s, size_t __maxlen, char *__format, ...);
+extern int vsnprintf(char *__s, size_t __maxlen, char *__format, __gnuc_va_list __arg);
+extern int vdprintf(int __fd, char *__fmt, __gnuc_va_list __arg);
+extern int dprintf(int __fd, char *__fmt, ...);
+extern int fscanf(FILE *__stream, char *__format, ...);
+extern int scanf(char *__format, ...);
+extern int sscanf(char *__s, char *__format, ...);
+extern int vfscanf(FILE *__s, char *__format, __gnuc_va_list __arg);
+extern int vscanf(char *__format, __gnuc_va_list __arg);
+extern int vsscanf(char *__s, char *__format, __gnuc_va_list __arg);
+extern int fgetc(FILE *__stream);
+extern int getc(FILE *__stream);
+extern int getchar(void);
+extern int getc_unlocked(FILE *__stream);
+extern int getchar_unlocked(void);
+extern int fgetc_unlocked(FILE *__stream);
+extern int fputc(int __c, FILE *__stream);
+extern int putc(int __c, FILE *__stream);
+extern int putchar(int __c);
+extern int fputc_unlocked(int __c, FILE *__stream);
+extern int putc_unlocked(int __c, FILE *__stream);
+extern int putchar_unlocked(int __c);
+extern int getw(FILE *__stream);
+extern int putw(int __w, FILE *__stream);
+extern char * fgets(char *__s, int __n, FILE *__stream);
+extern char * gets(char *__s);
+extern __ssize_t getdelim(char **__lineptr, size_t *__n, int __delimiter, FILE *__stream);
+extern __ssize_t getline(char **__lineptr, size_t *__n, FILE *__stream);
+extern int fputs(char *__s, FILE *__stream);
+extern int puts(char *__s);
+extern int ungetc(int __c, FILE *__stream);
+extern size_t fread(void *__ptr, size_t __size, size_t __n, FILE *__stream);
+extern size_t fwrite(void *__ptr, size_t __size, size_t __n, FILE *__s);
+extern size_t fread_unlocked(void *__ptr, size_t __size, size_t __n, FILE *__stream);
+extern size_t fwrite_unlocked(void *__ptr, size_t __size, size_t __n, FILE *__stream);
+extern int fseek(FILE *__stream, long int __off, int __whence);
+extern long int ftell(FILE *__stream);
+extern void rewind(FILE *__stream);
+extern int fseeko(FILE *__stream, __off_t __off, int __whence);
+extern __off_t ftello(FILE *__stream);
+extern int fgetpos(FILE *__stream, fpos_t *__pos);
+extern int fsetpos(FILE *__stream, fpos_t *__pos);
+extern void clearerr(FILE *__stream);
+extern int feof(FILE *__stream);
+extern int ferror(FILE *__stream);
+extern void clearerr_unlocked(FILE *__stream);
+extern int feof_unlocked(FILE *__stream);
+extern int ferror_unlocked(FILE *__stream);
+extern void perror(char *__s);
+extern int sys_nerr;
+extern int fileno(FILE *__stream);
+extern int fileno_unlocked(FILE *__stream);
+extern FILE * popen(char *__command, char *__modes);
+extern int pclose(FILE *__stream);
+extern char * ctermid(char *__s);
+extern void flockfile(FILE *__stream);
+extern int ftrylockfile(FILE *__stream);
+extern void funlockfile(FILE *__stream);
 typedef struct gcc_jit_context gcc_jit_context;
 typedef struct gcc_jit_result gcc_jit_result;
 typedef struct gcc_jit_object gcc_jit_object;
@@ -248,8 +241,8 @@ typedef struct gcc_jit_rvalue gcc_jit_rvalue;
 typedef struct gcc_jit_lvalue gcc_jit_lvalue;
 typedef struct gcc_jit_param gcc_jit_param;
 typedef struct gcc_jit_case gcc_jit_case;
-gcc_jit_context* gcc_jit_context_acquire(void);
-void gcc_jit_context_release(gcc_jit_context*);
+extern gcc_jit_context * gcc_jit_context_acquire(void);
+extern void gcc_jit_context_release(gcc_jit_context *ctxt);
 enum gcc_jit_str_option {
   GCC_JIT_STR_OPTION_PROGNAME,
   GCC_JIT_NUM_STR_OPTIONS,
@@ -269,32 +262,32 @@ enum gcc_jit_bool_option {
   GCC_JIT_BOOL_OPTION_KEEP_INTERMEDIATES,
   GCC_JIT_NUM_BOOL_OPTIONS,
 };
-void gcc_jit_context_set_str_option(gcc_jit_context*, enum gcc_jit_str_option, char*);
-void gcc_jit_context_set_int_option(gcc_jit_context*, enum gcc_jit_int_option, int);
-void gcc_jit_context_set_bool_option(gcc_jit_context*, enum gcc_jit_bool_option, int);
-void gcc_jit_context_set_bool_allow_unreachable_blocks(gcc_jit_context*, int);
-void gcc_jit_context_set_bool_use_external_driver(gcc_jit_context*, int);
-void gcc_jit_context_add_command_line_option(gcc_jit_context*, char*);
-gcc_jit_result* gcc_jit_context_compile(gcc_jit_context*);
+extern void gcc_jit_context_set_str_option(gcc_jit_context *ctxt, enum gcc_jit_str_option opt, char *value);
+extern void gcc_jit_context_set_int_option(gcc_jit_context *ctxt, enum gcc_jit_int_option opt, int value);
+extern void gcc_jit_context_set_bool_option(gcc_jit_context *ctxt, enum gcc_jit_bool_option opt, int value);
+extern void gcc_jit_context_set_bool_allow_unreachable_blocks(gcc_jit_context *ctxt, int bool_value);
+extern void gcc_jit_context_set_bool_use_external_driver(gcc_jit_context *ctxt, int bool_value);
+extern void gcc_jit_context_add_command_line_option(gcc_jit_context *ctxt, char *optname);
+extern gcc_jit_result * gcc_jit_context_compile(gcc_jit_context *ctxt);
 enum gcc_jit_output_kind {
   GCC_JIT_OUTPUT_KIND_ASSEMBLER,
   GCC_JIT_OUTPUT_KIND_OBJECT_FILE,
   GCC_JIT_OUTPUT_KIND_DYNAMIC_LIBRARY,
   GCC_JIT_OUTPUT_KIND_EXECUTABLE,
 };
-void gcc_jit_context_compile_to_file(gcc_jit_context*, enum gcc_jit_output_kind, char*);
-void gcc_jit_context_dump_to_file(gcc_jit_context*, char*, int);
-void gcc_jit_context_set_logfile(gcc_jit_context*, FILE*, int, int);
-char* gcc_jit_context_get_first_error(gcc_jit_context*);
-char* gcc_jit_context_get_last_error(gcc_jit_context*);
-void* gcc_jit_result_get_code(gcc_jit_result*, char*);
-void* gcc_jit_result_get_global(gcc_jit_result*, char*);
-void gcc_jit_result_release(gcc_jit_result*);
-gcc_jit_context* gcc_jit_object_get_context(gcc_jit_object*);
-char* gcc_jit_object_get_debug_string(gcc_jit_object*);
-gcc_jit_location* gcc_jit_context_new_location(gcc_jit_context*, char*, int, int);
-gcc_jit_object* gcc_jit_location_as_object(gcc_jit_location*);
-gcc_jit_object* gcc_jit_type_as_object(gcc_jit_type*);
+extern void gcc_jit_context_compile_to_file(gcc_jit_context *ctxt, enum gcc_jit_output_kind output_kind, char *output_path);
+extern void gcc_jit_context_dump_to_file(gcc_jit_context *ctxt, char *path, int update_locations);
+extern void gcc_jit_context_set_logfile(gcc_jit_context *ctxt, FILE *logfile, int flags, int verbosity);
+extern char * gcc_jit_context_get_first_error(gcc_jit_context *ctxt);
+extern char * gcc_jit_context_get_last_error(gcc_jit_context *ctxt);
+extern void * gcc_jit_result_get_code(gcc_jit_result *result, char *funcname);
+extern void * gcc_jit_result_get_global(gcc_jit_result *result, char *name);
+extern void gcc_jit_result_release(gcc_jit_result *result);
+extern gcc_jit_context * gcc_jit_object_get_context(gcc_jit_object *obj);
+extern char * gcc_jit_object_get_debug_string(gcc_jit_object *obj);
+extern gcc_jit_location * gcc_jit_context_new_location(gcc_jit_context *ctxt, char *filename, int line, int column);
+extern gcc_jit_object * gcc_jit_location_as_object(gcc_jit_location *loc);
+extern gcc_jit_object * gcc_jit_type_as_object(gcc_jit_type *type);
 enum gcc_jit_types {
   GCC_JIT_TYPE_VOID,
   GCC_JIT_TYPE_VOID_PTR,
@@ -320,63 +313,63 @@ enum gcc_jit_types {
   GCC_JIT_TYPE_COMPLEX_DOUBLE,
   GCC_JIT_TYPE_COMPLEX_LONG_DOUBLE,
 };
-gcc_jit_type* gcc_jit_context_get_type(gcc_jit_context*, enum gcc_jit_types);
-gcc_jit_type* gcc_jit_context_get_int_type(gcc_jit_context*, int, int);
-gcc_jit_type* gcc_jit_type_get_pointer(gcc_jit_type*);
-gcc_jit_type* gcc_jit_type_get_const(gcc_jit_type*);
-gcc_jit_type* gcc_jit_type_get_volatile(gcc_jit_type*);
-gcc_jit_type* gcc_jit_context_new_array_type(gcc_jit_context*, gcc_jit_location*, gcc_jit_type*, int);
-gcc_jit_field* gcc_jit_context_new_field(gcc_jit_context*, gcc_jit_location*, gcc_jit_type*, char*);
-gcc_jit_object* gcc_jit_field_as_object(gcc_jit_field*);
-gcc_jit_struct* gcc_jit_context_new_struct_type(gcc_jit_context*, gcc_jit_location*, char*, int, gcc_jit_field**);
-gcc_jit_struct* gcc_jit_context_new_opaque_struct(gcc_jit_context*, gcc_jit_location*, char*);
-gcc_jit_type* gcc_jit_struct_as_type(gcc_jit_struct*);
-void gcc_jit_struct_set_fields(gcc_jit_struct*, gcc_jit_location*, int, gcc_jit_field**);
-gcc_jit_type* gcc_jit_context_new_union_type(gcc_jit_context*, gcc_jit_location*, char*, int, gcc_jit_field**);
-gcc_jit_type* gcc_jit_context_new_function_ptr_type(gcc_jit_context*, gcc_jit_location*, gcc_jit_type*, int, gcc_jit_type**, int);
-gcc_jit_param* gcc_jit_context_new_param(gcc_jit_context*, gcc_jit_location*, gcc_jit_type*, char*);
-gcc_jit_object* gcc_jit_param_as_object(gcc_jit_param*);
-gcc_jit_lvalue* gcc_jit_param_as_lvalue(gcc_jit_param*);
-gcc_jit_rvalue* gcc_jit_param_as_rvalue(gcc_jit_param*);
+extern gcc_jit_type * gcc_jit_context_get_type(gcc_jit_context *ctxt, enum gcc_jit_types type_);
+extern gcc_jit_type * gcc_jit_context_get_int_type(gcc_jit_context *ctxt, int num_bytes, int is_signed);
+extern gcc_jit_type * gcc_jit_type_get_pointer(gcc_jit_type *type);
+extern gcc_jit_type * gcc_jit_type_get_const(gcc_jit_type *type);
+extern gcc_jit_type * gcc_jit_type_get_volatile(gcc_jit_type *type);
+extern gcc_jit_type * gcc_jit_context_new_array_type(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_type *element_type, int num_elements);
+extern gcc_jit_field * gcc_jit_context_new_field(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_type *type, char *name);
+extern gcc_jit_object * gcc_jit_field_as_object(gcc_jit_field *field);
+extern gcc_jit_struct * gcc_jit_context_new_struct_type(gcc_jit_context *ctxt, gcc_jit_location *loc, char *name, int num_fields, gcc_jit_field **fields);
+extern gcc_jit_struct * gcc_jit_context_new_opaque_struct(gcc_jit_context *ctxt, gcc_jit_location *loc, char *name);
+extern gcc_jit_type * gcc_jit_struct_as_type(gcc_jit_struct *struct_type);
+extern void gcc_jit_struct_set_fields(gcc_jit_struct *struct_type, gcc_jit_location *loc, int num_fields, gcc_jit_field **fields);
+extern gcc_jit_type * gcc_jit_context_new_union_type(gcc_jit_context *ctxt, gcc_jit_location *loc, char *name, int num_fields, gcc_jit_field **fields);
+extern gcc_jit_type * gcc_jit_context_new_function_ptr_type(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_type *return_type, int num_params, gcc_jit_type **param_types, int is_variadic);
+extern gcc_jit_param * gcc_jit_context_new_param(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_type *type, char *name);
+extern gcc_jit_object * gcc_jit_param_as_object(gcc_jit_param *param);
+extern gcc_jit_lvalue * gcc_jit_param_as_lvalue(gcc_jit_param *param);
+extern gcc_jit_rvalue * gcc_jit_param_as_rvalue(gcc_jit_param *param);
 enum gcc_jit_function_kind {
   GCC_JIT_FUNCTION_EXPORTED,
   GCC_JIT_FUNCTION_INTERNAL,
   GCC_JIT_FUNCTION_IMPORTED,
   GCC_JIT_FUNCTION_ALWAYS_INLINE,
 };
-gcc_jit_function* gcc_jit_context_new_function(gcc_jit_context*, gcc_jit_location*, enum gcc_jit_function_kind, gcc_jit_type*, char*, int, gcc_jit_param**, int);
-gcc_jit_function* gcc_jit_context_get_builtin_function(gcc_jit_context*, char*);
-gcc_jit_object* gcc_jit_function_as_object(gcc_jit_function*);
-gcc_jit_param* gcc_jit_function_get_param(gcc_jit_function*, int);
-void gcc_jit_function_dump_to_dot(gcc_jit_function*, char*);
-gcc_jit_block* gcc_jit_function_new_block(gcc_jit_function*, char*);
-gcc_jit_object* gcc_jit_block_as_object(gcc_jit_block*);
-gcc_jit_function* gcc_jit_block_get_function(gcc_jit_block*);
+extern gcc_jit_function * gcc_jit_context_new_function(gcc_jit_context *ctxt, gcc_jit_location *loc, enum gcc_jit_function_kind kind, gcc_jit_type *return_type, char *name, int num_params, gcc_jit_param **params, int is_variadic);
+extern gcc_jit_function * gcc_jit_context_get_builtin_function(gcc_jit_context *ctxt, char *name);
+extern gcc_jit_object * gcc_jit_function_as_object(gcc_jit_function *func);
+extern gcc_jit_param * gcc_jit_function_get_param(gcc_jit_function *func, int index);
+extern void gcc_jit_function_dump_to_dot(gcc_jit_function *func, char *path);
+extern gcc_jit_block * gcc_jit_function_new_block(gcc_jit_function *func, char *name);
+extern gcc_jit_object * gcc_jit_block_as_object(gcc_jit_block *block);
+extern gcc_jit_function * gcc_jit_block_get_function(gcc_jit_block *block);
 enum gcc_jit_global_kind {
   GCC_JIT_GLOBAL_EXPORTED,
   GCC_JIT_GLOBAL_INTERNAL,
   GCC_JIT_GLOBAL_IMPORTED,
 };
-gcc_jit_lvalue* gcc_jit_context_new_global(gcc_jit_context*, gcc_jit_location*, enum gcc_jit_global_kind, gcc_jit_type*, char*);
-gcc_jit_object* gcc_jit_lvalue_as_object(gcc_jit_lvalue*);
-gcc_jit_rvalue* gcc_jit_lvalue_as_rvalue(gcc_jit_lvalue*);
-gcc_jit_object* gcc_jit_rvalue_as_object(gcc_jit_rvalue*);
-gcc_jit_type* gcc_jit_rvalue_get_type(gcc_jit_rvalue*);
-gcc_jit_rvalue* gcc_jit_context_new_rvalue_from_int(gcc_jit_context*, gcc_jit_type*, int);
-gcc_jit_rvalue* gcc_jit_context_new_rvalue_from_long(gcc_jit_context*, gcc_jit_type*, long);
-gcc_jit_rvalue* gcc_jit_context_zero(gcc_jit_context*, gcc_jit_type*);
-gcc_jit_rvalue* gcc_jit_context_one(gcc_jit_context*, gcc_jit_type*);
-gcc_jit_rvalue* gcc_jit_context_new_rvalue_from_double(gcc_jit_context*, gcc_jit_type*, double);
-gcc_jit_rvalue* gcc_jit_context_new_rvalue_from_ptr(gcc_jit_context*, gcc_jit_type*, void*);
-gcc_jit_rvalue* gcc_jit_context_null(gcc_jit_context*, gcc_jit_type*);
-gcc_jit_rvalue* gcc_jit_context_new_string_literal(gcc_jit_context*, char*);
+extern gcc_jit_lvalue * gcc_jit_context_new_global(gcc_jit_context *ctxt, gcc_jit_location *loc, enum gcc_jit_global_kind kind, gcc_jit_type *type, char *name);
+extern gcc_jit_object * gcc_jit_lvalue_as_object(gcc_jit_lvalue *lvalue);
+extern gcc_jit_rvalue * gcc_jit_lvalue_as_rvalue(gcc_jit_lvalue *lvalue);
+extern gcc_jit_object * gcc_jit_rvalue_as_object(gcc_jit_rvalue *rvalue);
+extern gcc_jit_type * gcc_jit_rvalue_get_type(gcc_jit_rvalue *rvalue);
+extern gcc_jit_rvalue * gcc_jit_context_new_rvalue_from_int(gcc_jit_context *ctxt, gcc_jit_type *numeric_type, int value);
+extern gcc_jit_rvalue * gcc_jit_context_new_rvalue_from_long(gcc_jit_context *ctxt, gcc_jit_type *numeric_type, long value);
+extern gcc_jit_rvalue * gcc_jit_context_zero(gcc_jit_context *ctxt, gcc_jit_type *numeric_type);
+extern gcc_jit_rvalue * gcc_jit_context_one(gcc_jit_context *ctxt, gcc_jit_type *numeric_type);
+extern gcc_jit_rvalue * gcc_jit_context_new_rvalue_from_double(gcc_jit_context *ctxt, gcc_jit_type *numeric_type, double value);
+extern gcc_jit_rvalue * gcc_jit_context_new_rvalue_from_ptr(gcc_jit_context *ctxt, gcc_jit_type *pointer_type, void *value);
+extern gcc_jit_rvalue * gcc_jit_context_null(gcc_jit_context *ctxt, gcc_jit_type *pointer_type);
+extern gcc_jit_rvalue * gcc_jit_context_new_string_literal(gcc_jit_context *ctxt, char *value);
 enum gcc_jit_unary_op {
   GCC_JIT_UNARY_OP_MINUS,
   GCC_JIT_UNARY_OP_BITWISE_NEGATE,
   GCC_JIT_UNARY_OP_LOGICAL_NEGATE,
   GCC_JIT_UNARY_OP_ABS,
 };
-gcc_jit_rvalue* gcc_jit_context_new_unary_op(gcc_jit_context*, gcc_jit_location*, enum gcc_jit_unary_op, gcc_jit_type*, gcc_jit_rvalue*);
+extern gcc_jit_rvalue * gcc_jit_context_new_unary_op(gcc_jit_context *ctxt, gcc_jit_location *loc, enum gcc_jit_unary_op op, gcc_jit_type *result_type, gcc_jit_rvalue *rvalue);
 enum gcc_jit_binary_op {
   GCC_JIT_BINARY_OP_PLUS,
   GCC_JIT_BINARY_OP_MINUS,
@@ -391,7 +384,7 @@ enum gcc_jit_binary_op {
   GCC_JIT_BINARY_OP_LSHIFT,
   GCC_JIT_BINARY_OP_RSHIFT,
 };
-gcc_jit_rvalue* gcc_jit_context_new_binary_op(gcc_jit_context*, gcc_jit_location*, enum gcc_jit_binary_op, gcc_jit_type*, gcc_jit_rvalue*, gcc_jit_rvalue*);
+extern gcc_jit_rvalue * gcc_jit_context_new_binary_op(gcc_jit_context *ctxt, gcc_jit_location *loc, enum gcc_jit_binary_op op, gcc_jit_type *result_type, gcc_jit_rvalue *a, gcc_jit_rvalue *b);
 enum gcc_jit_comparison {
   GCC_JIT_COMPARISON_EQ,
   GCC_JIT_COMPARISON_NE,
@@ -400,41 +393,143 @@ enum gcc_jit_comparison {
   GCC_JIT_COMPARISON_GT,
   GCC_JIT_COMPARISON_GE,
 };
-gcc_jit_rvalue* gcc_jit_context_new_comparison(gcc_jit_context*, gcc_jit_location*, enum gcc_jit_comparison, gcc_jit_rvalue*, gcc_jit_rvalue*);
-gcc_jit_rvalue* gcc_jit_context_new_call(gcc_jit_context*, gcc_jit_location*, gcc_jit_function*, int, gcc_jit_rvalue**);
-gcc_jit_rvalue* gcc_jit_context_new_call_through_ptr(gcc_jit_context*, gcc_jit_location*, gcc_jit_rvalue*, int, gcc_jit_rvalue**);
-gcc_jit_rvalue* gcc_jit_context_new_cast(gcc_jit_context*, gcc_jit_location*, gcc_jit_rvalue*, gcc_jit_type*);
-gcc_jit_lvalue* gcc_jit_context_new_array_access(gcc_jit_context*, gcc_jit_location*, gcc_jit_rvalue*, gcc_jit_rvalue*);
-gcc_jit_lvalue* gcc_jit_lvalue_access_field(gcc_jit_lvalue*, gcc_jit_location*, gcc_jit_field*);
-gcc_jit_rvalue* gcc_jit_rvalue_access_field(gcc_jit_rvalue*, gcc_jit_location*, gcc_jit_field*);
-gcc_jit_lvalue* gcc_jit_rvalue_dereference_field(gcc_jit_rvalue*, gcc_jit_location*, gcc_jit_field*);
-gcc_jit_lvalue* gcc_jit_rvalue_dereference(gcc_jit_rvalue*, gcc_jit_location*);
-gcc_jit_rvalue* gcc_jit_lvalue_get_address(gcc_jit_lvalue*, gcc_jit_location*);
-gcc_jit_lvalue* gcc_jit_function_new_local(gcc_jit_function*, gcc_jit_location*, gcc_jit_type*, char*);
-void gcc_jit_block_add_eval(gcc_jit_block*, gcc_jit_location*, gcc_jit_rvalue*);
-void gcc_jit_block_add_assignment(gcc_jit_block*, gcc_jit_location*, gcc_jit_lvalue*, gcc_jit_rvalue*);
-void gcc_jit_block_add_assignment_op(gcc_jit_block*, gcc_jit_location*, gcc_jit_lvalue*, enum gcc_jit_binary_op, gcc_jit_rvalue*);
-void gcc_jit_block_add_comment(gcc_jit_block*, gcc_jit_location*, char*);
-void gcc_jit_block_end_with_conditional(gcc_jit_block*, gcc_jit_location*, gcc_jit_rvalue*, gcc_jit_block*, gcc_jit_block*);
-void gcc_jit_block_end_with_jump(gcc_jit_block*, gcc_jit_location*, gcc_jit_block*);
-void gcc_jit_block_end_with_return(gcc_jit_block*, gcc_jit_location*, gcc_jit_rvalue*);
-void gcc_jit_block_end_with_void_return(gcc_jit_block*, gcc_jit_location*);
-gcc_jit_case* gcc_jit_context_new_case(gcc_jit_context*, gcc_jit_rvalue*, gcc_jit_rvalue*, gcc_jit_block*);
-gcc_jit_object* gcc_jit_case_as_object(gcc_jit_case*);
-void gcc_jit_block_end_with_switch(gcc_jit_block*, gcc_jit_location*, gcc_jit_rvalue*, gcc_jit_block*, int, gcc_jit_case**);
-gcc_jit_context* gcc_jit_context_new_child_context(gcc_jit_context*);
-void gcc_jit_context_dump_reproducer_to_file(gcc_jit_context*, char*);
-void gcc_jit_context_enable_dump(gcc_jit_context*, char*, char**);
+extern gcc_jit_rvalue * gcc_jit_context_new_comparison(gcc_jit_context *ctxt, gcc_jit_location *loc, enum gcc_jit_comparison op, gcc_jit_rvalue *a, gcc_jit_rvalue *b);
+extern gcc_jit_rvalue * gcc_jit_context_new_call(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_function *func, int numargs, gcc_jit_rvalue **args);
+extern gcc_jit_rvalue * gcc_jit_context_new_call_through_ptr(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_rvalue *fn_ptr, int numargs, gcc_jit_rvalue **args);
+extern gcc_jit_rvalue * gcc_jit_context_new_cast(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_rvalue *rvalue, gcc_jit_type *type);
+extern gcc_jit_lvalue * gcc_jit_context_new_array_access(gcc_jit_context *ctxt, gcc_jit_location *loc, gcc_jit_rvalue *ptr, gcc_jit_rvalue *index);
+extern gcc_jit_lvalue * gcc_jit_lvalue_access_field(gcc_jit_lvalue *struct_or_union, gcc_jit_location *loc, gcc_jit_field *field);
+extern gcc_jit_rvalue * gcc_jit_rvalue_access_field(gcc_jit_rvalue *struct_or_union, gcc_jit_location *loc, gcc_jit_field *field);
+extern gcc_jit_lvalue * gcc_jit_rvalue_dereference_field(gcc_jit_rvalue *ptr, gcc_jit_location *loc, gcc_jit_field *field);
+extern gcc_jit_lvalue * gcc_jit_rvalue_dereference(gcc_jit_rvalue *rvalue, gcc_jit_location *loc);
+extern gcc_jit_rvalue * gcc_jit_lvalue_get_address(gcc_jit_lvalue *lvalue, gcc_jit_location *loc);
+extern gcc_jit_lvalue * gcc_jit_function_new_local(gcc_jit_function *func, gcc_jit_location *loc, gcc_jit_type *type, char *name);
+extern void gcc_jit_block_add_eval(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_rvalue *rvalue);
+extern void gcc_jit_block_add_assignment(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_lvalue *lvalue, gcc_jit_rvalue *rvalue);
+extern void gcc_jit_block_add_assignment_op(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_lvalue *lvalue, enum gcc_jit_binary_op op, gcc_jit_rvalue *rvalue);
+extern void gcc_jit_block_add_comment(gcc_jit_block *block, gcc_jit_location *loc, char *text);
+extern void gcc_jit_block_end_with_conditional(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_rvalue *boolval, gcc_jit_block *on_true, gcc_jit_block *on_false);
+extern void gcc_jit_block_end_with_jump(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_block *target);
+extern void gcc_jit_block_end_with_return(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_rvalue *rvalue);
+extern void gcc_jit_block_end_with_void_return(gcc_jit_block *block, gcc_jit_location *loc);
+extern gcc_jit_case * gcc_jit_context_new_case(gcc_jit_context *ctxt, gcc_jit_rvalue *min_value, gcc_jit_rvalue *max_value, gcc_jit_block *dest_block);
+extern gcc_jit_object * gcc_jit_case_as_object(gcc_jit_case *case_);
+extern void gcc_jit_block_end_with_switch(gcc_jit_block *block, gcc_jit_location *loc, gcc_jit_rvalue *expr, gcc_jit_block *default_block, int num_cases, gcc_jit_case **cases);
+extern gcc_jit_context * gcc_jit_context_new_child_context(gcc_jit_context *parent_ctxt);
+extern void gcc_jit_context_dump_reproducer_to_file(gcc_jit_context *ctxt, char *path);
+extern void gcc_jit_context_enable_dump(gcc_jit_context *ctxt, char *dumpname, char **out_ptr);
 typedef struct gcc_jit_timer gcc_jit_timer;
-gcc_jit_timer* gcc_jit_timer_new(void);
-void gcc_jit_timer_release(gcc_jit_timer*);
-void gcc_jit_context_set_timer(gcc_jit_context*, gcc_jit_timer*);
-gcc_jit_timer* gcc_jit_context_get_timer(gcc_jit_context*);
-void gcc_jit_timer_push(gcc_jit_timer*, char*);
-void gcc_jit_timer_pop(gcc_jit_timer*, char*);
-void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
+extern gcc_jit_timer * gcc_jit_timer_new(void);
+extern void gcc_jit_timer_release(gcc_jit_timer *timer);
+extern void gcc_jit_context_set_timer(gcc_jit_context *ctxt, gcc_jit_timer *timer);
+extern gcc_jit_timer * gcc_jit_context_get_timer(gcc_jit_context *ctxt);
+extern void gcc_jit_timer_push(gcc_jit_timer *timer, char *item_name);
+extern void gcc_jit_timer_pop(gcc_jit_timer *timer, char *item_name);
+extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
 ';
     private FFI $ffi;
+    const _STDIO_H = 1;
+    const _FEATURES_H = 1;
+    const _DEFAULT_SOURCE = 1;
+    const __USE_POSIX_IMPLICITLY = 1;
+    const _POSIX_SOURCE = 1;
+    const _POSIX_C_SOURCE = 200809;
+    const __USE_POSIX = 1;
+    const __USE_POSIX2 = 1;
+    const __USE_POSIX199309 = 1;
+    const __USE_POSIX199506 = 1;
+    const __USE_XOPEN2K = 1;
+    const __USE_ISOC95 = 1;
+    const __USE_ISOC99 = 1;
+    const __USE_XOPEN2K8 = 1;
+    const _ATFILE_SOURCE = 1;
+    const __USE_MISC = 1;
+    const __USE_ATFILE = 1;
+    const __USE_FORTIFY_LEVEL = 0;
+    const _STDC_PREDEF_H = 1;
+    const __STDC_IEC_559__ = 1;
+    const __STDC_IEC_559_COMPLEX__ = 1;
+    const __STDC_ISO_10646__ = 201605;
+    const __STDC_NO_THREADS__ = 1;
+    const __GNU_LIBRARY__ = 6;
+    const __GLIBC__ = 2;
+    const __GLIBC_MINOR__ = 24;
+    const _SYS_CDEFS_H = 1;
+    const __WORDSIZE = 64;
+    const __WORDSIZE_TIME64_COMPAT32 = 1;
+    const __SYSCALL_WORDSIZE = 64;
+    const _BITS_TYPES_H = 1;
+    const _BITS_TYPESIZES_H = 1;
+    const __OFF_T_MATCHES_OFF64_T = 1;
+    const __INO_T_MATCHES_INO64_T = 1;
+    const __FD_SETSIZE = 1024;
+    const __FILE_defined = 1;
+    const ____FILE_defined = 1;
+    const _G_config_h = 1;
+    const ____mbstate_t_defined = 1;
+    const _G_HAVE_MMAP = 1;
+    const _G_HAVE_MREMAP = 1;
+    const _G_IO_IO_FILE_VERSION = 0x20001;
+    const _G_BUFSIZ = 8192;
+    const _IO_UNIFIED_JUMPTABLES = 1;
+    const _IOS_INPUT = 1;
+    const _IOS_OUTPUT = 2;
+    const _IOS_ATEND = 4;
+    const _IOS_APPEND = 8;
+    const _IOS_TRUNC = 16;
+    const _IOS_NOCREATE = 32;
+    const _IOS_NOREPLACE = 64;
+    const _IOS_BIN = 128;
+    const _IO_MAGIC = 0xFBAD0000;
+    const _OLD_STDIO_MAGIC = 0xFABC0000;
+    const _IO_MAGIC_MASK = 0xFFFF0000;
+    const _IO_USER_BUF = 1;
+    const _IO_UNBUFFERED = 2;
+    const _IO_NO_READS = 4;
+    const _IO_NO_WRITES = 8;
+    const _IO_EOF_SEEN = 0x10;
+    const _IO_ERR_SEEN = 0x20;
+    const _IO_DELETE_DONT_CLOSE = 0x40;
+    const _IO_LINKED = 0x80;
+    const _IO_IN_BACKUP = 0x100;
+    const _IO_LINE_BUF = 0x200;
+    const _IO_TIED_PUT_GET = 0x400;
+    const _IO_CURRENTLY_PUTTING = 0x800;
+    const _IO_IS_APPENDING = 0x1000;
+    const _IO_IS_FILEBUF = 0x2000;
+    const _IO_BAD_SEEN = 0x4000;
+    const _IO_USER_LOCK = 0x8000;
+    const _IO_FLAGS2_MMAP = 1;
+    const _IO_FLAGS2_NOTCANCEL = 2;
+    const _IO_FLAGS2_USER_WBUF = 8;
+    const _IO_SKIPWS = 01;
+    const _IO_LEFT = 02;
+    const _IO_RIGHT = 04;
+    const _IO_INTERNAL = 010;
+    const _IO_DEC = 020;
+    const _IO_OCT = 040;
+    const _IO_HEX = 0100;
+    const _IO_SHOWBASE = 0200;
+    const _IO_SHOWPOINT = 0400;
+    const _IO_UPPERCASE = 01000;
+    const _IO_SHOWPOS = 02000;
+    const _IO_SCIENTIFIC = 04000;
+    const _IO_FIXED = 010000;
+    const _IO_UNITBUF = 020000;
+    const _IO_STDIO = 040000;
+    const _IO_DONT_CLOSE = 0100000;
+    const _IO_BOOLALPHA = 0200000;
+    const _IOFBF = 0;
+    const _IOLBF = 1;
+    const _IONBF = 2;
+    const SEEK_SET = 0;
+    const SEEK_CUR = 1;
+    const SEEK_END = 2;
+    const L_tmpnam = 20;
+    const TMP_MAX = 238328;
+    const FILENAME_MAX = 4096;
+    const L_ctermid = 9;
+    const FOPEN_MAX = 16;
     public function __construct() {
         $this->ffi = FFI::cdef(self::HEADER_DEF, self::SOFILE);
     }
@@ -475,14 +570,10 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
     
     public function __get(string $name) {
         switch($name) {
-            case '_IO_2_1_stdin_': $tmp = $this->ffi->_IO_2_1_stdin_; return $tmp === null ? null : new _IO_FILE_plus($tmp);
-            case '_IO_2_1_stdout_': $tmp = $this->ffi->_IO_2_1_stdout_; return $tmp === null ? null : new _IO_FILE_plus($tmp);
-            case '_IO_2_1_stderr_': $tmp = $this->ffi->_IO_2_1_stderr_; return $tmp === null ? null : new _IO_FILE_plus($tmp);
             case 'stdin': $tmp = $this->ffi->stdin; return $tmp === null ? null : new _IO_FILE_ptr($tmp);
             case 'stdout': $tmp = $this->ffi->stdout; return $tmp === null ? null : new _IO_FILE_ptr($tmp);
             case 'stderr': $tmp = $this->ffi->stderr; return $tmp === null ? null : new _IO_FILE_ptr($tmp);
             case 'sys_nerr': return $this->ffi->sys_nerr;
-            case 'sys_errlist': return $this->ffi->sys_errlist;
             default: return $this->ffi->$name;
         }
     }
@@ -491,18 +582,6 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
     const __codecvt_partial = 1;
     const __codecvt_error = 2;
     const __codecvt_noconv = 3;
-    public function __underflow(?_IO_FILE_ptr $p0): ?int {
-        $result = $this->ffi->__underflow($p0 === null ? null : $p0->getData());
-        return $result;
-    }
-    public function __uflow(?_IO_FILE_ptr $p0): ?int {
-        $result = $this->ffi->__uflow($p0 === null ? null : $p0->getData());
-        return $result;
-    }
-    public function __overflow(?_IO_FILE_ptr $p0, ?int $p1): ?int {
-        $result = $this->ffi->__overflow($p0 === null ? null : $p0->getData(), $p1);
-        return $result;
-    }
     public function _IO_getc(?_IO_FILE_ptr $p0): ?int {
         $result = $this->ffi->_IO_getc($p0 === null ? null : $p0->getData());
         return $result;
@@ -576,17 +655,17 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
         $result = $this->ffi->tmpfile();
         return $result === null ? null : new FILE_ptr($result);
     }
-    public function tmpnam(?string $p0): ?string {
+    public function tmpnam(?string $p0): ?int_ptr {
         $result = $this->ffi->tmpnam($p0);
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
-    public function tmpnam_r(?string $p0): ?string {
+    public function tmpnam_r(?string $p0): ?int_ptr {
         $result = $this->ffi->tmpnam_r($p0);
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
-    public function tempnam(?string $p0, ?string $p1): ?string {
+    public function tempnam(?string $p0, ?string $p1): ?int_ptr {
         $result = $this->ffi->tempnam($p0, $p1);
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
     public function fclose(?FILE_ptr $p0): ?int {
         $result = $this->ffi->fclose($p0 === null ? null : $p0->getData());
@@ -685,18 +764,6 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
         $result = $this->ffi->sscanf($p0, $p1);
         return $result;
     }
-    public function __isoc99_fscanf(?FILE_ptr $p0, ?string $p1): ?int {
-        $result = $this->ffi->__isoc99_fscanf($p0 === null ? null : $p0->getData(), $p1);
-        return $result;
-    }
-    public function __isoc99_scanf(?string $p0): ?int {
-        $result = $this->ffi->__isoc99_scanf($p0);
-        return $result;
-    }
-    public function __isoc99_sscanf(?string $p0, ?string $p1): ?int {
-        $result = $this->ffi->__isoc99_sscanf($p0, $p1);
-        return $result;
-    }
     public function vfscanf(?FILE_ptr $p0, ?string $p1, ?__gnuc_va_list $p2): ?int {
         $result = $this->ffi->vfscanf($p0 === null ? null : $p0->getData(), $p1, $p2 === null ? null : $p2->getData());
         return $result;
@@ -707,18 +774,6 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
     }
     public function vsscanf(?string $p0, ?string $p1, ?__gnuc_va_list $p2): ?int {
         $result = $this->ffi->vsscanf($p0, $p1, $p2 === null ? null : $p2->getData());
-        return $result;
-    }
-    public function __isoc99_vfscanf(?FILE_ptr $p0, ?string $p1, ?__gnuc_va_list $p2): ?int {
-        $result = $this->ffi->__isoc99_vfscanf($p0 === null ? null : $p0->getData(), $p1, $p2 === null ? null : $p2->getData());
-        return $result;
-    }
-    public function __isoc99_vscanf(?string $p0, ?__gnuc_va_list $p1): ?int {
-        $result = $this->ffi->__isoc99_vscanf($p0, $p1 === null ? null : $p1->getData());
-        return $result;
-    }
-    public function __isoc99_vsscanf(?string $p0, ?string $p1, ?__gnuc_va_list $p2): ?int {
-        $result = $this->ffi->__isoc99_vsscanf($p0, $p1, $p2 === null ? null : $p2->getData());
         return $result;
     }
     public function fgetc(?FILE_ptr $p0): ?int {
@@ -777,17 +832,13 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
         $result = $this->ffi->putw($p0, $p1 === null ? null : $p1->getData());
         return $result;
     }
-    public function fgets(?string $p0, ?int $p1, ?FILE_ptr $p2): ?string {
+    public function fgets(?string $p0, ?int $p1, ?FILE_ptr $p2): ?int_ptr {
         $result = $this->ffi->fgets($p0, $p1, $p2 === null ? null : $p2->getData());
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
-    public function gets(?string $p0): ?string {
+    public function gets(?string $p0): ?int_ptr {
         $result = $this->ffi->gets($p0);
-        return $result;
-    }
-    public function __getdelim(?string_ptr $p0, ?size_t_ptr $p1, ?int $p2, ?FILE_ptr $p3): ?__ssize_t {
-        $result = $this->ffi->__getdelim($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData());
-        return $result === null ? null : new __ssize_t($result);
+        return $result === null ? null : new int_ptr($result);
     }
     public function getdelim(?string_ptr $p0, ?size_t_ptr $p1, ?int $p2, ?FILE_ptr $p3): ?__ssize_t {
         $result = $this->ffi->getdelim($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData());
@@ -893,9 +944,9 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
         $result = $this->ffi->pclose($p0 === null ? null : $p0->getData());
         return $result;
     }
-    public function ctermid(?string $p0): ?string {
+    public function ctermid(?string $p0): ?int_ptr {
         $result = $this->ffi->ctermid($p0);
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
     public function flockfile(?FILE_ptr $p0): void {
         $this->ffi->flockfile($p0 === null ? null : $p0->getData());
@@ -966,13 +1017,13 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
     public function gcc_jit_context_set_logfile(?gcc_jit_context_ptr $p0, ?FILE_ptr $p1, ?int $p2, ?int $p3): void {
         $this->ffi->gcc_jit_context_set_logfile($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3);
     }
-    public function gcc_jit_context_get_first_error(?gcc_jit_context_ptr $p0): ?string {
+    public function gcc_jit_context_get_first_error(?gcc_jit_context_ptr $p0): ?int_ptr {
         $result = $this->ffi->gcc_jit_context_get_first_error($p0 === null ? null : $p0->getData());
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
-    public function gcc_jit_context_get_last_error(?gcc_jit_context_ptr $p0): ?string {
+    public function gcc_jit_context_get_last_error(?gcc_jit_context_ptr $p0): ?int_ptr {
         $result = $this->ffi->gcc_jit_context_get_last_error($p0 === null ? null : $p0->getData());
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
     public function gcc_jit_result_get_code(?gcc_jit_result_ptr $p0, ?string $p1): ?void_ptr {
         $result = $this->ffi->gcc_jit_result_get_code($p0 === null ? null : $p0->getData(), $p1);
@@ -989,9 +1040,9 @@ void gcc_jit_timer_print(gcc_jit_timer*, FILE*);
         $result = $this->ffi->gcc_jit_object_get_context($p0 === null ? null : $p0->getData());
         return $result === null ? null : new gcc_jit_context_ptr($result);
     }
-    public function gcc_jit_object_get_debug_string(?gcc_jit_object_ptr $p0): ?string {
+    public function gcc_jit_object_get_debug_string(?gcc_jit_object_ptr $p0): ?int_ptr {
         $result = $this->ffi->gcc_jit_object_get_debug_string($p0 === null ? null : $p0->getData());
-        return $result;
+        return $result === null ? null : new int_ptr($result);
     }
     public function gcc_jit_context_new_location(?gcc_jit_context_ptr $p0, ?string $p1, ?int $p2, ?int $p3): ?gcc_jit_location_ptr {
         $result = $this->ffi->gcc_jit_context_new_location($p0 === null ? null : $p0->getData(), $p1, $p2, $p3);
