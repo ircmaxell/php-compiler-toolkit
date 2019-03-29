@@ -55,7 +55,7 @@ class Function_ implements CoreFunction {
         throw new \LogicException("Unknown parameter index: $index");
     }
 
-    public function getParamterByName(string $name): CoreParameter {
+    public function getParameterByName(string $name): CoreParameter {
         foreach ($this->params as $param) {
             if ($name === $param->getName()) {
                 return $param;

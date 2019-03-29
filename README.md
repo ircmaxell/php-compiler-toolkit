@@ -33,7 +33,7 @@ function compileAdd(Compiler $compiler): callable {
     );
 
     $block = $func->createBlock("main");
-    $b = $block->binaryOp(Block::BINARYOP_ADD, $func->getParamterByName('a'), $func->getParamterByName('b'), $long);
+    $b = $block->binaryOp(Block::BINARYOP_ADD, $func->getParamterByName('a'), $func->getParameterByName('b'), $long);
     $block->endWithReturn($b);
 
     $result = $compiler->compileInPlace();

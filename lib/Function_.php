@@ -11,7 +11,7 @@ interface Function_ {
 
     public function getParameterIndex(int $index): Parameter;
 
-    public function getParamterByName(string $name): Parameter;
+    public function getParameterByName(string $name): Parameter;
 
     public function getName(): string;
 
