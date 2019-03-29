@@ -8,19 +8,22 @@ use PHPCompilerToolkit\Function_ as CoreFunction;
 use PHPCompilerToolkit\Type as CoreType;
 use PHPCompilerToolkit\Parameter as CoreParameter;
 use llvm\LLVMValueRef;
+use llvm\LLVMBuilderRef;
 
 class Function_ implements CoreFunction {
 
     private Compiler $compiler;
     private LLVMValueRef $func;
+    private LLVMBuilderRef $builder;
     private string $name;
     private Type $returnType;
     private bool $isVariadic; 
     private array $params;
 
-    public function __construct(Compiler $compiler, LLVMValueRef $func, string $name, Type $returnType, bool $isVariadic, Parameter ...$params) {
+    public function __construct(Compiler $compiler, LLVMValueRef $func, LLVMBuilderRef $builder, string $name, Type $returnType, bool $isVariadic, Parameter ...$params) {
         $this->compiler = $compiler;
         $this->func = $func;
+        $this->builder = $builder;
         $this->name = $name;
         $this->returnType = $returnType;
         $this->isVariadic = $isVariadic;
@@ -67,9 +70,10 @@ class Function_ implements CoreFunction {
         $block = new Block(
             $this->compiler,
             $this,
+            $this->compiler->lib->LLVMAppendBasicBlock($this->func, $name),
+            $this->builder,
             $name
         );
-        $this->blocks[] = $block;
         return $block;
     }
 

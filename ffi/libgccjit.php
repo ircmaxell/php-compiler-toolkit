@@ -530,8 +530,8 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
     const FILENAME_MAX = 4096;
     const L_ctermid = 9;
     const FOPEN_MAX = 16;
-    public function __construct() {
-        $this->ffi = FFI::cdef(self::HEADER_DEF, self::SOFILE);
+    public function __construct(string $pathToSoFile = self::SOFILE) {
+        $this->ffi = FFI::cdef(self::HEADER_DEF, $pathToSoFile);
     }
     
     public function cast(ilibgccjit $from, string $to): ilibgccjit {
@@ -1389,17 +1389,10 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         $this->ffi->gcc_jit_timer_print($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData());
     }
 }
-class void_ptr implements ilibgccjit {
-    private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
-    public function getData(): FFI\CData { return $this->data; }
-    public function equals(void_ptr $other): bool { return $this->data == $other->data; }
-    public function addr(): void_ptr_ptr { return new void_ptr_ptr(FFI::addr($this->data)); }
-    public static function getType(): string { return 'void*'; }
-}
+
 class __u_char implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned char'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__u_char $other): bool { return $this->data == $other->data; }
     public function addr(): __u_char_ptr { return new __u_char_ptr(FFI::addr($this->data)); }
@@ -1443,7 +1436,7 @@ class __u_char_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __u_short implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned short int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__u_short $other): bool { return $this->data == $other->data; }
     public function addr(): __u_short_ptr { return new __u_short_ptr(FFI::addr($this->data)); }
@@ -1487,7 +1480,7 @@ class __u_short_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __u_int implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__u_int $other): bool { return $this->data == $other->data; }
     public function addr(): __u_int_ptr { return new __u_int_ptr(FFI::addr($this->data)); }
@@ -1531,7 +1524,7 @@ class __u_int_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __u_long implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__u_long $other): bool { return $this->data == $other->data; }
     public function addr(): __u_long_ptr { return new __u_long_ptr(FFI::addr($this->data)); }
@@ -1575,7 +1568,7 @@ class __u_long_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __int8_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('signed char'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__int8_t $other): bool { return $this->data == $other->data; }
     public function addr(): __int8_t_ptr { return new __int8_t_ptr(FFI::addr($this->data)); }
@@ -1619,7 +1612,7 @@ class __int8_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __uint8_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned char'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__uint8_t $other): bool { return $this->data == $other->data; }
     public function addr(): __uint8_t_ptr { return new __uint8_t_ptr(FFI::addr($this->data)); }
@@ -1663,7 +1656,7 @@ class __uint8_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __int16_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('signed short int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__int16_t $other): bool { return $this->data == $other->data; }
     public function addr(): __int16_t_ptr { return new __int16_t_ptr(FFI::addr($this->data)); }
@@ -1707,7 +1700,7 @@ class __int16_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __uint16_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned short int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__uint16_t $other): bool { return $this->data == $other->data; }
     public function addr(): __uint16_t_ptr { return new __uint16_t_ptr(FFI::addr($this->data)); }
@@ -1751,7 +1744,7 @@ class __uint16_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __int32_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('signed int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__int32_t $other): bool { return $this->data == $other->data; }
     public function addr(): __int32_t_ptr { return new __int32_t_ptr(FFI::addr($this->data)); }
@@ -1795,7 +1788,7 @@ class __int32_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __uint32_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__uint32_t $other): bool { return $this->data == $other->data; }
     public function addr(): __uint32_t_ptr { return new __uint32_t_ptr(FFI::addr($this->data)); }
@@ -1839,7 +1832,7 @@ class __uint32_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __int64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('signed long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__int64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __int64_t_ptr { return new __int64_t_ptr(FFI::addr($this->data)); }
@@ -1883,7 +1876,7 @@ class __int64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __uint64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__uint64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __uint64_t_ptr { return new __uint64_t_ptr(FFI::addr($this->data)); }
@@ -1927,7 +1920,7 @@ class __uint64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __quad_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__quad_t $other): bool { return $this->data == $other->data; }
     public function addr(): __quad_t_ptr { return new __quad_t_ptr(FFI::addr($this->data)); }
@@ -1971,7 +1964,7 @@ class __quad_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __u_quad_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__u_quad_t $other): bool { return $this->data == $other->data; }
     public function addr(): __u_quad_t_ptr { return new __u_quad_t_ptr(FFI::addr($this->data)); }
@@ -2015,7 +2008,7 @@ class __u_quad_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __dev_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__dev_t $other): bool { return $this->data == $other->data; }
     public function addr(): __dev_t_ptr { return new __dev_t_ptr(FFI::addr($this->data)); }
@@ -2059,7 +2052,7 @@ class __dev_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __uid_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__uid_t $other): bool { return $this->data == $other->data; }
     public function addr(): __uid_t_ptr { return new __uid_t_ptr(FFI::addr($this->data)); }
@@ -2103,7 +2096,7 @@ class __uid_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __gid_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__gid_t $other): bool { return $this->data == $other->data; }
     public function addr(): __gid_t_ptr { return new __gid_t_ptr(FFI::addr($this->data)); }
@@ -2147,7 +2140,7 @@ class __gid_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __ino_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__ino_t $other): bool { return $this->data == $other->data; }
     public function addr(): __ino_t_ptr { return new __ino_t_ptr(FFI::addr($this->data)); }
@@ -2191,7 +2184,7 @@ class __ino_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __ino64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__ino64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __ino64_t_ptr { return new __ino64_t_ptr(FFI::addr($this->data)); }
@@ -2235,7 +2228,7 @@ class __ino64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __mode_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__mode_t $other): bool { return $this->data == $other->data; }
     public function addr(): __mode_t_ptr { return new __mode_t_ptr(FFI::addr($this->data)); }
@@ -2279,7 +2272,7 @@ class __mode_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __nlink_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__nlink_t $other): bool { return $this->data == $other->data; }
     public function addr(): __nlink_t_ptr { return new __nlink_t_ptr(FFI::addr($this->data)); }
@@ -2323,7 +2316,7 @@ class __nlink_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __off_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__off_t $other): bool { return $this->data == $other->data; }
     public function addr(): __off_t_ptr { return new __off_t_ptr(FFI::addr($this->data)); }
@@ -2367,7 +2360,7 @@ class __off_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __off64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__off64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __off64_t_ptr { return new __off64_t_ptr(FFI::addr($this->data)); }
@@ -2411,7 +2404,7 @@ class __off64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __pid_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__pid_t $other): bool { return $this->data == $other->data; }
     public function addr(): __pid_t_ptr { return new __pid_t_ptr(FFI::addr($this->data)); }
@@ -2499,7 +2492,7 @@ class __fsid_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __clock_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__clock_t $other): bool { return $this->data == $other->data; }
     public function addr(): __clock_t_ptr { return new __clock_t_ptr(FFI::addr($this->data)); }
@@ -2543,7 +2536,7 @@ class __clock_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __rlim_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__rlim_t $other): bool { return $this->data == $other->data; }
     public function addr(): __rlim_t_ptr { return new __rlim_t_ptr(FFI::addr($this->data)); }
@@ -2587,7 +2580,7 @@ class __rlim_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __rlim64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__rlim64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __rlim64_t_ptr { return new __rlim64_t_ptr(FFI::addr($this->data)); }
@@ -2631,7 +2624,7 @@ class __rlim64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __id_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__id_t $other): bool { return $this->data == $other->data; }
     public function addr(): __id_t_ptr { return new __id_t_ptr(FFI::addr($this->data)); }
@@ -2675,7 +2668,7 @@ class __id_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __time_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__time_t $other): bool { return $this->data == $other->data; }
     public function addr(): __time_t_ptr { return new __time_t_ptr(FFI::addr($this->data)); }
@@ -2719,7 +2712,7 @@ class __time_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __useconds_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__useconds_t $other): bool { return $this->data == $other->data; }
     public function addr(): __useconds_t_ptr { return new __useconds_t_ptr(FFI::addr($this->data)); }
@@ -2763,7 +2756,7 @@ class __useconds_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __suseconds_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__suseconds_t $other): bool { return $this->data == $other->data; }
     public function addr(): __suseconds_t_ptr { return new __suseconds_t_ptr(FFI::addr($this->data)); }
@@ -2807,7 +2800,7 @@ class __suseconds_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __daddr_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__daddr_t $other): bool { return $this->data == $other->data; }
     public function addr(): __daddr_t_ptr { return new __daddr_t_ptr(FFI::addr($this->data)); }
@@ -2851,7 +2844,7 @@ class __daddr_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __key_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__key_t $other): bool { return $this->data == $other->data; }
     public function addr(): __key_t_ptr { return new __key_t_ptr(FFI::addr($this->data)); }
@@ -2895,7 +2888,7 @@ class __key_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __clockid_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__clockid_t $other): bool { return $this->data == $other->data; }
     public function addr(): __clockid_t_ptr { return new __clockid_t_ptr(FFI::addr($this->data)); }
@@ -2983,7 +2976,7 @@ class __timer_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __blksize_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__blksize_t $other): bool { return $this->data == $other->data; }
     public function addr(): __blksize_t_ptr { return new __blksize_t_ptr(FFI::addr($this->data)); }
@@ -3027,7 +3020,7 @@ class __blksize_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __blkcnt_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__blkcnt_t $other): bool { return $this->data == $other->data; }
     public function addr(): __blkcnt_t_ptr { return new __blkcnt_t_ptr(FFI::addr($this->data)); }
@@ -3071,7 +3064,7 @@ class __blkcnt_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __blkcnt64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__blkcnt64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __blkcnt64_t_ptr { return new __blkcnt64_t_ptr(FFI::addr($this->data)); }
@@ -3115,7 +3108,7 @@ class __blkcnt64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __fsblkcnt_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__fsblkcnt_t $other): bool { return $this->data == $other->data; }
     public function addr(): __fsblkcnt_t_ptr { return new __fsblkcnt_t_ptr(FFI::addr($this->data)); }
@@ -3159,7 +3152,7 @@ class __fsblkcnt_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __fsblkcnt64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__fsblkcnt64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __fsblkcnt64_t_ptr { return new __fsblkcnt64_t_ptr(FFI::addr($this->data)); }
@@ -3203,7 +3196,7 @@ class __fsblkcnt64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __fsfilcnt_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__fsfilcnt_t $other): bool { return $this->data == $other->data; }
     public function addr(): __fsfilcnt_t_ptr { return new __fsfilcnt_t_ptr(FFI::addr($this->data)); }
@@ -3247,7 +3240,7 @@ class __fsfilcnt_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __fsfilcnt64_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__fsfilcnt64_t $other): bool { return $this->data == $other->data; }
     public function addr(): __fsfilcnt64_t_ptr { return new __fsfilcnt64_t_ptr(FFI::addr($this->data)); }
@@ -3291,7 +3284,7 @@ class __fsfilcnt64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __fsword_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__fsword_t $other): bool { return $this->data == $other->data; }
     public function addr(): __fsword_t_ptr { return new __fsword_t_ptr(FFI::addr($this->data)); }
@@ -3335,7 +3328,7 @@ class __fsword_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __ssize_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__ssize_t $other): bool { return $this->data == $other->data; }
     public function addr(): __ssize_t_ptr { return new __ssize_t_ptr(FFI::addr($this->data)); }
@@ -3379,7 +3372,7 @@ class __ssize_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __syscall_slong_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__syscall_slong_t $other): bool { return $this->data == $other->data; }
     public function addr(): __syscall_slong_t_ptr { return new __syscall_slong_t_ptr(FFI::addr($this->data)); }
@@ -3423,7 +3416,7 @@ class __syscall_slong_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __syscall_ulong_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__syscall_ulong_t $other): bool { return $this->data == $other->data; }
     public function addr(): __syscall_ulong_t_ptr { return new __syscall_ulong_t_ptr(FFI::addr($this->data)); }
@@ -3467,7 +3460,7 @@ class __syscall_ulong_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __loff_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__loff_t $other): bool { return $this->data == $other->data; }
     public function addr(): __loff_t_ptr { return new __loff_t_ptr(FFI::addr($this->data)); }
@@ -3599,7 +3592,7 @@ class __caddr_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __intptr_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__intptr_t $other): bool { return $this->data == $other->data; }
     public function addr(): __intptr_t_ptr { return new __intptr_t_ptr(FFI::addr($this->data)); }
@@ -3643,7 +3636,7 @@ class __intptr_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class __socklen_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(__socklen_t $other): bool { return $this->data == $other->data; }
     public function addr(): __socklen_t_ptr { return new __socklen_t_ptr(FFI::addr($this->data)); }
@@ -3775,7 +3768,7 @@ class __FILE_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class wint_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(wint_t $other): bool { return $this->data == $other->data; }
     public function addr(): wint_t_ptr { return new wint_t_ptr(FFI::addr($this->data)); }
@@ -3951,7 +3944,7 @@ class _G_fpos64_t_ptr_ptr_ptr_ptr implements ilibgccjit {
 }
 class _IO_lock_t implements ilibgccjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('void'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(_IO_lock_t $other): bool { return $this->data == $other->data; }
     public function addr(): _IO_lock_t_ptr { return new _IO_lock_t_ptr(FFI::addr($this->data)); }

@@ -73,15 +73,19 @@ class Compiler extends AbstractCompiler {
         $paramWrapper = $this->lib->makeArray(
             LLVMTypeRef_ptr::class, 
             array_map(
-                function(CoreType $type) {
-                    return $type->getType();
+                function(CoreParameter $param) {
+                    return $param->getType()->getType();
                 },
                 $params
             )
         );
         $type = $this->lib->LLVMFunctionType($returnType->getType(), $paramWrapper, count($params), $this->bool($isVarArgs));
         $func = $this->lib->LLVMAddFunction($this->module, $name, $type);
-        return new Function_($this, $func, $name, $returnType, $isVarArgs, ...$params);
+        foreach ($params as $index => $param) {
+            $param->setParam($this->lib->LLVMGetParam($func, $index));
+        }
+        $builder = $this->lib->LLVMCreateBuilder();
+        return new Function_($this, $func, $builder, $name, $returnType, $isVarArgs, ...$params);
     }
 
     public function bool(bool $value): LLVMBool {

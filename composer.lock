@@ -69,12 +69,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/FFIMe.git",
-                "reference": "0bc7e2758b6e2261777fffbbdf4236e93cf0e3b0"
+                "reference": "2ef0d8e53f04727c0c6a135356aebe9b4a5a7bd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/0bc7e2758b6e2261777fffbbdf4236e93cf0e3b0",
-                "reference": "0bc7e2758b6e2261777fffbbdf4236e93cf0e3b0",
+                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/2ef0d8e53f04727c0c6a135356aebe9b4a5a7bd4",
+                "reference": "2ef0d8e53f04727c0c6a135356aebe9b4a5a7bd4",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                 }
             ],
             "description": "Make life easy when working with 7.4's FFI",
-            "time": "2019-03-28T18:48:01+00:00"
+            "time": "2019-03-29T19:02:54+00:00"
         },
         {
             "name": "ircmaxell/php-c-parser",
@@ -138,7 +138,7 @@
                 }
             ],
             "description": "Parse C when using PHP",
-            "time": "2019-03-28T18:37:22+00:00"
+            "time": "2019-03-28 18:37:22"
         },
         {
             "name": "myclabs/deep-copy",
@@ -511,12 +511,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "0317a769a81845c390e19684d9ba25d7f6aa4707"
+                "reference": "d8ff5ed364cb7a1a32e6040076017b38f6cbdf07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/0317a769a81845c390e19684d9ba25d7f6aa4707",
-                "reference": "0317a769a81845c390e19684d9ba25d7f6aa4707",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/d8ff5ed364cb7a1a32e6040076017b38f6cbdf07",
+                "reference": "d8ff5ed364cb7a1a32e6040076017b38f6cbdf07",
                 "shasum": ""
             },
             "require": {
@@ -566,7 +566,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-26 07:38:26"
+            "time": "2019-03-29 06:00:42"
         },
         {
             "name": "phpunit/php-file-iterator",

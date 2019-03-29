@@ -1495,8 +1495,8 @@ int jit_frame_contains_crawl_mark(void *frame, jit_crawl_mark_t *mark);
     const JIT_OPCODE_OPER_COPY = 0x01400000;
     const JIT_OPCODE_OPER_ADDRESS_OF = 0x01500000;
     const JIT_FAST_GET_CURRENT_FRAME = 1;
-    public function __construct() {
-        $this->ffi = FFI::cdef(self::HEADER_DEF, self::SOFILE);
+    public function __construct(string $pathToSoFile = self::SOFILE) {
+        $this->ffi = FFI::cdef(self::HEADER_DEF, $pathToSoFile);
     }
     
     public function cast(ilibjit $from, string $to): ilibjit {
@@ -4456,17 +4456,9 @@ int jit_frame_contains_crawl_mark(void *frame, jit_crawl_mark_t *mark);
     }
 }
 
-class void_ptr implements ilibjit {
-    private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
-    public function getData(): FFI\CData { return $this->data; }
-    public function equals(void_ptr $other): bool { return $this->data == $other->data; }
-    public function addr(): void_ptr_ptr { return new void_ptr_ptr(FFI::addr($this->data)); }
-    public static function getType(): string { return 'void*'; }
-}
 class jit_sbyte implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('char'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_sbyte $other): bool { return $this->data == $other->data; }
     public function addr(): jit_sbyte_ptr { return new jit_sbyte_ptr(FFI::addr($this->data)); }
@@ -4510,7 +4502,7 @@ class jit_sbyte_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_ubyte implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned char'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_ubyte $other): bool { return $this->data == $other->data; }
     public function addr(): jit_ubyte_ptr { return new jit_ubyte_ptr(FFI::addr($this->data)); }
@@ -4554,7 +4546,7 @@ class jit_ubyte_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_short implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('short'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_short $other): bool { return $this->data == $other->data; }
     public function addr(): jit_short_ptr { return new jit_short_ptr(FFI::addr($this->data)); }
@@ -4598,7 +4590,7 @@ class jit_short_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_ushort implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned short'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_ushort $other): bool { return $this->data == $other->data; }
     public function addr(): jit_ushort_ptr { return new jit_ushort_ptr(FFI::addr($this->data)); }
@@ -4642,7 +4634,7 @@ class jit_ushort_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_int implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_int $other): bool { return $this->data == $other->data; }
     public function addr(): jit_int_ptr { return new jit_int_ptr(FFI::addr($this->data)); }
@@ -4686,7 +4678,7 @@ class jit_int_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_uint implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_uint $other): bool { return $this->data == $other->data; }
     public function addr(): jit_uint_ptr { return new jit_uint_ptr(FFI::addr($this->data)); }
@@ -4730,7 +4722,7 @@ class jit_uint_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_nint implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_nint $other): bool { return $this->data == $other->data; }
     public function addr(): jit_nint_ptr { return new jit_nint_ptr(FFI::addr($this->data)); }
@@ -4774,7 +4766,7 @@ class jit_nint_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_nuint implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_nuint $other): bool { return $this->data == $other->data; }
     public function addr(): jit_nuint_ptr { return new jit_nuint_ptr(FFI::addr($this->data)); }
@@ -4818,7 +4810,7 @@ class jit_nuint_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_long implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_long $other): bool { return $this->data == $other->data; }
     public function addr(): jit_long_ptr { return new jit_long_ptr(FFI::addr($this->data)); }
@@ -4862,7 +4854,7 @@ class jit_long_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_ulong implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_ulong $other): bool { return $this->data == $other->data; }
     public function addr(): jit_ulong_ptr { return new jit_ulong_ptr(FFI::addr($this->data)); }
@@ -4906,7 +4898,7 @@ class jit_ulong_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_float32 implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('float'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_float32 $other): bool { return $this->data == $other->data; }
     public function addr(): jit_float32_ptr { return new jit_float32_ptr(FFI::addr($this->data)); }
@@ -4950,7 +4942,7 @@ class jit_float32_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_float64 implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('double'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_float64 $other): bool { return $this->data == $other->data; }
     public function addr(): jit_float64_ptr { return new jit_float64_ptr(FFI::addr($this->data)); }
@@ -4994,7 +4986,7 @@ class jit_float64_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_nfloat implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long double'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_nfloat $other): bool { return $this->data == $other->data; }
     public function addr(): jit_nfloat_ptr { return new jit_nfloat_ptr(FFI::addr($this->data)); }
@@ -5391,11 +5383,7 @@ class jit_stack_trace_t_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_label_t implements ilibjit {
     private FFI\CData $data;
-    public function __construct(int $data) { 
-      $tmp = FFI::new('unsigned long'); 
-      $tmp = $data; 
-      $this->data = $tmp;
-    }
+    public function __construct($data) { $tmp = FFI::new('unsigned long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_label_t $other): bool { return $this->data == $other->data; }
     public function addr(): jit_label_t_ptr { return new jit_label_t_ptr(FFI::addr($this->data)); }
@@ -5571,7 +5559,7 @@ class jit_on_demand_driver_func_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_size_t implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('unsigned int'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_size_t $other): bool { return $this->data == $other->data; }
     public function addr(): jit_size_t_ptr { return new jit_size_t_ptr(FFI::addr($this->data)); }
@@ -5923,7 +5911,7 @@ class jit_debugger_t_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_debugger_thread_id_t implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_debugger_thread_id_t $other): bool { return $this->data == $other->data; }
     public function addr(): jit_debugger_thread_id_t_ptr { return new jit_debugger_thread_id_t_ptr(FFI::addr($this->data)); }
@@ -5967,7 +5955,7 @@ class jit_debugger_thread_id_t_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_debugger_breakpoint_id_t implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct($data) { $tmp = FFI::new('long'); $tmp = $data; $this->data = $tmp; }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_debugger_breakpoint_id_t $other): bool { return $this->data == $other->data; }
     public function addr(): jit_debugger_breakpoint_id_t_ptr { return new jit_debugger_breakpoint_id_t_ptr(FFI::addr($this->data)); }
