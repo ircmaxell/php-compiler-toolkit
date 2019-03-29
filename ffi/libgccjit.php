@@ -1389,7 +1389,14 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         $this->ffi->gcc_jit_timer_print($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData());
     }
 }
-
+class void_ptr implements ilibgccjit {
+    private FFI\CData $data;
+    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function getData(): FFI\CData { return $this->data; }
+    public function equals(void_ptr $other): bool { return $this->data == $other->data; }
+    public function addr(): void_ptr_ptr { return new void_ptr_ptr(FFI::addr($this->data)); }
+    public static function getType(): string { return 'void*'; }
+}
 class __u_char implements ilibgccjit {
     private FFI\CData $data;
     public function __construct(FFI\CData $data) { $this->data = $data; }

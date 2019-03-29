@@ -2,15 +2,25 @@
 declare(strict_types=1);
 
 namespace PHPCompilerToolkit\Backend\libgccjit;
+
 use PHPCompilerToolkit\AbstractCompiler;
 use PHPCompilerToolkit\Type as CoreType;
+use PHPCompilerToolkit\Function_ as CoreFunction;
+use PHPCompilerToolkit\Parameter as CoreParameter;
+use PHPCompilerToolkit\Result as CoreResult;
+
 use libgccjit\libgccjit;
 use libgccjit\gcc_jit_context_ptr;
+use libgccjit\gcc_jit_param_ptr_ptr;
+use libgccjit\gcc_jit_result_ptr;
+
 
 class Compiler extends AbstractCompiler {
 
     public gcc_jit_context_ptr $context;
     public libgccjit $lib;
+    private ?Result $result = null;
+    private array $functions = [];
 
     const PRIMITIVE_TYPE_MAP = [
         CoreType::T_VOID => libgccjit::GCC_JIT_TYPE_VOID,
@@ -41,8 +51,56 @@ class Compiler extends AbstractCompiler {
     protected function _createPrimitiveType(int $type): CoreType {
         return new Type(
             $this,
-            $this->lib->gcc_jit_context_get_type($this->context, self::PRIMITIVE_TYPE_MAP[$type])
+            $this->lib->gcc_jit_context_get_type($this->context, self::PRIMITIVE_TYPE_MAP[$type]),
+            CoreType::PRIMITIVE_TYPE_MAP_TO_C[$type]
         );
+    }
+
+    public function createParameter(string $name, CoreType $type): CoreParameter {
+        return new Parameter(
+            $this,
+            $name,
+            $this->lib->gcc_jit_context_new_param($this->context, null, $type->getType(), $name),
+            $type
+        );
+    }
+
+    public function createFunction(string $name, CoreType $returnType, bool $isVarArgs, CoreParameter ...$params): CoreFunction {
+        $paramValues = array_map(
+            function(CoreParameter $param) {
+                return $param->getParam();
+            },
+            $params
+        );
+        $paramWrapper = $this->lib->makeArray(
+            gcc_jit_param_ptr_ptr::class, 
+            $paramValues
+        );
+        $func = $this->lib->gcc_jit_context_new_function(
+            $this->context,
+            null,
+            libgccjit::GCC_JIT_FUNCTION_EXPORTED,
+            $returnType->getType(),
+            $name, 
+            count($params),
+            $paramWrapper,
+            $isVarArgs ? 1 : 0
+        );
+        $function = new Function_($this, $func, $name, $returnType, $isVarArgs, ...$params);
+        $this->functions[$name] = $function;
+        return $function;
+    }
+    
+    public function compileInPlace(): CoreResult {
+        if ($this->result !== null) {
+            return $this->result;
+        }
+        $this->result = new Result(
+            $this,
+            $this->functions,
+            $this->lib->gcc_jit_context_compile($this->context)
+        );
+        return $this->result;
     }
 
 }

@@ -23,6 +23,27 @@ interface Type {
     public const T_DOUBLE = 16;
     public const T_LONG_DOUBLE = 17;
     public const T_SIZE_T = 18;
+
+    public const PRIMITIVE_TYPE_MAP_TO_C = [
+        self::T_VOID => 'void',
+        self::T_VOID_PTR => 'void*',
+        self::T_BOOL => 'bool',
+        self::T_CHAR => 'char',
+        self::T_SIGNED_CHAR => 'signed char',
+        self::T_UNSIGNED_CHAR => 'unsigned char',
+        self::T_SHORT => 'short',
+        self::T_UNSIGNED_SHORT => 'unsigned short',
+        self::T_INT => 'int',
+        self::T_UNSIGNED_INT  => 'unsigned int',
+        self::T_LONG  => 'long',
+        self::T_UNSIGNED_LONG  => 'unsigned long',
+        self::T_LONG_LONG  => 'long long',
+        self::T_UNSIGNED_LONG_LONG  => 'unsigned long long',
+        self::T_FLOAT  => 'float',
+        self::T_DOUBLE  => 'double',
+        self::T_LONG_DOUBLE  => 'long double',
+        self::T_SIZE_T  => 'size_t',
+    ];
     
     public function getPointer(): Type;
 
@@ -31,5 +52,7 @@ interface Type {
     public function getVolatile(): Type;
 
     public function newArrayType(int $numElements): Type;
+
+    public function asCString(): string;
 
 }

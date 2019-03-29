@@ -4456,6 +4456,14 @@ int jit_frame_contains_crawl_mark(void *frame, jit_crawl_mark_t *mark);
     }
 }
 
+class void_ptr implements ilibjit {
+    private FFI\CData $data;
+    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function getData(): FFI\CData { return $this->data; }
+    public function equals(void_ptr $other): bool { return $this->data == $other->data; }
+    public function addr(): void_ptr_ptr { return new void_ptr_ptr(FFI::addr($this->data)); }
+    public static function getType(): string { return 'void*'; }
+}
 class jit_sbyte implements ilibjit {
     private FFI\CData $data;
     public function __construct(FFI\CData $data) { $this->data = $data; }
@@ -5383,7 +5391,11 @@ class jit_stack_trace_t_ptr_ptr_ptr_ptr implements ilibjit {
 }
 class jit_label_t implements ilibjit {
     private FFI\CData $data;
-    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function __construct(int $data) { 
+      $tmp = FFI::new('unsigned long'); 
+      $tmp = $data; 
+      $this->data = $tmp;
+    }
     public function getData(): FFI\CData { return $this->data; }
     public function equals(jit_label_t $other): bool { return $this->data == $other->data; }
     public function addr(): jit_label_t_ptr { return new jit_label_t_ptr(FFI::addr($this->data)); }
