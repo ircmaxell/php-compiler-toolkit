@@ -11,7 +11,7 @@ use libgccjit\gcc_jit_param_ptr;
 class LValue implements CoreLValue {
 
     private Compiler $compiler;
-    private gcc_jit_rvalue_ptr $lvalue;
+    private gcc_jit_lvalue_ptr $lvalue;
     private Type $type;
 
     public function __construct(Compiler $compiler, gcc_jit_lvalue_ptr $lvalue, Type $type) {

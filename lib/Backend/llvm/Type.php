@@ -18,6 +18,7 @@ class Type implements CoreType {
     public function __construct(Compiler $compiler, LLVMTypeRef $type, string $ctype, int $is = 0) {
         $this->compiler = $compiler;
         $this->type = $type;
+        $this->ctype = $ctype;
         $this->is = $is;
     }
 

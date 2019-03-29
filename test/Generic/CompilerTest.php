@@ -20,6 +20,19 @@ class GenericTest extends TestCase {
         $this->assertInstanceOf(Type::class, $type, "$backendName failed to provide a valid type for volatile $typeName");
     }
 
+    /**
+     * @dataProvider provideBackends
+     */
+    public function testBasicFunctionDeclaration(string $backendName, Compiler $compiler) {
+        $void = $compiler->createPrimitiveType(Type::T_VOID);
+        $func = $compiler->createFunction('test', $void, false);
+        $this->assertInstanceOf(Function_::class, $func);
+        $this->assertEquals($void, $func->getReturnType());
+        $this->assertEquals('test', $func->getName());
+        $this->assertEquals([], $func->getParameters());
+        $this->assertEquals(false, $func->isVariadic());
+    }
+
     public static function provideBackendAndTypes(): \Generator {
         foreach (self::provideBackends() as $backend) {
             yield [$backend[0], $backend[1], 'void', Type::T_VOID];

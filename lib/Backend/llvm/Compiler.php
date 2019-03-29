@@ -6,6 +6,8 @@ namespace PHPCompilerToolkit\Backend\llvm;
 use PHPCompilerToolkit\AbstractCompiler;
 use PHPCompilerToolkit\Type as CoreType;
 use PHPCompilerToolkit\Function_ as CoreFunction;
+use PHPCompilerToolkit\Parameter as CoreParameter;
+use PHPCompilerToolkit\Result as CoreResult;
 use llvm\llvm;
 use llvm\LLVMModuleRef;
 use llvm\LLVMContextRef;
@@ -67,7 +69,7 @@ class Compiler extends AbstractCompiler {
         throw new \LogicException('Unknown primitive type found: ' . $type);
     }
 
-    public function createFunction(string $name, CoreType $returnType, bool $isVarArgs, CoreType ...$params): CoreFunction {
+    public function createFunction(string $name, CoreType $returnType, bool $isVarArgs, CoreParameter ...$params): CoreFunction {
         $paramWrapper = $this->lib->makeArray(
             LLVMTypeRef_ptr::class, 
             array_map(
@@ -84,10 +86,24 @@ class Compiler extends AbstractCompiler {
 
     public function bool(bool $value): LLVMBool {
         $bool = $this->lib->getFFI()->new('LLVMBool');
-        if ($value) {
-            $bool = 1;
-        }
+        $bool = $value ? 1 : 0;
         return new LLVMBool($bool);
+    }
+
+    public function createParameter(string $name, CoreType $type): CoreParameter {
+        return new Parameter(
+            $this,
+            $name,
+            $type
+        );
+    }
+
+    public function compileInPlace(): CoreResult {
+        if ($this->result !== null) {
+            return $this->result;
+        }
+        
+        return $this->result;
     }
 
 }
