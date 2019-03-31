@@ -9,6 +9,7 @@ use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\IR\Op;
+use PHPCompilerToolkit\IR\TerminalOp;
 
 class BlockBuilder extends Builder {
     public Block $block;
@@ -27,6 +28,10 @@ class BlockBuilder extends Builder {
         return $result;
     }
 
+    public function jump(BlockBuilder $block): void {
+        $this->block->addOp(new Op\BlockCall($block->block));
+    }
+
     public function returnVoid(): void {
         $this->block->addOp(new Op\ReturnVoid());
     }
@@ -40,7 +45,7 @@ class BlockBuilder extends Builder {
             if ($this->arguments->contains($value)) {
                 return $this->arguments[$value];
             }
-            $newValue = new Value($this->block, $left->type);
+            $newValue = new Value($this->block, $value->type);
             $this->arguments[$value] = $newValue;
             return $newValue;
         }
@@ -64,8 +69,14 @@ class BlockBuilder extends Builder {
                 throw new \LogicException("Attempting to finish a non-void function with an unclosed block, you must terminate");
             }
         }
-        if ($this->arguments->count() > 0) {
-            throw new \LogicException("Arguments not supported yet");
+    }
+
+    public function getTargetBlocks(): array {
+        foreach ($this->block->ops as $op) {
+            if ($op instanceof TerminalOp) {
+                return $op->getTargetBlocks();
+            }
         }
+        throw new \LogicException("Block does not contain any TerminalOp, was finish() called?");
     }
 }

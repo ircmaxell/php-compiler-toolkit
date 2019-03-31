@@ -4,9 +4,11 @@ declare(strict_types=1);
 namespace PHPCompilerToolkit\IR\Op;
 
 use PHPCompilerToolkit\IR\Block;
+use PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\IR\OpAbstract;
+use PHPCompilerToolkit\IR\TerminalOp;
 
-class BlockCall extends OpAbstract {
+class BlockCall extends OpAbstract implements TerminalOp {
 
     public Block $block;
     public array $arguments = [];
@@ -23,7 +25,15 @@ class BlockCall extends OpAbstract {
         return null;
     }
 
-    public function isTerminal(): bool {
-        return true;
+    public function getTargetBlocks(): array {
+        return [$this->block];
     }
+
+    public function getBlockCallForBlock(Block $block): BlockCall {
+        if ($block === $this->block) {
+            return $this;
+        }
+        throw new \LogicException("Attempt to get BlockCall for non-existing block");
+    }
+
 }

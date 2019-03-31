@@ -5,8 +5,9 @@ namespace PHPCompilerToolkit\IR\Op;
 
 use PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\IR\OpAbstract;
+use PHPCompilerToolkit\IR\TerminalOp;
 
-class ReturnValue extends OpAbstract {
+class ReturnValue extends OpAbstract implements TerminalOp {
 
     public Value $value;
 
@@ -22,7 +23,11 @@ class ReturnValue extends OpAbstract {
         return null;
     }
 
-    public function isTerminal(): bool {
-        return true;
+    public function getTargetBlocks(): array {
+        return [];
+    }
+
+    public function getBlockCallForBlock(Block $block): BlockCall {
+        throw new \LogicException("Returns do not have target blocks");
     }
 }

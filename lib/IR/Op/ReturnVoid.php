@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace PHPCompilerToolkit\IR\Op;
 
-use PHPCompilerToolkit\IR\Value;
+use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\OpAbstract;
+use PHPCompilerToolkit\IR\TerminalOp;
+use PHPCompilerToolkit\IR\Value;
 
-class ReturnVoid extends OpAbstract {
+class ReturnVoid extends OpAbstract implements TerminalOp {
 
     public function getArguments(): array {
         return [];
@@ -16,7 +18,11 @@ class ReturnVoid extends OpAbstract {
         return null;
     }
 
-    public function isTerminal(): bool {
-        return true;
+    public function getTargetBlocks(): array {
+        return [];
+    }
+
+    public function getBlockCallForBlock(Block $block): BlockCall {
+        throw new \LogicException("Returns do not have target blocks");
     }
 }

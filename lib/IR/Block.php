@@ -7,7 +7,7 @@ class Block {
 
     public Function_ $function;
     public string $name;
-    public array $arguments;
+    public array $arguments = [];
     public array $ops = [];
     public bool $isClosed = false;
 
@@ -29,10 +29,19 @@ class Block {
         if ($result !== null && $result->block !== $this) {
             throw new \LogicException("Result doesn't belong to block, this is not correct");
         }
-        if ($op->isTerminal()) {
+        if ($op instanceof TerminalOp) {
             $this->isClosed = true;
         }
         $this->ops[] = $op;
+    }
+
+    public function getBlockCallForBlock(Block $block): Op\BlockCall {
+        foreach ($this->ops as $op) {
+            if ($op instanceof TerminalOp) {
+                return $op->getBlockCallForBlock($block);
+            }
+        }
+        throw new \LogicException("Exactly one TerminalOp expected in each block");
     }
 
 }

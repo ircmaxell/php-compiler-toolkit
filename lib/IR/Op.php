@@ -11,6 +11,4 @@ interface Op {
 
     public function getName(): string;
 
-    public function isTerminal(): bool;
-
 }

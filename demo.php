@@ -19,8 +19,15 @@ $type = $builder->type()->longLong()    ;
 $func = $builder->createFunction('add', $type, false, new Parameter($type, 'a'), new Parameter($type, 'b'));
 // We need a block in the function (blocks contain code)
 $main = $func->createBlock('main');
+
+$result = $main->add($func->arg(0), $func->arg(1));
+
+$next = $func->createBlock('next');
+
+$main->jump($next);
+
 // We want the block to return the result of addition of the two args:
-$main->returnValue($main->add($func->arg(0), $func->arg(1)));
+$next->returnValue($result);
 // We are done building everything
 $builder->finish();
 
@@ -30,7 +37,8 @@ $libgccjit = new Backend\LIBGCCJIT;
 $llvm = new Backend\LLVM;
 
 $a = $libjit->compile($context)->getCallable('add');
+var_dump($a(1,1));
 $b = $libgccjit->compile($context)->getCallable('add');
+var_dump($b(2,2));
 $c = $llvm->compile($context)->getCallable('add');
-
-var_dump($a(1, 1), $b(2, 2), $c(4, 4));
+var_dump($c(4, 4));

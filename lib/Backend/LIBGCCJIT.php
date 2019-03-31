@@ -97,26 +97,35 @@ class LIBGCCJIT extends BackendAbstract {
         return $func;
     }
 
+    private SplObjectStorage $localMap;
     private SplObjectStorage $valueMap;
     private SplObjectStorage $blockMap;
 
     protected function compileFunction(Function_ $function, $func): void {
         $this->valueMap = new SplObjectStorage;
         $this->blockMap = new SplObjectStorage;
+        $this->localMap = new SplObjectStorage;
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->gcc_jit_param_as_rvalue($this->parameterMap[$function->name][$index]);
         }
         foreach ($function->blocks as $block) {
             $this->blockMap[$block] = $this->lib->gcc_jit_function_new_block($func, $block->name);
+            foreach ($block->arguments as $idx => $argument) {
+                $this->localMap[$argument] = $this->lib->gcc_jit_function_new_local($func, null, $this->typeMap[$argument->type], $block->name . '_arg_' . $idx);
+            }
         }
         foreach ($function->blocks as $block) {
             $this->compileBlock($func, $block);
         }
+        unset($this->localMap);
         unset($this->valueMap);
         unset($this->blockMap);
     }
 
     protected function compileBlock(gcc_jit_function_ptr $func, Block $block): void {
+        foreach ($block->arguments as $argument) {
+            $this->valueMap[$argument] = $this->lib->gcc_jit_lvalue_as_rvalue($this->localMap[$argument], null);
+        }
         foreach ($block->ops as $op) {
             $this->compileOp($func, $this->blockMap[$block], $op);
         }
@@ -129,9 +138,18 @@ class LIBGCCJIT extends BackendAbstract {
             $this->lib->gcc_jit_block_end_with_void_return($block, null);
         } elseif ($op instanceof Op\ReturnValue) {
             $this->lib->gcc_jit_block_end_with_return($block, null, $this->valueMap[$op->value]);
+        } elseif ($op instanceof Op\BlockCall) {
+            $this->compileBlockCall($block, $op);
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
+    }
+
+    protected function compileBlockCall(gcc_jit_block_ptr $block, Op\BlockCall $op): void {
+        foreach ($op->block->arguments as $index => $argument) {
+            $this->lib->gcc_jit_block_add_assignment($block, null, $this->localMap[$argument], $this->valueMap[$op->arguments[$index]]);
+        }
+        $this->lib->gcc_jit_block_end_with_jump($block, null, $this->blockMap[$op->block]);
     }
 
     protected function compileBinaryOp(Op\BinaryOp $op): void {

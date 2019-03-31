@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 namespace PHPCompilerToolkit\Builder;
+
+use SplObjectStorage;
 use PHPCompilerToolkit\Builder;
 use PHPCompilerToolkit\Context;
 use PHPCompilerToolkit\IR\Function_;
@@ -29,5 +31,60 @@ class FunctionBuilder extends Builder {
         foreach ($this->blocks as $block) {
             $block->finish();
         }
+        // Handle block args
+        // Build block graph
+        do {
+            $rerun = false;
+            $parentMap = new SplObjectStorage;
+            $argumentMap = new SplObjectStorage;
+            foreach ($this->blocks as $block) {
+                $argumentMap[$block->block] = $block->arguments;
+                $block->arguments = new SplObjectStorage;
+                foreach ($block->getTargetBlocks() as $subBlock) {
+                    if (!$parentMap->contains($subBlock)) {
+                        $parentMap[$subBlock] = [];
+                    }
+                    $a = $parentMap[$subBlock];
+                    $a[] = $block->block;
+                    $parentMap[$subBlock] = $a;
+                }
+            }
+            foreach ($parentMap as $block) {
+                if ($argumentMap[$block]->count() === 0) {
+                    continue;
+                }
+                $parents = $parentMap[$block];
+                // for each parent, wire in arguments
+                foreach ($parents as $parent) {
+                    $call = $parent->getBlockCallForBlock($block);
+                    if (count($call->arguments) !== count($block->arguments)) {
+                        throw new \RuntimeException("Mismatch between argument counts for block and call");
+                    }
+                    foreach ($argumentMap[$block] as $argument) {
+                        if ($argument->block === $parent) {
+                            // add directly
+                            $call->arguments[] = $argument;
+                        } else {
+                            // hoist to arg
+                            $call->arguments[] = $this->findBuilderForBlock($parent)->hoistToArg($argument);
+                            $rerun = true;
+                        }
+                    }
+                }
+                // finally, add the positional arguments
+                foreach ($argumentMap[$block] as $argument) {
+                    $block->arguments[] = $argumentMap[$block][$argument];
+                }
+            }
+        } while ($rerun);
+    }
+
+    private function findBuilderForBlock(Block $block): BlockBuilder {
+        foreach ($this->blocks as $tmp) {
+            if ($tmp->block === $block) {
+                return $tmp;
+            }
+        }
+        throw new \LogicException("Could not find block");
     }
 }

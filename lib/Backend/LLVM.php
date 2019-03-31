@@ -105,29 +105,40 @@ class LLVM extends BackendAbstract {
         return $this->lib->LLVMAddFunction($this->module, $function->name, $type);
     }
 
+    private SplObjectStorage $localMap;
     private SplObjectStorage $valueMap;
     private SplObjectStorage $blockMap;
 
     protected function compileFunction(Function_ $function, $func): void {
         $this->valueMap = new SplObjectStorage;
         $this->blockMap = new SplObjectStorage;
+        $this->localMap = new SplObjectStorage;
         $builder = $this->lib->LLVMCreateBuilder();
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->LLVMGetParam($func, $index);
         }
-        foreach ($function->blocks as $block) {
+        foreach ($function->blocks as $index => $block) {
             $this->blockMap[$block] = $this->lib->LLVMAppendBasicBlock($func, $block->name);
+            if ($index === 0) {
+                $this->lib->LLVMPositionBuilderAtEnd($builder, $this->blockMap[$block]);
+            }
+            foreach ($block->arguments as $idx => $argument) {
+                $this->localMap[$argument] = $this->lib->LLVMBuildAlloca($builder, $this->typeMap[$argument->type], $block->name . '_arg_' . $idx);
+            }
         }
         foreach ($function->blocks as $block) {
             $this->compileBlock($block, $builder);
         }
+        unset($this->localMap);
         unset($this->valueMap);
         unset($this->blockMap);
     }
 
     protected function compileBlock(Block $block, LLVMBuilderRef $builder): void {
-        $llvmBlock = $this->blockMap[$block];
-        $this->lib->LLVMPositionBuilderAtEnd($builder, $llvmBlock);
+        $this->lib->LLVMPositionBuilderAtEnd($builder, $this->blockMap[$block]);
+        foreach ($block->arguments as $idx => $argument) {
+            $this->valueMap[$argument] = $this->lib->LLVMBuildLoad($builder, $this->localMap[$argument], $block->name . '_arg_' . $idx . '_load');
+        }
         foreach ($block->ops as $op) {
             $this->compileOp($op, $builder);
         }
@@ -140,6 +151,8 @@ class LLVM extends BackendAbstract {
             $this->lib->LLVMBuildRetVoid($builder);
         } elseif ($op instanceof Op\ReturnValue) {
             $this->lib->LLVMBuildRet($builder, $this->valueMap[$op->value]);
+        } elseif ($op instanceof Op\BlockCall) {
+            $this->compileBlockCall($builder, $op);
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
@@ -151,6 +164,13 @@ class LLVM extends BackendAbstract {
         } else {
             throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
         }
+    }
+
+    protected function compileBlockCall(LLVMBuilderRef $builder, Op\BlockCall $op): void {
+        foreach ($op->block->arguments as $index => $argument) {
+            $this->lib->LLVMBuildStore($builder, $this->valueMap[$op->arguments[$index]], $this->localMap[$argument]);
+        }
+        $this->lib->LLVMBuildBr($builder, $this->blockMap[$op->block]);
     }
 
     protected function varName(): string {

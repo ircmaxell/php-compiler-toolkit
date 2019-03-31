@@ -107,26 +107,35 @@ class LIBJIT extends BackendAbstract {
 
     private SplObjectStorage $valueMap;
     private SplObjectStorage $blockMap;
+    private SplObjectStorage $localMap;
 
     protected function compileFunction(Function_ $function, $func): void {
         $this->valueMap = new SplObjectStorage;
         $this->blockMap = new SplObjectStorage;
+        $this->localMap = new SplObjectStorage;
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->jit_value_get_param($func, $index);
         }
         foreach ($function->blocks as $block) {
             $this->blockMap[$block] = $this->lib->jit_function_reserve_label($func);
+            foreach ($block->arguments as $argument) {
+                $this->localMap[$argument] = $this->lib->jit_value_create($func, $this->typeMap[$argument->type]);
+            }
         }
         foreach ($function->blocks as $block) {
             $this->compileBlock($func, $block);
         }
         $this->lib->jit_function_compile($func);
+        unset($this->localMap);
         unset($this->valueMap);
         unset($this->blockMap);
     }
 
     protected function compileBlock(jit_function_t $func, Block $block): void {
         $this->lib->jit_insn_label($func, $this->blockMap[$block]->addr());
+        foreach ($block->arguments as $argument) {
+            $this->valueMap[$argument] = $this->lib->jit_insn_load($func, $this->localMap[$argument]);
+        }
         foreach ($block->ops as $op) {
             $this->compileOp($func, $op);
         }
@@ -139,9 +148,18 @@ class LIBJIT extends BackendAbstract {
             $this->lib->jit_insn_return($func, null);
         } elseif ($op instanceof Op\ReturnValue) {
             $this->lib->jit_insn_return($func, $this->valueMap[$op->value]);
+        } elseif ($op instanceof Op\BlockCall) {
+            $this->compileBlockCall($func, $op);
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
+    }
+
+    protected function compileBlockCall(jit_function_t $func, Op\BlockCall $op): void {
+        foreach ($op->block->arguments as $index => $argument) {
+            $this->lib->jit_insn_store($func, $this->localMap[$argument], $this->valueMap[$op->arguments[$index]]);
+        }
+        $this->lib->jit_insn_branch($func, $this->blockMap[$op->block]->addr());
     }
 
     protected function compileBinaryOp(jit_function_t $func, Op\BinaryOp $op): void {
