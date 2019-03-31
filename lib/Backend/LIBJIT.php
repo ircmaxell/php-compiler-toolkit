@@ -168,6 +168,12 @@ class LIBJIT extends BackendAbstract {
             $this->lib->jit_insn_return($func, $this->valueMap[$op->value]);
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($func, $op);
+        } elseif ($op instanceof Op\ConditionalBlockCall) {
+            $if = $this->lib->jit_function_reserve_label($func);
+            $this->lib->jit_insn_branch_if($func, $this->valueMap[$op->cond], $if->addr());
+            $this->compileBlockCall($func, $op->ifFalse);
+            $this->lib->jit_insn_label($func, $if->addr());
+            $this->compileBlockCall($func, $op->ifTrue);
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
@@ -178,6 +184,7 @@ class LIBJIT extends BackendAbstract {
             $this->lib->jit_insn_store($func, $this->localMap[$argument], $this->valueMap[$op->arguments[$index]]);
         }
         $this->lib->jit_insn_branch($func, $this->blockMap[$op->block]->addr());
+
     }
 
     protected function compileBinaryOp(jit_function_t $func, Op\BinaryOp $op): void {

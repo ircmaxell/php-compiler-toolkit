@@ -133,6 +133,10 @@ class BlockBuilder extends Builder {
         $this->block->addOp(new Op\BlockCall($block->block));
     }
 
+    public function jumpIf(Value $cond, BlockBuilder $ifTrue, BlockBuilder $ifFalse): void {
+        $this->block->addOp(new Op\ConditionalBlockCall($cond, $ifTrue->block, $ifFalse->block));
+    }
+
     public function returnVoid(): void {
         $this->block->addOp(new Op\ReturnVoid());
     }

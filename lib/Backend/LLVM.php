@@ -22,6 +22,8 @@ use llvm\LLVMContextRef;
 use llvm\LLVMBool;
 use llvm\LLVMBuilderRef;
 use llvm\LLVMExecutionEngineRef;
+use llvm\LLVMIntPredicate;
+use llvm\LLVMRealPredicate;
 use llvm\LLVMTypeRef_ptr;
 use LLVM\LLVMValueRef;
 use llvm\LLVMVerifierFailureAction;
@@ -140,24 +142,24 @@ class LLVM extends BackendAbstract {
             }
         }
         foreach ($function->blocks as $block) {
-            $this->compileBlock($block, $builder);
+            $this->compileBlock($func, $block, $builder);
         }
         unset($this->localMap);
         unset($this->valueMap);
         unset($this->blockMap);
     }
 
-    protected function compileBlock(Block $block, LLVMBuilderRef $builder): void {
+    protected function compileBlock(LLVMValueRef $func, Block $block, LLVMBuilderRef $builder): void {
         $this->lib->LLVMPositionBuilderAtEnd($builder, $this->blockMap[$block]);
         foreach ($block->arguments as $idx => $argument) {
             $this->valueMap[$argument] = $this->lib->LLVMBuildLoad($builder, $this->localMap[$argument], $block->name . '_arg_' . $idx . '_load');
         }
         foreach ($block->ops as $op) {
-            $this->compileOp($op, $builder);
+            $this->compileOp($func, $op, $builder, $block);
         }
     }
 
-    protected function compileOp(Op $op, LLVMBuilderRef $builder): void {
+    protected function compileOp(LLVMValueRef $func, Op $op, LLVMBuilderRef $builder, Block $block): void {
         if ($op instanceof Op\BinaryOp) {
             $this->compileBinaryOp($op, $builder);
         } elseif ($op instanceof Op\ReturnVoid) {
@@ -166,6 +168,14 @@ class LLVM extends BackendAbstract {
             $this->lib->LLVMBuildRet($builder, $this->valueMap[$op->value]);
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($builder, $op);
+        } elseif ($op instanceof Op\ConditionalBlockCall) {
+            $if = $this->lib->LLVMAppendBasicBlock($func, $block->name . '_if');
+            $else = $this->lib->LLVMAppendBasicBlock($func, $block->name . '_else');
+            $this->lib->LLVMBuildCondBr($builder, $this->valueMap[$op->cond], $if, $else);
+            $this->lib->LLVMPositionBuilderAtEnd($builder, $if);
+            $this->compileBlockCall($builder, $op->ifTrue);
+            $this->lib->LLVMPositionBuilderAtEnd($builder, $else);
+            $this->compileBlockCall($builder, $op->ifFalse);
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
@@ -271,7 +281,7 @@ class LLVM extends BackendAbstract {
                 throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
             }
         }
-        $t = $this->lib->new('LLVMIntPredicate');
+        $t = $this->lib->getFFI()->new('LLVMIntPredicate');
         $t = $predicate;
         return new LLVMIntPredicate($t);
     }
@@ -292,7 +302,7 @@ class LLVM extends BackendAbstract {
         } else {
             throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
         }
-        $t = $this->lib->new('LLVMRealPredicate');
+        $t = $this->lib->getFFI()->new('LLVMRealPredicate');
         $t = $predicate;
         return new LLVMRealPredicate($t);
     }

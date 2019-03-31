@@ -34,6 +34,22 @@ $func = $builder->createFunction('add1', $type, false, new Parameter($type, 'a')
 // We need a block in the function (blocks contain code)
 $main = $func->createBlock('main');
 $main->returnValue($main->add($func->arg(0), $builder->const()->long_long(1)));
+
+// long long add1or2(long long shouldAdd1, long long a) {
+//     if (shouldAdd > 0) {
+//          return a + 1;
+//     }
+//     return a + 2;
+// }
+// Next, we need to create the function: name, returnType, isVariadic, Parameter ...
+$func = $builder->createFunction('add1or2', $type, false, new Parameter($type, 'shouldAdd1'), new Parameter($type, 'a'));
+// We need a block in the function (blocks contain code)
+$main = $func->createBlock('main');
+$ifTrue = $func->createBlock('ifTrue');
+$ifFalse = $func->createBlock('ifFlase');
+$main->jumpIf($main->gt($func->arg(0), $builder->const()->long_long(0)), $ifTrue, $ifFalse);
+$ifTrue->returnValue($ifTrue->add($func->arg(1), $builder->const()->long_long(1)));
+$ifFalse->returnValue($ifFalse->add($func->arg(1), $builder->const()->long_long(2)));
 $builder->finish();
 
 use PHPCompilerToolkit\Backend;
@@ -60,10 +76,10 @@ $add = [
 
 foreach ($add as $compiler => $callable) {
     echo "    Compiler $compiler: \n";
-    echo "      1 + 1 = " . $callable(1, 1) . "\n";
-    echo "      1 + 2 = " . $callable(1, 2) . "\n";
-    echo "      99 + 1 = " . $callable(99, 1) . "\n";
-    echo "      (1 + 2) + 3) = " . $callable($callable(1, 2), 3) . "\n";
+    echo "      add(1, 1) = " . $callable(1, 1) . "\n";
+    echo "      add(1, 2) = " . $callable(1, 2) . "\n";
+    echo "      add(99, 1) = " . $callable(99, 1) . "\n";
+    echo "      add(add(1, 2), 3) = " . $callable($callable(1, 2), 3) . "\n";
 }
 
 echo "
@@ -83,8 +99,34 @@ $add1 = [
 
 foreach ($add1 as $compiler => $callable) {
     echo "    Compiler $compiler: \n";
-    echo "      1 + 1 = " . $callable(1) . "\n";
-    echo "      2 + 1 = " . $callable(2) . "\n";
-    echo "      99 + 1 = " . $callable(99) . "\n";
-    echo "      (99 + 1) + 1 = " . $callable($callable(99)) . "\n";
+    echo "      add1(1) = " . $callable(1) . "\n";
+    echo "      add1(2) = " . $callable(2) . "\n";
+    echo "      add1(99) = " . $callable(99) . "\n";
+    echo "      add1(add1(99)) = " . $callable($callable(99)) . "\n";
+}
+
+echo "
+
+Add1or2 Function:
+    long long add1or2(long long shouldAdd1, long long a) {
+       if (shouldAdd > 0) {
+            return a + 1;
+       }
+       return a + 2;
+   }
+";
+
+
+$add1or2 = [
+    'libjit' => $libjitResult->getCallable('add1or2'),
+    'libgccjit' => $libgccjitResult->getCallable('add1or2'),
+    'llvm' => $llvmResult->getCallable('add1or2'),
+];
+
+foreach ($add1or2 as $compiler => $callable) {
+    echo "    Compiler $compiler: \n";
+    echo "      add1or2(0, 1) = " . $callable(0, 1) . "\n";
+    echo "      add1or2(0, 2) = " . $callable(0, 2) . "\n";
+    echo "      add1or2(1, 99) = " . $callable(1, 99) . "\n";
+    echo "      add1or2(1, add1or2(0, 99)) = " . $callable(1, $callable(0, 99)) . "\n";
 }

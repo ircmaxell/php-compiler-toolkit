@@ -140,11 +140,11 @@ class LIBGCCJIT extends BackendAbstract {
             $this->valueMap[$argument] = $this->lib->gcc_jit_lvalue_as_rvalue($this->localMap[$argument], null);
         }
         foreach ($block->ops as $op) {
-            $this->compileOp($func, $this->blockMap[$block], $op);
+            $this->compileOp($func, $this->blockMap[$block], $block, $op);
         }
     }
 
-    protected function compileOp(gcc_jit_function_ptr $func, gcc_jit_block_ptr $block, Op $op): void {
+    protected function compileOp(gcc_jit_function_ptr $func, gcc_jit_block_ptr $block, Block $irBlock, Op $op): void {
         if ($op instanceof Op\BinaryOp) {
             $this->compileBinaryOp($op);
         } elseif ($op instanceof Op\ReturnVoid) {
@@ -153,6 +153,12 @@ class LIBGCCJIT extends BackendAbstract {
             $this->lib->gcc_jit_block_end_with_return($block, null, $this->valueMap[$op->value]);
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($block, $op);
+        } elseif ($op instanceof Op\ConditionalBlockCall) {
+            $if = $this->lib->gcc_jit_function_new_block($func, $irBlock->name . '_if');
+            $else = $this->lib->gcc_jit_function_new_block($func, $irBlock->name . '_else');
+            $this->lib->gcc_jit_block_end_with_conditional($block, null, $this->valueMap[$op->cond], $if, $else);
+            $this->compileBlockCall($if, $op->ifTrue);
+            $this->compileBlockCall($else, $op->ifFalse);
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }

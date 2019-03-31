@@ -2761,15 +2761,15 @@ void LLVMViewFunctionCFGOnly(LLVMValueRef Fn);
     const LLVMInstructionValueKind = 24;
  // typedefenum LLVMIntPredicate
     const LLVMIntEQ = 32;
-    const LLVMIntNE = 0;
-    const LLVMIntUGT = 1;
-    const LLVMIntUGE = 2;
-    const LLVMIntULT = 3;
-    const LLVMIntULE = 4;
-    const LLVMIntSGT = 5;
-    const LLVMIntSGE = 6;
-    const LLVMIntSLT = 7;
-    const LLVMIntSLE = 8;
+    const LLVMIntNE = 33;
+    const LLVMIntUGT = 34;
+    const LLVMIntUGE = 35;
+    const LLVMIntULT = 36;
+    const LLVMIntULE = 37;
+    const LLVMIntSGT = 38;
+    const LLVMIntSGE = 39;
+    const LLVMIntSLT = 40;
+    const LLVMIntSLE = 41;
  // typedefenum LLVMRealPredicate
     const LLVMRealPredicateFalse = 0;
     const LLVMRealOEQ = 1;
