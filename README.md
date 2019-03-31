@@ -17,51 +17,57 @@ As such, the performance of this library isn't incredibly important today. Over 
 So, here's a "basic" example for a function which adds two numbers:
 
 ```php
-use PHPCompilerToolkit\Compiler;
-use PHPCompilerToolkit\Type;
-use PHPCompilerToolkit\Block;
+use PHPCompilerToolkit\Context;
+use PHPCompilerToolkit\Builder\GlobalBuilder;
+use PHPCompilerToolkit\IR\Parameter;
 
+$context = new Context;
+$builder = new GlobalBuilder($context);
 
-function compileAdd(Compiler $compiler): callable {
-    $long = $compiler->createPrimitiveType(Type::T_LONG_LONG);
-    $func = $compiler->createFunction(
-        'add', 
-        $long, 
-        false, 
-        $compiler->createParameter('a', $long),
-        $compiler->createParameter('b', $long)
-    );
+// long long add(long long a, long long b) {
+//     return a + b;
+// }
 
-    $block = $func->createBlock("main");
-    $b = $block->binaryOp(Block::BINARYOP_ADD, $func->getParamterByName('a'), $func->getParameterByName('b'), $long);
-    $block->endWithReturn($b);
-
-    $result = $compiler->compileInPlace();
-
-    return $result->getCallable('add');
-}
+// First, let's get a reference to the type we want to use:
+$type = $builder->type()->longLong()    ;
+// Next, we need to create the function: name, returnType, isVariadic, Parameter ...
+$func = $builder->createFunction('add', $type, false, new Parameter($type, 'a'), new Parameter($type, 'b'));
+// We need a block in the function (blocks contain code)
+$main = $func->createBlock('main');
+// We want the block to return the result of addition of the two args:
+$main->returnValue($main->add($func->arg(0), $func->arg(1)));
+// We are done building everything
+$builder->finish();
 ```
 
-Notice how we inject the compiler. This allows us to replace backends easily. To get a php callable back out, all we need to do is call `compileAdd` with an appropriate backend:
+Notice how we haven't picked a backend yet. Now we can:
 
 ```php
 
-$libjit = new PHPCompilerToolkit\Backend\libjit\Compiler;
+$libjit = new PHPCompilerToolkit\Backend\LIBJIT;
 
-$add = compileAdd($libjit);
+$add = $libjit->compile($context)->getCallable('add');
 ```
 
 Or if we wanted to use libgccjit:
 
 ```php
-$libgccjit = new PHPCompilerToolkit\Backend\libgccjit\Compiler;
+$libgccjit = new PHPCompilerToolkit\Backend\LIBGCCJIT;
 
-$add2 = compileAdd($libgccjit);
+$add = $libgccjit->compile($context)->getCallable('add');
+```
+
+Or if we wanted to use LLVM:
+
+```php
+$llvm = new PHPCompilerToolkit\Backend\LLVM;
+
+$add3 = $llvm->compile($context)->getCallable('add');
 ```
 
 And since they are just normal PHP closures at this point:
 
 ```php
-var_dump($add(1, 1), $add2(2, 2));
-// int(2), int(4)
+var_dump($add(1, 1), $add2(2, 2), $add3(4, 4);
+// int(2), int(4), int(8)
 ```

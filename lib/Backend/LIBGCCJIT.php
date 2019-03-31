@@ -1,0 +1,150 @@
+<?php
+declare(strict_types=1);
+
+namespace PHPCompilerToolkit\Backend;
+
+use SplObjectStorage;
+
+use PHPCompilerToolkit\BackendAbstract;
+use PHPCompilerToolkit\Context;
+use PHPCompilerToolkit\CompiledUnit;
+use PHPCompilerToolkit\IR\Block;
+use PHPCompilerToolkit\IR\Function_;
+use PHPCompilerToolkit\IR\Op;
+use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\Type;
+
+use libgccjit\libgccjit as lib;
+use libgccjit\gcc_jit_block_ptr;
+use libgccjit\gcc_jit_context_ptr;
+use libgccjit\gcc_jit_function_ptr;
+use libgccjit\gcc_jit_param_ptr_ptr;
+
+class LIBGCCJIT extends BackendAbstract {
+
+    public lib $lib;
+    public gcc_jit_context_ptr $context;
+
+    const PRIMITIVE_TYPE_MAP = [
+        Type\Primitive::T_VOID => lib::GCC_JIT_TYPE_VOID,
+        Type\Primitive::T_VOID_PTR => lib::GCC_JIT_TYPE_VOID_PTR,
+        Type\Primitive::T_BOOL => lib::GCC_JIT_TYPE_BOOL,
+        Type\Primitive::T_CHAR => lib::GCC_JIT_TYPE_CHAR,
+        Type\Primitive::T_SIGNED_CHAR => lib::GCC_JIT_TYPE_SIGNED_CHAR,
+        Type\Primitive::T_UNSIGNED_CHAR => lib::GCC_JIT_TYPE_UNSIGNED_CHAR,
+        Type\Primitive::T_SHORT => lib::GCC_JIT_TYPE_SHORT,
+        Type\Primitive::T_UNSIGNED_SHORT => lib::GCC_JIT_TYPE_UNSIGNED_SHORT,
+        Type\Primitive::T_INT => lib::GCC_JIT_TYPE_INT,
+        Type\Primitive::T_UNSIGNED_INT  => lib::GCC_JIT_TYPE_UNSIGNED_INT,
+        Type\Primitive::T_LONG  => lib::GCC_JIT_TYPE_LONG,
+        Type\Primitive::T_UNSIGNED_LONG  => lib::GCC_JIT_TYPE_UNSIGNED_LONG,
+        Type\Primitive::T_LONG_LONG  => lib::GCC_JIT_TYPE_LONG_LONG,
+        Type\Primitive::T_UNSIGNED_LONG_LONG  => lib::GCC_JIT_TYPE_UNSIGNED_LONG_LONG,
+        Type\Primitive::T_FLOAT  => lib::GCC_JIT_TYPE_FLOAT,
+        Type\Primitive::T_DOUBLE  => lib::GCC_JIT_TYPE_DOUBLE,
+        Type\Primitive::T_LONG_DOUBLE  => lib::GCC_JIT_TYPE_LONG_DOUBLE,
+        Type\Primitive::T_SIZE_T  => lib::GCC_JIT_TYPE_SIZE_T,
+    ];
+
+    public function __construct() {
+        $this->lib = new lib;
+    }
+
+    protected function beforeCompile(Context $context): void {
+        $this->parameterMap = [];
+        $this->context = $this->lib->gcc_jit_context_acquire();
+    }
+
+    protected function afterCompile(Context $context): void {
+        unset($this->parameterMap);
+        unset($this->context);
+    }
+
+    protected function compileType(Type $type) {
+        if ($type instanceof Type\Primitive) {
+            return $this->lib->gcc_jit_context_get_type($this->context, self::PRIMITIVE_TYPE_MAP[$type->kind]);
+        }
+        throw new \LogicException("Not implemented type for gcc_jit: " . get_class($type));
+    }
+
+    protected array $parameterMap;
+
+    protected function declareFunction(Function_ $function) {
+        $this->parameterMap[$function->name] = array_map(
+            function(Parameter $param) {
+                return $this->lib->gcc_jit_context_new_param($this->context, null, $this->typeMap[$param->type], $param->name);
+            }, 
+            $function->parameters
+        );
+        $params = $this->lib->makeArray(
+            gcc_jit_param_ptr_ptr::class,
+            $this->parameterMap[$function->name]
+        );
+
+        $func = $this->lib->gcc_jit_context_new_function(
+            $this->context,
+            null,
+            lib::GCC_JIT_FUNCTION_EXPORTED,
+            $this->typeMap[$function->returnType],
+            $function->name,
+            count($function->parameters),
+            $params,
+            $function->isVariadic ? 1 : 0
+        );
+        if ($func === null) {
+            throw new \LogicException("Func shouldn't be null");
+        }
+        return $func;
+    }
+
+    private SplObjectStorage $valueMap;
+    private SplObjectStorage $blockMap;
+
+    protected function compileFunction(Function_ $function, $func): void {
+        $this->valueMap = new SplObjectStorage;
+        $this->blockMap = new SplObjectStorage;
+        foreach ($function->parameters as $index => $parameter) {
+            $this->valueMap[$parameter->value] = $this->lib->gcc_jit_param_as_rvalue($this->parameterMap[$function->name][$index]);
+        }
+        foreach ($function->blocks as $block) {
+            $this->blockMap[$block] = $this->lib->gcc_jit_function_new_block($func, $block->name);
+        }
+        foreach ($function->blocks as $block) {
+            $this->compileBlock($func, $block);
+        }
+        unset($this->valueMap);
+        unset($this->blockMap);
+    }
+
+    protected function compileBlock(gcc_jit_function_ptr $func, Block $block): void {
+        foreach ($block->ops as $op) {
+            $this->compileOp($func, $this->blockMap[$block], $op);
+        }
+    }
+
+    protected function compileOp(gcc_jit_function_ptr $func, gcc_jit_block_ptr $block, Op $op): void {
+        if ($op instanceof Op\BinaryOp) {
+            $this->compileBinaryOp($op);
+        } elseif ($op instanceof Op\ReturnVoid) {
+            $this->lib->gcc_jit_block_end_with_void_return($block, null);
+        } elseif ($op instanceof Op\ReturnValue) {
+            $this->lib->gcc_jit_block_end_with_return($block, null, $this->valueMap[$op->value]);
+        } else {
+            throw new \LogicException("Unknown Op encountered: " . get_class($op));
+        }
+    }
+
+    protected function compileBinaryOp(Op\BinaryOp $op): void {
+        if ($op instanceof Op\BinaryOp\Add) {
+            $this->valueMap[$op->result] = $this->lib->gcc_jit_context_new_binary_op($this->context, null, lib::GCC_JIT_BINARY_OP_PLUS, $this->typeMap[$op->result->type], $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } else {
+            throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
+        }
+    }
+
+    protected function buildResult(): CompiledUnit {
+        $result = $this->lib->gcc_jit_context_compile($this->context);
+        return new LIBGCCJIT\CompiledUnit($this, $result, $this->signatureMap);
+    }
+
+}

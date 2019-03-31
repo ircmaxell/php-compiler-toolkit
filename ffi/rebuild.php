@@ -13,5 +13,7 @@ $libgccjit->codegen('libgccjit\\libgccjit', __DIR__ . '/libgccjit.php');
 
 
 $llvm = new FFIMe\FFIMe('/usr/lib/llvm-4.0/lib/libLLVM-4.0.so.1', ['/usr/include/llvm-c-4.0/', '/usr/include/llvm-4.0/']);
-$llvm->include(__DIR__ . '/llvm.h');
+$llvm->include("llvm-c/Core.h");
+$llvm->include("llvm-c/ExecutionEngine.h");
+$llvm->include("llvm-c/Analysis.h");
 $llvm->codegen('llvm\\llvm', __DIR__ . '/llvm.php');

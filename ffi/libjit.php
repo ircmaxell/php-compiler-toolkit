@@ -4456,6 +4456,32 @@ int jit_frame_contains_crawl_mark(void *frame, jit_crawl_mark_t *mark);
     }
 }
 
+class void_ptr implements ilibjit {
+    private FFI\CData $data;
+    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function getData(): FFI\CData { return $this->data; }
+    public function equals(void_ptr $other): bool { return $this->data == $other->data; }
+    public function addr(): void_ptr_ptr { return new void_ptr_ptr(FFI::addr($this->data)); }
+    public static function getType(): string { return 'void*'; }
+}
+class void_ptr_ptr implements ilibjit {
+    private FFI\CData $data;
+    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function getData(): FFI\CData { return $this->data; }
+    public function equals(void_ptr_ptr $other): bool { return $this->data == $other->data; }
+    public function addr(): void_ptr_ptr_ptr { return new void_ptr_ptr_ptr(FFI::addr($this->data)); }
+    public function deref(int $n = 0): void_ptr { return new void_ptr($this->data[$n]); }
+    public static function getType(): string { return 'void**'; }
+}
+class void_ptr_ptr_ptr implements ilibjit {
+    private FFI\CData $data;
+    public function __construct(FFI\CData $data) { $this->data = $data; }
+    public function getData(): FFI\CData { return $this->data; }
+    public function equals(void_ptr_ptr_ptr $other): bool { return $this->data == $other->data; }
+    public function addr(): void_ptr_ptr_ptr_ptr { return new void_ptr_ptr_ptr_ptr(FFI::addr($this->data)); }
+    public function deref(int $n = 0): void_ptr_ptr { return new void_ptr_ptr($this->data[$n]); }
+    public static function getType(): string { return 'void***'; }
+}
 class jit_sbyte implements ilibjit {
     private FFI\CData $data;
     public function __construct($data) { $tmp = FFI::new('char'); $tmp = $data; $this->data = $tmp; }

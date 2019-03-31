@@ -69,12 +69,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/FFIMe.git",
-                "reference": "2ef0d8e53f04727c0c6a135356aebe9b4a5a7bd4"
+                "reference": "b877e36f339bb70aa4418153e7372ae280cdea0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/2ef0d8e53f04727c0c6a135356aebe9b4a5a7bd4",
-                "reference": "2ef0d8e53f04727c0c6a135356aebe9b4a5a7bd4",
+                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/b877e36f339bb70aa4418153e7372ae280cdea0b",
+                "reference": "b877e36f339bb70aa4418153e7372ae280cdea0b",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                 }
             ],
             "description": "Make life easy when working with 7.4's FFI",
-            "time": "2019-03-29T19:02:54+00:00"
+            "time": "2019-03-30T14:23:45+00:00"
         },
         {
             "name": "ircmaxell/php-c-parser",
@@ -106,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/php-c-parser.git",
-                "reference": "817f7faea5c83b0167bb9d93d2620ee0c9d2ec1f"
+                "reference": "de5532e2c000986661d0b460f316436c385fe1cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/php-c-parser/zipball/817f7faea5c83b0167bb9d93d2620ee0c9d2ec1f",
-                "reference": "817f7faea5c83b0167bb9d93d2620ee0c9d2ec1f",
+                "url": "https://api.github.com/repos/ircmaxell/php-c-parser/zipball/de5532e2c000986661d0b460f316436c385fe1cd",
+                "reference": "de5532e2c000986661d0b460f316436c385fe1cd",
                 "shasum": ""
             },
             "require": {
@@ -138,7 +138,7 @@
                 }
             ],
             "description": "Parse C when using PHP",
-            "time": "2019-03-28 18:37:22"
+            "time": "2019-03-30T14:03:15+00:00"
         },
         {
             "name": "myclabs/deep-copy",
