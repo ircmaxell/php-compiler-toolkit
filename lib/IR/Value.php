@@ -4,18 +4,20 @@ declare(strict_types=1);
 namespace PHPCompilerToolkit\IR;
 use PHPCompilerToolkit\Type;
 
-class Value {
+abstract class Value {
 
     public Type $type;
-    public Block $block;
 
-    public function __construct(Block $block, Type $type) {
-        $this->block = $block;
+    public function __construct(Type $type) {
         $this->type = $type;
     }
     
     public function isOwnedBy(Block $block): bool {
-        return $this->block === $block;
+        return true;
+    }
+
+    public function isConstant(): bool {
+        return false;
     }
 
 }

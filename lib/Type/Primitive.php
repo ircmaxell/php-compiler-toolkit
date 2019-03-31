@@ -65,4 +65,27 @@ class Primitive extends TypeAbstract {
     public function isVoid(): bool {
         return $this->kind === self::T_VOID;
     }
+
+    public function isSigned(): bool {
+        switch ($this->kind) {
+            case self::T_VOID_PTR:
+            case self::T_UNSIGNED_CHAR:
+            case self::T_UNSIGNED_SHORT:
+            case self::T_UNSIGNED_INT:
+            case self::T_UNSIGNED_LONG:
+            case self::T_UNSIGNED_LONG_LONG:
+                return false;
+        }
+        return true;
+    }
+
+    public function isFloatingPoint(): bool {
+        switch ($this->kind) {
+            case self::T_FLOAT:
+            case self::T_DOUBLE:
+            case self::T_LONG_DOUBLE:
+                return true;
+        }
+        return false;
+    }
 }

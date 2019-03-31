@@ -32,7 +32,7 @@ class Function_ {
         $block = new Block($this, $name);
         if (empty($this->blocks)) {
             foreach ($this->parameters as $parameter) {
-                $parameter->setValue(new Value($block, $parameter->type));
+                $parameter->setValue(new Value\Value($block, $parameter->type));
             }
         }
         $this->blocks[] = $block;

@@ -21,12 +21,12 @@ class Block {
             throw new \LogicException("Attempting to add op to closed block");
         }
         foreach ($op->getArguments() as $arg) {
-            if ($arg->block !== $this) {
+            if (!$arg->isOwnedBy($this)) {
                 throw new \LogicException("Arg doesn't belong to block, this is not correct");
             }
         }
         $result = $op->getResult();
-        if ($result !== null && $result->block !== $this) {
+        if ($result !== null && !$result->isOwnedBy($this)) {
             throw new \LogicException("Result doesn't belong to block, this is not correct");
         }
         if ($op instanceof TerminalOp) {

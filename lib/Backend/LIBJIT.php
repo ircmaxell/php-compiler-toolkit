@@ -12,6 +12,7 @@ use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Op;
 use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\IR\Value\Constant;
 use PHPCompilerToolkit\Type;
 
 use libjit\libjit as lib;
@@ -19,11 +20,15 @@ use libjit\jit_context_t;
 use libjit\jit_type_t_ptr;
 use libjit\jit_abi_t;
 use libjit\jit_function_t;
+use libjit\jit_value_t;
+use libjit\jit_long;
+use libjit\jit_float64;
 
 class LIBJIT extends BackendAbstract {
 
     public lib $lib;
     public jit_context_t $context;
+    public SplObjectStorage $constantMap;
 
     public function __construct() {
         $this->lib = new lib;
@@ -81,6 +86,12 @@ class LIBJIT extends BackendAbstract {
         throw new \LogicException("Type " . get_class($type) . " not implemented yet");
     }
 
+    protected array $constants = [];
+    protected function compileConstant(Constant $constant) {
+        // libjit allocates constants per function, do nothing
+        $this->constants[] = $constant;
+    }
+
     protected function declareFunction(Function_ $function) {
         $paramWrapper = $this->lib->makeArray(
             jit_type_t_ptr::class,
@@ -113,6 +124,13 @@ class LIBJIT extends BackendAbstract {
         $this->valueMap = new SplObjectStorage;
         $this->blockMap = new SplObjectStorage;
         $this->localMap = new SplObjectStorage;
+        foreach ($this->constants as $constant) {
+            if ($constant->type->isFloatingPoint()) {
+                $this->valueMap[$constant] = $this->lib->jit_value_create_float64_constant($func, $this->typeMap[$constant->type], new jit_float64($this->$constant->value));
+            } else {
+                $this->valueMap[$constant] = $this->lib->jit_value_create_long_constant($func, $this->typeMap[$constant->type], new jit_long($constant->value));
+            }
+        }
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->jit_value_get_param($func, $index);
         }
@@ -165,9 +183,55 @@ class LIBJIT extends BackendAbstract {
     protected function compileBinaryOp(jit_function_t $func, Op\BinaryOp $op): void {
         if ($op instanceof Op\BinaryOp\Add) {
             $this->valueMap[$op->result] = $this->lib->jit_insn_add($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\BitwiseAnd) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_and($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\BitwiseOr) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_or($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\BitwiseXor) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_xor($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\Div) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_div($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\EQ) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_eq($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\GE) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_ge($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\GT) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_gt($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\LE) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_le($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\LogicalAnd) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_and(
+                $func, 
+                $this->toLogicalValue($func, $this->valueMap[$op->left]), 
+                $this->toLogicalValue($func, $this->valueMap[$op->right])
+            );
+        } elseif ($op instanceof Op\BinaryOp\LogicalOr) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_and(
+                $func, 
+                $this->toLogicalValue($func, $this->valueMap[$op->left]), 
+                $this->toLogicalValue($func, $this->valueMap[$op->right])
+            );
+        } elseif ($op instanceof Op\BinaryOp\LT) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_lt($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\Mod) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_rem($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\Mul) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_mul($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\NE) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_ne($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\SL) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_shl($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\SR) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_shr($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif ($op instanceof Op\BinaryOp\Sub) {
+            $this->valueMap[$op->result] = $this->lib->jit_insn_sub($func, $this->valueMap[$op->left], $this->valueMap[$op->right]);
         } else {
             throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
         }
+    }
+
+    protected function toLogicalValue(jit_function_t $func, jit_value_t $value): jit_value_t {
+        throw new \LogicalException("Unknown how to do yet, but todo in the future");
     }
 
     protected function buildResult(): CompiledUnit {

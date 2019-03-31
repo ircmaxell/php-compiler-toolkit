@@ -15,4 +15,8 @@ interface Type {
 
     public function asCString(): string;
 
+    public function isSigned(): bool;
+
+    public function isFloatingPoint(): bool;
+
 }

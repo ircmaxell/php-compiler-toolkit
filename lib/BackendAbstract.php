@@ -5,19 +5,25 @@ namespace PHPCompilerToolkit;
 
 use SplObjectStorage;
 use PHPCompilerToolkit\IR\Function_;
+use PHPCompilerToolkit\IR\Value\Constant;
 
 abstract class BackendAbstract implements Backend {
 
     protected SplObjectStorage $typeMap;
+    protected SplObjectStorage $constantMap;
     protected array $functionMap;
     protected array $signatureMap;
 
     public function compile(Context $context): CompiledUnit {
         $this->beforeCompile($context);
         $this->typeMap = new SplObjectStorage;
+        $this->constantMap = new SplObjectStorage;
         $this->functionMap = [];
         foreach ($context->types as $type) {
             $this->typeMap[$type] = $this->compileType($type);
+        }
+        foreach ($context->constants as $constant) {
+            $this->constantMap[$constant] = $this->compileConstant($constant);
         }
         foreach ($context->functions as $function) {
             $this->functionMap[$function->name] = $this->declareFunction($function);
@@ -34,6 +40,7 @@ abstract class BackendAbstract implements Backend {
     }
 
     abstract protected function compileType(Type $type);
+    abstract protected function compileConstant(Constant $constant);
     abstract protected function declareFunction(Function_ $function);
     abstract protected function compileFunction(Function_ $function, $func): void;
     abstract protected function buildResult(): CompiledUnit;

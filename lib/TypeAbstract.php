@@ -32,4 +32,12 @@ abstract class TypeAbstract implements Type {
         return new Type\ArrayType($this->context, $this, $numElements);
     }
 
+    public function isSigned(): bool {
+        return false;
+    }
+
+    public function isFloatingPoint(): bool {
+        return false;
+    }
+
 }

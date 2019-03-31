@@ -61,7 +61,7 @@ class FunctionBuilder extends Builder {
                         throw new \RuntimeException("Mismatch between argument counts for block and call");
                     }
                     foreach ($argumentMap[$block] as $argument) {
-                        if ($argument->block === $parent) {
+                        if ($argument->isOwnedBy($parent)) {
                             // add directly
                             $call->arguments[] = $argument;
                         } else {

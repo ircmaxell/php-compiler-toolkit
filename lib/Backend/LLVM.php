@@ -13,6 +13,7 @@ use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Op;
 use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\IR\Value\Constant;
 use PHPCompilerToolkit\Type;
 
 use llvm\llvm as lib;
@@ -22,6 +23,7 @@ use llvm\LLVMBool;
 use llvm\LLVMBuilderRef;
 use llvm\LLVMExecutionEngineRef;
 use llvm\LLVMTypeRef_ptr;
+use LLVM\LLVMValueRef;
 use llvm\LLVMVerifierFailureAction;
 use llvm\string_ptr;
 
@@ -91,6 +93,14 @@ class LLVM extends BackendAbstract {
         throw new \LogicException("Type " . get_class($type) . " not implemented yet");
     }
 
+    protected function compileConstant(Constant $constant) {
+        // libjit allocates constants per function, do nothing
+        if ($constant->type->isFloatingPoint()) {
+            return $this->lib->LLVMConstReal($this->typeMap[$constant->type], $constant->value);
+        }
+        return $this->lib->LLVMConstInt($this->typeMap[$constant->type], $constant->value, $this->bool(false));
+    }
+
     protected function declareFunction(Function_ $function) {
         $paramWrapper = $this->lib->makeArray(
             LLVMTypeRef_ptr::class,
@@ -113,6 +123,9 @@ class LLVM extends BackendAbstract {
         $this->valueMap = new SplObjectStorage;
         $this->blockMap = new SplObjectStorage;
         $this->localMap = new SplObjectStorage;
+        foreach ($this->constantMap as $constant) {
+            $this->valueMap[$constant] = $this->constantMap[$constant];
+        }
         $builder = $this->lib->LLVMCreateBuilder();
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->LLVMGetParam($func, $index);
@@ -160,10 +173,132 @@ class LLVM extends BackendAbstract {
 
     protected function compileBinaryOp(Op $op, LLVMBuilderRef $builder): void {
         if ($op instanceof Op\BinaryOp\Add) {
-            $this->valueMap[$op->result] = $this->lib->LLVMBuildAdd($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            if ($op->result->type->isFloatingPoint()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildFAdd($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } else {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildAdd($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            }
+        } elseif ($op instanceof Op\BinaryOp\BitwiseAnd) {
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildAnd($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName()); 
+        } elseif ($op instanceof Op\BinaryOp\BitwiseOr) {
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildOr($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName()); 
+        } elseif ($op instanceof Op\BinaryOp\BitwiseXor) {
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildXor($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+        } elseif ($op instanceof Op\BinaryOp\Div) {
+            if ($op->result->type->isSigned()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildUDiv($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } elseif ($op->result->type->isFloatingPoint()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildFDiv($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } else {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildSDiv($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            }
+        } elseif ($op instanceof Op\BinaryOp\LogicalAnd) {
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildAnd(
+                $builder, 
+                $this->toLogicalValue($builder, $this->valueMap[$op->left]), 
+                $this->toLogicalValue($builder, $this->valueMap[$op->right]), 
+                $this->varName()
+            ); 
+        } elseif ($op instanceof Op\BinaryOp\LogicalOr) {
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildOr(
+                $builder, 
+                $this->toLogicalValue($builder, $this->valueMap[$op->left]), 
+                $this->toLogicalValue($builder, $this->valueMap[$op->right]),
+                $this->varName()
+            );
+        } elseif ($op instanceof Op\BinaryOp\Mod) {
+            if ($op->result->type->isSigned()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildURem($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } elseif ($op->result->type->isFloatingPoint()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildFRem($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } else {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildSRem($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            }
+        } elseif ($op instanceof Op\BinaryOp\SL) {
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildShl($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+        } elseif ($op instanceof Op\BinaryOp\SR) {
+            if ($op->result->type->isSigned()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildAShr($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } else {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildLShr($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            }
+        } elseif ($op instanceof Op\BinaryOp\Sub) {
+            if ($op->result->type->isFloatingPoint()) {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildFSub($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            } else {
+                $this->valueMap[$op->result] = $this->lib->LLVMBuildSub($builder, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+            }
+        } elseif ($op->left->type->isFloatingPoint() || $op->right->type->isFloatingPoint()) {
+            $predicate = $this->getRealPredicate($op);
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildFCmp($builder, $predicate, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+        } else {
+            $predicate = $this->getIntPredicate($op);
+            $this->valueMap[$op->result] = $this->lib->LLVMBuildICmp($builder, $predicate, $this->valueMap[$op->left], $this->valueMap[$op->right], $this->varName());
+        }
+    }
+
+    protected function getIntPredicate(Op\BinaryOp $op): LLVMIntPredicate {
+        if ($op->left->type->isSigned() || $op->right->type->isSigned()) { 
+            if ($op instanceof Op\BinaryOp\EQ) {
+                $predicate = lib::LLVMIntEQ;
+            } elseif ($op instanceof Op\BinaryOp\GE) {
+                $predicate = lib::LLVMIntSGE;
+            } elseif ($op instanceof Op\BinaryOp\GT) {
+                $predicate = lib::LLVMIntSGT;
+            } elseif ($op instanceof Op\BinaryOp\LE) {
+                $predicate = lib::LLVMIntSLE;
+            } elseif ($op instanceof Op\BinaryOp\LT) {
+                $predicate = lib::LLVMIntSLT;
+            } elseif ($op instanceof Op\BinaryOp\NE) {
+                $predicate = lib::LLVMIntNE;
+            } else {
+                throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
+            }
+        } else {
+            if ($op instanceof Op\BinaryOp\EQ) {
+                $predicate = lib::LLVMIntEQ;
+            } elseif ($op instanceof Op\BinaryOp\GE) {
+                $predicate = lib::LLVMIntUGE;
+            } elseif ($op instanceof Op\BinaryOp\GT) {
+                $predicate = lib::LLVMIntUGT;
+            } elseif ($op instanceof Op\BinaryOp\LE) {
+                $predicate = lib::LLVMIntULE;
+            } elseif ($op instanceof Op\BinaryOp\LT) {
+                $predicate = lib::LLVMIntULT;
+            } elseif ($op instanceof Op\BinaryOp\NE) {
+                $predicate = lib::LLVMIntNE;
+            } else {
+                throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
+            }
+        }
+        $t = $this->lib->new('LLVMIntPredicate');
+        $t = $predicate;
+        return new LLVMIntPredicate($t);
+    }
+
+    protected function getRealPredicate(Op\BinaryOp $op): LLVMRealPredicate {
+        if ($op instanceof Op\BinaryOp\EQ) {
+            $predicate = lib::LLVMRealOEQ;
+        } elseif ($op instanceof Op\BinaryOp\GE) {
+            $predicate = lib::LLVMRealOGE;
+        } elseif ($op instanceof Op\BinaryOp\GT) {
+            $predicate = lib::LLVMRealOGT;
+        } elseif ($op instanceof Op\BinaryOp\LE) {
+            $predicate = lib::LLVMRealOLE;
+        } elseif ($op instanceof Op\BinaryOp\LT) {
+            $predicate = lib::LLVMRealOLT;
+        } elseif ($op instanceof Op\BinaryOp\NE) {
+            $predicate = lib::LLVMRealONE;
         } else {
             throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
         }
+        $t = $this->lib->new('LLVMRealPredicate');
+        $t = $predicate;
+        return new LLVMRealPredicate($t);
+    }
+
+    protected function toLogicalValue(LLVMBuilderRef $Builder, LLVMValueRef $value): LLVMValueRef {
+        throw new \LogicalException("Unknown how to do yet, but todo in the future");
     }
 
     protected function compileBlockCall(LLVMBuilderRef $builder, Op\BlockCall $op): void {

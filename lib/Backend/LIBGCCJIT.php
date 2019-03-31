@@ -12,6 +12,8 @@ use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Op;
 use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\IR\Value\Constant;
+
 use PHPCompilerToolkit\Type;
 
 use libgccjit\libgccjit as lib;
@@ -67,6 +69,14 @@ class LIBGCCJIT extends BackendAbstract {
         throw new \LogicException("Not implemented type for gcc_jit: " . get_class($type));
     }
 
+    protected function compileConstant(Constant $constant) {
+        // libjit allocates constants per function, do nothing
+        if ($constant->type->isFloatingPoint()) {
+            return $this->lib->gcc_jit_context_new_rvalue_from_double($this->context, $this->typeMap[$constant->type], $constant->value);
+        }
+        return $this->lib->gcc_jit_context_new_rvalue_from_long($this->context, $this->typeMap[$constant->type], $constant->value);
+    }
+
     protected array $parameterMap;
 
     protected function declareFunction(Function_ $function) {
@@ -105,6 +115,9 @@ class LIBGCCJIT extends BackendAbstract {
         $this->valueMap = new SplObjectStorage;
         $this->blockMap = new SplObjectStorage;
         $this->localMap = new SplObjectStorage;
+        foreach ($this->constantMap as $constant) {
+            $this->valueMap[$constant] = $this->constantMap[$constant];
+        }
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->gcc_jit_param_as_rvalue($this->parameterMap[$function->name][$index]);
         }
@@ -152,11 +165,38 @@ class LIBGCCJIT extends BackendAbstract {
         $this->lib->gcc_jit_block_end_with_jump($block, null, $this->blockMap[$op->block]);
     }
 
+    const BINARYOP_MAP = [
+        Op\BinaryOp\Add::class => lib::GCC_JIT_BINARY_OP_PLUS,
+        Op\BinaryOp\BitwiseAnd::class => lib::GCC_JIT_BINARY_OP_BITWISE_AND,
+        Op\BinaryOp\BitwiseOr::class => lib::GCC_JIT_BINARY_OP_BITWISE_OR,
+        Op\BinaryOp\BitwiseXor::class => lib::GCC_JIT_BINARY_OP_BITWISE_XOR,
+        Op\BinaryOp\Div::class => lib::GCC_JIT_BINARY_OP_DIVIDE,
+        Op\BinaryOp\LogicalAnd::class => lib::GCC_JIT_BINARY_OP_LOGICAL_AND,
+        Op\BinaryOp\LogicalOr::class => lib::GCC_JIT_BINARY_OP_LOGICAL_OR,
+        Op\BinaryOp\Mod::class => lib::GCC_JIT_BINARY_OP_MODULO,
+        Op\BinaryOp\Mul::class => lib::GCC_JIT_BINARY_OP_MULT,
+        Op\BinaryOp\SL::class => lib::GCC_JIT_BINARY_OP_LSHIFT,
+        Op\BinaryOp\SR::class => lib::GCC_JIT_BINARY_OP_RSHIFT,
+        Op\BinaryOp\Sub::class => lib::GCC_JIT_BINARY_OP_MINUS,
+    ];
+
+    const COMPAREOP_MAP = [
+        OP\BinaryOp\EQ::class => lib::GCC_JIT_COMPARISON_EQ,
+        OP\BinaryOp\GE::class => lib::GCC_JIT_COMPARISON_GE,
+        OP\BinaryOp\GT::class => lib::GCC_JIT_COMPARISON_GT,
+        OP\BinaryOp\LE::class => lib::GCC_JIT_COMPARISON_LE,
+        OP\BinaryOp\LT::class => lib::GCC_JIT_COMPARISON_LT,
+        OP\BinaryOp\NE::class => lib::GCC_JIT_COMPARISON_NE,
+    ];
+
     protected function compileBinaryOp(Op\BinaryOp $op): void {
-        if ($op instanceof Op\BinaryOp\Add) {
-            $this->valueMap[$op->result] = $this->lib->gcc_jit_context_new_binary_op($this->context, null, lib::GCC_JIT_BINARY_OP_PLUS, $this->typeMap[$op->result->type], $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        $class = get_class($op);
+        if (isset(self::BINARYOP_MAP[$class])) {
+            $this->valueMap[$op->result] = $this->lib->gcc_jit_context_new_binary_op($this->context, null, self::BINARYOP_MAP[$class], $this->typeMap[$op->result->type], $this->valueMap[$op->left], $this->valueMap[$op->right]);
+        } elseif (isset(self::COMPAREOP_MAP[$class])) {
+            $this->valueMap[$op->result] = $this->lib->gcc_jit_context_new_comparison($this->context, null, self::COMPAREOP_MAP[$class], $this->valueMap[$op->left], $this->valueMap[$op->right]);
         } else {
-            throw new \LogicException("Unknown BinaryOp encountered: " . get_class($op));
+            throw new \LogicException("Unknown BinaryOp encountered: $class");
         }
     }
 
