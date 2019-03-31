@@ -12,6 +12,7 @@ use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Op;
 use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\IR\Value\Constant;
 
 use PHPCompilerToolkit\Type;
@@ -21,6 +22,8 @@ use libgccjit\gcc_jit_block_ptr;
 use libgccjit\gcc_jit_context_ptr;
 use libgccjit\gcc_jit_function_ptr;
 use libgccjit\gcc_jit_param_ptr_ptr;
+use libgccjit\gcc_jit_rvalue_ptr;
+use libgccjit\gcc_jit_rvalue_ptr_ptr;
 
 class LIBGCCJIT extends BackendAbstract {
 
@@ -52,9 +55,10 @@ class LIBGCCJIT extends BackendAbstract {
         $this->lib = new lib;
     }
 
-    protected function beforeCompile(Context $context): void {
+    protected function beforeCompile(Context $context, int $optimizationLevel): void {
         $this->parameterMap = [];
         $this->context = $this->lib->gcc_jit_context_acquire();
+        $this->lib->gcc_jit_context_set_int_option($this->context, lib::GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL, $optimizationLevel);
     }
 
     protected function afterCompile(Context $context): void {
@@ -151,6 +155,10 @@ class LIBGCCJIT extends BackendAbstract {
             $this->lib->gcc_jit_block_end_with_void_return($block, null);
         } elseif ($op instanceof Op\ReturnValue) {
             $this->lib->gcc_jit_block_end_with_return($block, null, $this->valueMap[$op->value]);
+        } elseif ($op instanceof Op\Call) {
+            $this->valueMap[$op->return] = $this->doCall($func, $op);
+        } elseif ($op instanceof Op\CallNoReturn) {
+            $this->lib->gcc_jit_block_add_eval($block, null, $this->doCall($func, $op));
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($block, $op);
         } elseif ($op instanceof Op\ConditionalBlockCall) {
@@ -162,6 +170,25 @@ class LIBGCCJIT extends BackendAbstract {
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
+    }
+
+    protected function doCall(gcc_jit_function_ptr $func, Op $op): gcc_jit_rvalue_ptr {
+        $paramWrapper = $this->lib->makeArray(
+            gcc_jit_rvalue_ptr_ptr::class,
+            array_map(
+                function(Value $value) {
+                    return $this->valueMap[$value];
+                }, 
+                $op->parameters
+            )
+        );
+        return $this->lib->gcc_jit_context_new_call(
+            $this->context,
+            null,
+            $this->functionMap[$op->function->name],
+            count($op->parameters),
+            $paramWrapper,
+        );
     }
 
     protected function compileBlockCall(gcc_jit_block_ptr $block, Op\BlockCall $op): void {
@@ -208,7 +235,7 @@ class LIBGCCJIT extends BackendAbstract {
 
     protected function buildResult(): CompiledUnit {
         $result = $this->lib->gcc_jit_context_compile($this->context);
-        return new LIBGCCJIT\CompiledUnit($this, $result, $this->signatureMap);
+        return new LIBGCCJIT\CompiledUnit($this, $this->context, $result, $this->signatureMap);
     }
 
 }

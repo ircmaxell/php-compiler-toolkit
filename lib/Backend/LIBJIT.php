@@ -12,6 +12,7 @@ use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Op;
 use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\IR\Value\Constant;
 use PHPCompilerToolkit\Type;
 
@@ -21,6 +22,7 @@ use libjit\jit_type_t_ptr;
 use libjit\jit_abi_t;
 use libjit\jit_function_t;
 use libjit\jit_value_t;
+use libjit\jit_value_t_ptr;
 use libjit\jit_long;
 use libjit\jit_float64;
 
@@ -29,13 +31,20 @@ class LIBJIT extends BackendAbstract {
     public lib $lib;
     public jit_context_t $context;
     public SplObjectStorage $constantMap;
+    public jit_abi_t $abi;
 
     public function __construct() {
         $this->lib = new lib;
+        $abi = $this->lib->getFFI()->new('jit_abi_t');
+        $abi = lib::jit_abi_cdecl;
+        $this->abi = new jit_abi_t($abi);
     }
 
-    protected function beforeCompile(Context $context): void {
+    protected int $optimizationLevel;
+
+    protected function beforeCompile(Context $context, int $optimizationLevel): void {
         $this->context = $this->lib->jit_context_create();
+        $this->optimizationLevel = $optimizationLevel;
     }
 
     protected function afterCompile(Context $context): void {
@@ -102,17 +111,17 @@ class LIBJIT extends BackendAbstract {
                 $function->parameters
             )
         );
-        $abi = $this->lib->getFFI()->new('jit_abi_t');
-        $abi = lib::jit_abi_cdecl;
+
 
         $type = $this->lib->jit_type_create_signature(
-            new jit_abi_t($abi),
+            $this->abi,
             $this->typeMap[$function->returnType], 
             $paramWrapper, 
             count($function->parameters),
             1
         );
         $func = $this->lib->jit_function_create($this->context, $type);
+        $this->lib->jit_function_set_optimization_level($func, $this->optimizationLevel);
         return $func;
     }
 
@@ -143,7 +152,6 @@ class LIBJIT extends BackendAbstract {
         foreach ($function->blocks as $block) {
             $this->compileBlock($func, $block);
         }
-        $this->lib->jit_function_compile($func);
         unset($this->localMap);
         unset($this->valueMap);
         unset($this->blockMap);
@@ -166,6 +174,10 @@ class LIBJIT extends BackendAbstract {
             $this->lib->jit_insn_return($func, null);
         } elseif ($op instanceof Op\ReturnValue) {
             $this->lib->jit_insn_return($func, $this->valueMap[$op->value]);
+        } elseif ($op instanceof Op\Call) {
+            $this->valueMap[$op->return] = $this->doCall($func, $op);
+        } elseif ($op instanceof Op\CallNoReturn) {
+            $this->doCall($func, $op);
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($func, $op);
         } elseif ($op instanceof Op\ConditionalBlockCall) {
@@ -177,6 +189,43 @@ class LIBJIT extends BackendAbstract {
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
+    }
+
+    protected function doCall(jit_function_t $func, Op $op): jit_value_t {
+        $paramTypeWrapper = $this->lib->makeArray(
+            jit_type_t_ptr::class,
+            array_map(
+                function(Parameter $param) {
+                    return $this->typeMap[$param->type];
+                }, 
+                $op->function->parameters
+            )
+        );
+        $type = $this->lib->jit_type_create_signature(
+            $this->abi,
+            $this->typeMap[$op->function->returnType], 
+            $paramTypeWrapper, 
+            count($op->function->parameters),
+            1
+        );
+        $paramWrapper = $this->lib->makeArray(
+            jit_value_t_ptr::class,
+            array_map(
+                function(Value $value) {
+                    return $this->valueMap[$value];
+                }, 
+                $op->parameters
+            )
+        );
+        return $this->lib->jit_insn_call(
+            $func,
+            $op->function->name,
+            $this->functionMap[$op->function->name],
+            $type,
+            $paramWrapper,
+            count($op->parameters),
+            0
+        );
     }
 
     protected function compileBlockCall(jit_function_t $func, Op\BlockCall $op): void {

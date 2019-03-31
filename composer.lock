@@ -69,12 +69,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/FFIMe.git",
-                "reference": "b877e36f339bb70aa4418153e7372ae280cdea0b"
+                "reference": "a1ca1a45dbd463c7e6c608c4873bdec9214a0d22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/b877e36f339bb70aa4418153e7372ae280cdea0b",
-                "reference": "b877e36f339bb70aa4418153e7372ae280cdea0b",
+                "url": "https://api.github.com/repos/ircmaxell/FFIMe/zipball/a1ca1a45dbd463c7e6c608c4873bdec9214a0d22",
+                "reference": "a1ca1a45dbd463c7e6c608c4873bdec9214a0d22",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                 }
             ],
             "description": "Make life easy when working with 7.4's FFI",
-            "time": "2019-03-30T14:23:45+00:00"
+            "time": "2019-03-31T18:17:08+00:00"
         },
         {
             "name": "ircmaxell/php-c-parser",
@@ -138,7 +138,7 @@
                 }
             ],
             "description": "Parse C when using PHP",
-            "time": "2019-03-30T14:03:15+00:00"
+            "time": "2019-03-30 14:03:15"
         },
         {
             "name": "myclabs/deep-copy",

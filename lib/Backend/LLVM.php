@@ -13,6 +13,7 @@ use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Op;
 use PHPCompilerToolkit\IR\Parameter;
+use PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\IR\Value\Constant;
 use PHPCompilerToolkit\Type;
 
@@ -25,7 +26,8 @@ use llvm\LLVMExecutionEngineRef;
 use llvm\LLVMIntPredicate;
 use llvm\LLVMRealPredicate;
 use llvm\LLVMTypeRef_ptr;
-use LLVM\LLVMValueRef;
+use llvm\LLVMValueRef;
+use llvm\LLVMValueRef_ptr;
 use llvm\LLVMVerifierFailureAction;
 use llvm\string_ptr;
 
@@ -41,9 +43,12 @@ class LLVM extends BackendAbstract {
       $this->lib = new lib;
     }
 
-    protected function beforeCompile(Context $context): void {
+    protected int $optimizationLevel;
+
+    protected function beforeCompile(Context $context, int $optimizationLevel): void {
         $this->module = $this->lib->LLVMModuleCreateWithName('test_' . (self::$MODULE_IDX++));
         $this->context = $this->lib->LLVMGetModuleContext($this->module);
+        $this->optimizationLevel = $optimizationLevel;
     }
 
     protected function afterCompile(Context $context): void {
@@ -166,6 +171,10 @@ class LLVM extends BackendAbstract {
             $this->lib->LLVMBuildRetVoid($builder);
         } elseif ($op instanceof Op\ReturnValue) {
             $this->lib->LLVMBuildRet($builder, $this->valueMap[$op->value]);
+        } elseif ($op instanceof Op\Call) {
+            $this->valueMap[$op->return] = $this->doCall($builder, $op);
+        } elseif ($op instanceof Op\CallNoReturn) {
+            $this->doCall($builder, $op);
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($builder, $op);
         } elseif ($op instanceof Op\ConditionalBlockCall) {
@@ -179,6 +188,25 @@ class LLVM extends BackendAbstract {
         } else {
             throw new \LogicException("Unknown Op encountered: " . get_class($op));
         }
+    }
+
+    protected function doCall(LLVMBuilderRef $builder, Op $op): LLVMValueRef {
+        $paramWrapper = $this->lib->makeArray(
+            LLVMValueRef_ptr::class,
+            array_map(
+                function(Value $value) {
+                    return $this->valueMap[$value];
+                }, 
+                $op->parameters
+            )
+        );
+        return $this->lib->LLVMBuildCall(
+            $builder,
+            $this->functionMap[$op->function->name],
+            $paramWrapper,
+            count($op->parameters),
+            $op->function->name
+        );
     }
 
     protected function compileBinaryOp(Op $op, LLVMBuilderRef $builder): void {
@@ -334,12 +362,12 @@ class LLVM extends BackendAbstract {
         $this->initializeNativeTarget();
         $this->lib->LLVMLinkInMCJIT();
         $engine = new LLVMExecutionEngineRef($this->lib->getFFI()->new('LLVMExecutionEngineRef'));
-        $result = $this->lib->LLVMCreateJITCompilerForModule($engine->addr(), $this->module, 2, $error);
+        $result = $this->lib->LLVMCreateJITCompilerForModule($engine->addr(), $this->module, $this->optimizationLevel, $error);
         if (!$this->fromBool($result)) {
             $message = FFI::string($error->getData()[0], $this->strlen($error->getData()[0]));
             throw new \RuntimeException("LLVM JIT Compiler Initialization Failed: $message");
         }
-        return new LLVM\CompiledUnit($this, $engine, $this->signatureMap);
+        return new LLVM\CompiledUnit($this, $this->module, $engine, $this->signatureMap, $this->optimizationLevel);
     }
 
     public function bool(bool $value): LLVMBool {

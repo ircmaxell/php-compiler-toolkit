@@ -1,0 +1,32 @@
+function add1or2(l1 : long, l2 : long) : long
+	incoming_reg(l1, rdi)
+	incoming_reg(l2, rsi)
+.L:
+.L0:
+	i10 = l1 > 0
+	if l1 > 0 then goto .L3
+.L:
+	l9 = l2
+	goto .L2
+	ends_in_dead
+.L:
+.L3:
+	l8 = l2
+	goto .L1
+	ends_in_dead
+.L:
+.L1:
+	l11 = l8
+	l12 = l11 + 1
+	return_long(l12)
+	ends_in_dead
+.L:
+.L2:
+	l13 = l9
+	l14 = l13 + 2
+	return_long(l14)
+	ends_in_dead
+.L:
+.L:
+end
+

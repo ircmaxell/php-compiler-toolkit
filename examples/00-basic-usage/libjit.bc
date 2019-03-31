@@ -1,0 +1,12 @@
+function add(l1 : long, l2 : long) : long
+	incoming_reg(l1, rdi)
+	incoming_reg(l2, rsi)
+.L:
+.L0:
+	l5 = l1 + l2
+	return_long(l5)
+	ends_in_dead
+.L:
+.L:
+end
+

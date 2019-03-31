@@ -578,10 +578,10 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         }
     }
     // enum __codecvt_result
-    const __codecvt_ok = 0;
-    const __codecvt_partial = 1;
-    const __codecvt_error = 2;
-    const __codecvt_noconv = 3;
+    const __codecvt_ok = (0) + 0;
+    const __codecvt_partial = (0) + 1;
+    const __codecvt_error = (0) + 2;
+    const __codecvt_noconv = (0) + 3;
     public function _IO_getc(?_IO_FILE_ptr $p0): ?int {
         $result = $this->ffi->_IO_getc($p0 === null ? null : $p0->getData());
         return $result;
@@ -966,21 +966,21 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         $this->ffi->gcc_jit_context_release($p0 === null ? null : $p0->getData());
     }
     // enum gcc_jit_str_option
-    const GCC_JIT_STR_OPTION_PROGNAME = 0;
-    const GCC_JIT_NUM_STR_OPTIONS = 1;
+    const GCC_JIT_STR_OPTION_PROGNAME = (0) + 0;
+    const GCC_JIT_NUM_STR_OPTIONS = (0) + 1;
     // enum gcc_jit_int_option
-    const GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL = 0;
-    const GCC_JIT_NUM_INT_OPTIONS = 1;
+    const GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL = (0) + 0;
+    const GCC_JIT_NUM_INT_OPTIONS = (0) + 1;
     // enum gcc_jit_bool_option
-    const GCC_JIT_BOOL_OPTION_DEBUGINFO = 0;
-    const GCC_JIT_BOOL_OPTION_DUMP_INITIAL_TREE = 1;
-    const GCC_JIT_BOOL_OPTION_DUMP_INITIAL_GIMPLE = 2;
-    const GCC_JIT_BOOL_OPTION_DUMP_GENERATED_CODE = 3;
-    const GCC_JIT_BOOL_OPTION_DUMP_SUMMARY = 4;
-    const GCC_JIT_BOOL_OPTION_DUMP_EVERYTHING = 5;
-    const GCC_JIT_BOOL_OPTION_SELFCHECK_GC = 6;
-    const GCC_JIT_BOOL_OPTION_KEEP_INTERMEDIATES = 7;
-    const GCC_JIT_NUM_BOOL_OPTIONS = 8;
+    const GCC_JIT_BOOL_OPTION_DEBUGINFO = (0) + 0;
+    const GCC_JIT_BOOL_OPTION_DUMP_INITIAL_TREE = (0) + 1;
+    const GCC_JIT_BOOL_OPTION_DUMP_INITIAL_GIMPLE = (0) + 2;
+    const GCC_JIT_BOOL_OPTION_DUMP_GENERATED_CODE = (0) + 3;
+    const GCC_JIT_BOOL_OPTION_DUMP_SUMMARY = (0) + 4;
+    const GCC_JIT_BOOL_OPTION_DUMP_EVERYTHING = (0) + 5;
+    const GCC_JIT_BOOL_OPTION_SELFCHECK_GC = (0) + 6;
+    const GCC_JIT_BOOL_OPTION_KEEP_INTERMEDIATES = (0) + 7;
+    const GCC_JIT_NUM_BOOL_OPTIONS = (0) + 8;
     public function gcc_jit_context_set_str_option(?gcc_jit_context_ptr $p0, ?int $p1, ?string $p2): void {
         $this->ffi->gcc_jit_context_set_str_option($p0 === null ? null : $p0->getData(), $p1, $p2);
     }
@@ -1004,10 +1004,10 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         return $result === null ? null : new gcc_jit_result_ptr($result);
     }
     // enum gcc_jit_output_kind
-    const GCC_JIT_OUTPUT_KIND_ASSEMBLER = 0;
-    const GCC_JIT_OUTPUT_KIND_OBJECT_FILE = 1;
-    const GCC_JIT_OUTPUT_KIND_DYNAMIC_LIBRARY = 2;
-    const GCC_JIT_OUTPUT_KIND_EXECUTABLE = 3;
+    const GCC_JIT_OUTPUT_KIND_ASSEMBLER = (0) + 0;
+    const GCC_JIT_OUTPUT_KIND_OBJECT_FILE = (0) + 1;
+    const GCC_JIT_OUTPUT_KIND_DYNAMIC_LIBRARY = (0) + 2;
+    const GCC_JIT_OUTPUT_KIND_EXECUTABLE = (0) + 3;
     public function gcc_jit_context_compile_to_file(?gcc_jit_context_ptr $p0, ?int $p1, ?string $p2): void {
         $this->ffi->gcc_jit_context_compile_to_file($p0 === null ? null : $p0->getData(), $p1, $p2);
     }
@@ -1057,29 +1057,29 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         return $result === null ? null : new gcc_jit_object_ptr($result);
     }
     // enum gcc_jit_types
-    const GCC_JIT_TYPE_VOID = 0;
-    const GCC_JIT_TYPE_VOID_PTR = 1;
-    const GCC_JIT_TYPE_BOOL = 2;
-    const GCC_JIT_TYPE_CHAR = 3;
-    const GCC_JIT_TYPE_SIGNED_CHAR = 4;
-    const GCC_JIT_TYPE_UNSIGNED_CHAR = 5;
-    const GCC_JIT_TYPE_SHORT = 6;
-    const GCC_JIT_TYPE_UNSIGNED_SHORT = 7;
-    const GCC_JIT_TYPE_INT = 8;
-    const GCC_JIT_TYPE_UNSIGNED_INT = 9;
-    const GCC_JIT_TYPE_LONG = 10;
-    const GCC_JIT_TYPE_UNSIGNED_LONG = 11;
-    const GCC_JIT_TYPE_LONG_LONG = 12;
-    const GCC_JIT_TYPE_UNSIGNED_LONG_LONG = 13;
-    const GCC_JIT_TYPE_FLOAT = 14;
-    const GCC_JIT_TYPE_DOUBLE = 15;
-    const GCC_JIT_TYPE_LONG_DOUBLE = 16;
-    const GCC_JIT_TYPE_CONST_CHAR_PTR = 17;
-    const GCC_JIT_TYPE_SIZE_T = 18;
-    const GCC_JIT_TYPE_FILE_PTR = 19;
-    const GCC_JIT_TYPE_COMPLEX_FLOAT = 20;
-    const GCC_JIT_TYPE_COMPLEX_DOUBLE = 21;
-    const GCC_JIT_TYPE_COMPLEX_LONG_DOUBLE = 22;
+    const GCC_JIT_TYPE_VOID = (0) + 0;
+    const GCC_JIT_TYPE_VOID_PTR = (0) + 1;
+    const GCC_JIT_TYPE_BOOL = (0) + 2;
+    const GCC_JIT_TYPE_CHAR = (0) + 3;
+    const GCC_JIT_TYPE_SIGNED_CHAR = (0) + 4;
+    const GCC_JIT_TYPE_UNSIGNED_CHAR = (0) + 5;
+    const GCC_JIT_TYPE_SHORT = (0) + 6;
+    const GCC_JIT_TYPE_UNSIGNED_SHORT = (0) + 7;
+    const GCC_JIT_TYPE_INT = (0) + 8;
+    const GCC_JIT_TYPE_UNSIGNED_INT = (0) + 9;
+    const GCC_JIT_TYPE_LONG = (0) + 10;
+    const GCC_JIT_TYPE_UNSIGNED_LONG = (0) + 11;
+    const GCC_JIT_TYPE_LONG_LONG = (0) + 12;
+    const GCC_JIT_TYPE_UNSIGNED_LONG_LONG = (0) + 13;
+    const GCC_JIT_TYPE_FLOAT = (0) + 14;
+    const GCC_JIT_TYPE_DOUBLE = (0) + 15;
+    const GCC_JIT_TYPE_LONG_DOUBLE = (0) + 16;
+    const GCC_JIT_TYPE_CONST_CHAR_PTR = (0) + 17;
+    const GCC_JIT_TYPE_SIZE_T = (0) + 18;
+    const GCC_JIT_TYPE_FILE_PTR = (0) + 19;
+    const GCC_JIT_TYPE_COMPLEX_FLOAT = (0) + 20;
+    const GCC_JIT_TYPE_COMPLEX_DOUBLE = (0) + 21;
+    const GCC_JIT_TYPE_COMPLEX_LONG_DOUBLE = (0) + 22;
     public function gcc_jit_context_get_type(?gcc_jit_context_ptr $p0, ?int $p1): ?gcc_jit_type_ptr {
         $result = $this->ffi->gcc_jit_context_get_type($p0 === null ? null : $p0->getData(), $p1);
         return $result === null ? null : new gcc_jit_type_ptr($result);
@@ -1152,10 +1152,10 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         return $result === null ? null : new gcc_jit_rvalue_ptr($result);
     }
     // enum gcc_jit_function_kind
-    const GCC_JIT_FUNCTION_EXPORTED = 0;
-    const GCC_JIT_FUNCTION_INTERNAL = 1;
-    const GCC_JIT_FUNCTION_IMPORTED = 2;
-    const GCC_JIT_FUNCTION_ALWAYS_INLINE = 3;
+    const GCC_JIT_FUNCTION_EXPORTED = (0) + 0;
+    const GCC_JIT_FUNCTION_INTERNAL = (0) + 1;
+    const GCC_JIT_FUNCTION_IMPORTED = (0) + 2;
+    const GCC_JIT_FUNCTION_ALWAYS_INLINE = (0) + 3;
     public function gcc_jit_context_new_function(?gcc_jit_context_ptr $p0, ?gcc_jit_location_ptr $p1, ?int $p2, ?gcc_jit_type_ptr $p3, ?string $p4, ?int $p5, ?gcc_jit_param_ptr_ptr $p6, ?int $p7): ?gcc_jit_function_ptr {
         $result = $this->ffi->gcc_jit_context_new_function($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData(), $p4, $p5, $p6 === null ? null : $p6->getData(), $p7);
         return $result === null ? null : new gcc_jit_function_ptr($result);
@@ -1188,9 +1188,9 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         return $result === null ? null : new gcc_jit_function_ptr($result);
     }
     // enum gcc_jit_global_kind
-    const GCC_JIT_GLOBAL_EXPORTED = 0;
-    const GCC_JIT_GLOBAL_INTERNAL = 1;
-    const GCC_JIT_GLOBAL_IMPORTED = 2;
+    const GCC_JIT_GLOBAL_EXPORTED = (0) + 0;
+    const GCC_JIT_GLOBAL_INTERNAL = (0) + 1;
+    const GCC_JIT_GLOBAL_IMPORTED = (0) + 2;
     public function gcc_jit_context_new_global(?gcc_jit_context_ptr $p0, ?gcc_jit_location_ptr $p1, ?int $p2, ?gcc_jit_type_ptr $p3, ?string $p4): ?gcc_jit_lvalue_ptr {
         $result = $this->ffi->gcc_jit_context_new_global($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData(), $p4);
         return $result === null ? null : new gcc_jit_lvalue_ptr($result);
@@ -1244,38 +1244,38 @@ extern void gcc_jit_timer_print(gcc_jit_timer *timer, FILE *f_out);
         return $result === null ? null : new gcc_jit_rvalue_ptr($result);
     }
     // enum gcc_jit_unary_op
-    const GCC_JIT_UNARY_OP_MINUS = 0;
-    const GCC_JIT_UNARY_OP_BITWISE_NEGATE = 1;
-    const GCC_JIT_UNARY_OP_LOGICAL_NEGATE = 2;
-    const GCC_JIT_UNARY_OP_ABS = 3;
+    const GCC_JIT_UNARY_OP_MINUS = (0) + 0;
+    const GCC_JIT_UNARY_OP_BITWISE_NEGATE = (0) + 1;
+    const GCC_JIT_UNARY_OP_LOGICAL_NEGATE = (0) + 2;
+    const GCC_JIT_UNARY_OP_ABS = (0) + 3;
     public function gcc_jit_context_new_unary_op(?gcc_jit_context_ptr $p0, ?gcc_jit_location_ptr $p1, ?int $p2, ?gcc_jit_type_ptr $p3, ?gcc_jit_rvalue_ptr $p4): ?gcc_jit_rvalue_ptr {
         $result = $this->ffi->gcc_jit_context_new_unary_op($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData(), $p4 === null ? null : $p4->getData());
         return $result === null ? null : new gcc_jit_rvalue_ptr($result);
     }
     // enum gcc_jit_binary_op
-    const GCC_JIT_BINARY_OP_PLUS = 0;
-    const GCC_JIT_BINARY_OP_MINUS = 1;
-    const GCC_JIT_BINARY_OP_MULT = 2;
-    const GCC_JIT_BINARY_OP_DIVIDE = 3;
-    const GCC_JIT_BINARY_OP_MODULO = 4;
-    const GCC_JIT_BINARY_OP_BITWISE_AND = 5;
-    const GCC_JIT_BINARY_OP_BITWISE_XOR = 6;
-    const GCC_JIT_BINARY_OP_BITWISE_OR = 7;
-    const GCC_JIT_BINARY_OP_LOGICAL_AND = 8;
-    const GCC_JIT_BINARY_OP_LOGICAL_OR = 9;
-    const GCC_JIT_BINARY_OP_LSHIFT = 10;
-    const GCC_JIT_BINARY_OP_RSHIFT = 11;
+    const GCC_JIT_BINARY_OP_PLUS = (0) + 0;
+    const GCC_JIT_BINARY_OP_MINUS = (0) + 1;
+    const GCC_JIT_BINARY_OP_MULT = (0) + 2;
+    const GCC_JIT_BINARY_OP_DIVIDE = (0) + 3;
+    const GCC_JIT_BINARY_OP_MODULO = (0) + 4;
+    const GCC_JIT_BINARY_OP_BITWISE_AND = (0) + 5;
+    const GCC_JIT_BINARY_OP_BITWISE_XOR = (0) + 6;
+    const GCC_JIT_BINARY_OP_BITWISE_OR = (0) + 7;
+    const GCC_JIT_BINARY_OP_LOGICAL_AND = (0) + 8;
+    const GCC_JIT_BINARY_OP_LOGICAL_OR = (0) + 9;
+    const GCC_JIT_BINARY_OP_LSHIFT = (0) + 10;
+    const GCC_JIT_BINARY_OP_RSHIFT = (0) + 11;
     public function gcc_jit_context_new_binary_op(?gcc_jit_context_ptr $p0, ?gcc_jit_location_ptr $p1, ?int $p2, ?gcc_jit_type_ptr $p3, ?gcc_jit_rvalue_ptr $p4, ?gcc_jit_rvalue_ptr $p5): ?gcc_jit_rvalue_ptr {
         $result = $this->ffi->gcc_jit_context_new_binary_op($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData(), $p4 === null ? null : $p4->getData(), $p5 === null ? null : $p5->getData());
         return $result === null ? null : new gcc_jit_rvalue_ptr($result);
     }
     // enum gcc_jit_comparison
-    const GCC_JIT_COMPARISON_EQ = 0;
-    const GCC_JIT_COMPARISON_NE = 1;
-    const GCC_JIT_COMPARISON_LT = 2;
-    const GCC_JIT_COMPARISON_LE = 3;
-    const GCC_JIT_COMPARISON_GT = 4;
-    const GCC_JIT_COMPARISON_GE = 5;
+    const GCC_JIT_COMPARISON_EQ = (0) + 0;
+    const GCC_JIT_COMPARISON_NE = (0) + 1;
+    const GCC_JIT_COMPARISON_LT = (0) + 2;
+    const GCC_JIT_COMPARISON_LE = (0) + 3;
+    const GCC_JIT_COMPARISON_GT = (0) + 4;
+    const GCC_JIT_COMPARISON_GE = (0) + 5;
     public function gcc_jit_context_new_comparison(?gcc_jit_context_ptr $p0, ?gcc_jit_location_ptr $p1, ?int $p2, ?gcc_jit_rvalue_ptr $p3, ?gcc_jit_rvalue_ptr $p4): ?gcc_jit_rvalue_ptr {
         $result = $this->ffi->gcc_jit_context_new_comparison($p0 === null ? null : $p0->getData(), $p1 === null ? null : $p1->getData(), $p2, $p3 === null ? null : $p3->getData(), $p4 === null ? null : $p4->getData());
         return $result === null ? null : new gcc_jit_rvalue_ptr($result);

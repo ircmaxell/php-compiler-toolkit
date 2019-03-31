@@ -6,16 +6,20 @@ namespace PHPCompilerToolkit\Backend\LIBGCCJIT;
 use FFI;
 use PHPCompilerToolkit\Backend\LIBGCCJIT;
 use PHPCompilerToolkit\CompiledUnit as CoreCompiledUnit;
+use libgccjit\gcc_jit_context_ptr;
 use libgccjit\gcc_jit_result_ptr;
+use libgccjit\libgccjit as lib;
 
 class CompiledUnit implements CoreCompiledUnit {
 
     private LIBGCCJIT $backend;
     private gcc_jit_result_ptr $result;
+    private gcc_jit_context_ptr $context;
     private array $signatures;
 
-    public function __construct(LIBGCCJIT $backend, gcc_jit_result_ptr $result, array $signatures) {
+    public function __construct(LIBGCCJIT $backend, gcc_jit_context_ptr $context, gcc_jit_result_ptr $result, array $signatures) {
         $this->backend = $backend;
+        $this->context = $context;
         $this->result = $result;
         $this->signatures = $signatures;
     }
@@ -32,6 +36,14 @@ class CompiledUnit implements CoreCompiledUnit {
             FFI::sizeof($cb)
         );
         return $cb;
+    }
+
+    public function dumpToFile(string $filename): void {
+        $this->backend->lib->gcc_jit_context_dump_to_file($this->context, $filename, 1);
+    }
+
+    public function dumpCompiledToFile(string $filename): void {
+        $this->backend->lib->gcc_jit_context_compile_to_file($this->context, lib::GCC_JIT_OUTPUT_KIND_ASSEMBLER, $filename);
     }
 
 }

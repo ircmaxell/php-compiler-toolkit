@@ -1,0 +1,29 @@
+; ModuleID = 'test_1'
+source_filename = "test_1"
+target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
+
+define i64 @add1or2(i64, i64) {
+main:
+  %ifTrue_arg_0 = alloca i64
+  %ifFalse_arg_0 = alloca i64
+  %var_1 = icmp sgt i64 %0, 0
+  br i1 %var_1, label %main_if, label %main_else
+
+ifTrue:                                           ; preds = %main_if
+  %ifTrue_arg_0_load = load i64, i64* %ifTrue_arg_0
+  %var_2 = add i64 %ifTrue_arg_0_load, 1
+  ret i64 %var_2
+
+ifFalse:                                          ; preds = %main_else
+  %ifFalse_arg_0_load = load i64, i64* %ifFalse_arg_0
+  %var_3 = add i64 %ifFalse_arg_0_load, 2
+  ret i64 %var_3
+
+main_if:                                          ; preds = %main
+  store i64 %1, i64* %ifTrue_arg_0
+  br label %ifTrue
+
+main_else:                                        ; preds = %main
+  store i64 %1, i64* %ifFalse_arg_0
+  br label %ifFalse
+}

@@ -129,6 +129,16 @@ class BlockBuilder extends Builder {
         return $result;
     }
 
+    public function call(FunctionBuilder $function, Value ... $args): Value {
+        $result = new Value\Value($this->block, $function->function->returnType);
+        $this->block->addOp(new Op\Call($function->function, $result, ...$args));
+        return $result;
+    }
+
+    public function callNoReturn(FunctionBuilder $function, Value ... $args): void {
+        $this->block->addOp(new Op\CallNoReturn($function->function, ...$args));
+    }
+
     public function jump(BlockBuilder $block): void {
         $this->block->addOp(new Op\BlockCall($block->block));
     }

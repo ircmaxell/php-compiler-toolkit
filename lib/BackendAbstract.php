@@ -14,8 +14,8 @@ abstract class BackendAbstract implements Backend {
     protected array $functionMap;
     protected array $signatureMap;
 
-    public function compile(Context $context): CompiledUnit {
-        $this->beforeCompile($context);
+    public function compile(Context $context, int $optimizationLevel = Backend::O0): CompiledUnit {
+        $this->beforeCompile($context, $optimizationLevel);
         $this->typeMap = new SplObjectStorage;
         $this->constantMap = new SplObjectStorage;
         $this->functionMap = [];
@@ -45,7 +45,7 @@ abstract class BackendAbstract implements Backend {
     abstract protected function compileFunction(Function_ $function, $func): void;
     abstract protected function buildResult(): CompiledUnit;
 
-    protected function beforeCompile(Context $context): void {
+    protected function beforeCompile(Context $context, int $optimizationLevel): void {
     }
 
     protected function afterCompile(Context $context): void {

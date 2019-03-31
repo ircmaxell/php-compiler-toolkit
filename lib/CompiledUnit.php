@@ -7,4 +7,9 @@ interface CompiledUnit {
 
     public function getCallable(string $functionName): callable;
 
+    public function dumpToFile(string $filename): void;
+
+    public function dumpCompiledToFile(string $filename): void;
+
+
 }
