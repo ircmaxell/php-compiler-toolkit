@@ -1,0 +1,16 @@
+long long add(long long $0<a>, long long $1<b>) {
+
+    main():
+        #2 = Add($0, $1);
+        ReturnValue #2;
+
+}
+
+long long add2(long long $0<a>, long long $1<b>) {
+
+    main():
+        #2 = Call(add, $0, $1);
+        #3 = Call(add, #2, $1);
+        ReturnValue #3;
+
+}

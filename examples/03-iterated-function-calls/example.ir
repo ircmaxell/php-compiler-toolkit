@@ -1,0 +1,114 @@
+long long add(long long $0<a>, long long $1<b>) {
+
+    main():
+        #2 = Add($0, $1);
+        ReturnValue #2;
+
+}
+
+long long add100(long long $0<a>, long long $1<b>) {
+
+    main():
+        #2 = Call(add, $0, $1);
+        #3 = Call(add, #2, $1);
+        #4 = Call(add, #3, $1);
+        #5 = Call(add, #4, $1);
+        #6 = Call(add, #5, $1);
+        #7 = Call(add, #6, $1);
+        #8 = Call(add, #7, $1);
+        #9 = Call(add, #8, $1);
+        #10 = Call(add, #9, $1);
+        #11 = Call(add, #10, $1);
+        #12 = Call(add, #11, $1);
+        #13 = Call(add, #12, $1);
+        #14 = Call(add, #13, $1);
+        #15 = Call(add, #14, $1);
+        #16 = Call(add, #15, $1);
+        #17 = Call(add, #16, $1);
+        #18 = Call(add, #17, $1);
+        #19 = Call(add, #18, $1);
+        #20 = Call(add, #19, $1);
+        #21 = Call(add, #20, $1);
+        #22 = Call(add, #21, $1);
+        #23 = Call(add, #22, $1);
+        #24 = Call(add, #23, $1);
+        #25 = Call(add, #24, $1);
+        #26 = Call(add, #25, $1);
+        #27 = Call(add, #26, $1);
+        #28 = Call(add, #27, $1);
+        #29 = Call(add, #28, $1);
+        #30 = Call(add, #29, $1);
+        #31 = Call(add, #30, $1);
+        #32 = Call(add, #31, $1);
+        #33 = Call(add, #32, $1);
+        #34 = Call(add, #33, $1);
+        #35 = Call(add, #34, $1);
+        #36 = Call(add, #35, $1);
+        #37 = Call(add, #36, $1);
+        #38 = Call(add, #37, $1);
+        #39 = Call(add, #38, $1);
+        #40 = Call(add, #39, $1);
+        #41 = Call(add, #40, $1);
+        #42 = Call(add, #41, $1);
+        #43 = Call(add, #42, $1);
+        #44 = Call(add, #43, $1);
+        #45 = Call(add, #44, $1);
+        #46 = Call(add, #45, $1);
+        #47 = Call(add, #46, $1);
+        #48 = Call(add, #47, $1);
+        #49 = Call(add, #48, $1);
+        #50 = Call(add, #49, $1);
+        #51 = Call(add, #50, $1);
+        #52 = Call(add, #51, $1);
+        #53 = Call(add, #52, $1);
+        #54 = Call(add, #53, $1);
+        #55 = Call(add, #54, $1);
+        #56 = Call(add, #55, $1);
+        #57 = Call(add, #56, $1);
+        #58 = Call(add, #57, $1);
+        #59 = Call(add, #58, $1);
+        #60 = Call(add, #59, $1);
+        #61 = Call(add, #60, $1);
+        #62 = Call(add, #61, $1);
+        #63 = Call(add, #62, $1);
+        #64 = Call(add, #63, $1);
+        #65 = Call(add, #64, $1);
+        #66 = Call(add, #65, $1);
+        #67 = Call(add, #66, $1);
+        #68 = Call(add, #67, $1);
+        #69 = Call(add, #68, $1);
+        #70 = Call(add, #69, $1);
+        #71 = Call(add, #70, $1);
+        #72 = Call(add, #71, $1);
+        #73 = Call(add, #72, $1);
+        #74 = Call(add, #73, $1);
+        #75 = Call(add, #74, $1);
+        #76 = Call(add, #75, $1);
+        #77 = Call(add, #76, $1);
+        #78 = Call(add, #77, $1);
+        #79 = Call(add, #78, $1);
+        #80 = Call(add, #79, $1);
+        #81 = Call(add, #80, $1);
+        #82 = Call(add, #81, $1);
+        #83 = Call(add, #82, $1);
+        #84 = Call(add, #83, $1);
+        #85 = Call(add, #84, $1);
+        #86 = Call(add, #85, $1);
+        #87 = Call(add, #86, $1);
+        #88 = Call(add, #87, $1);
+        #89 = Call(add, #88, $1);
+        #90 = Call(add, #89, $1);
+        #91 = Call(add, #90, $1);
+        #92 = Call(add, #91, $1);
+        #93 = Call(add, #92, $1);
+        #94 = Call(add, #93, $1);
+        #95 = Call(add, #94, $1);
+        #96 = Call(add, #95, $1);
+        #97 = Call(add, #96, $1);
+        #98 = Call(add, #97, $1);
+        #99 = Call(add, #98, $1);
+        #100 = Call(add, #99, $1);
+        #101 = Call(add, #100, $1);
+        ReturnValue #101;
+
+}

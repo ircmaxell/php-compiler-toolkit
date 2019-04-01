@@ -11,4 +11,6 @@ interface Op {
 
     public function getName(): string;
 
+    public function getShortName(): string;
+
 }

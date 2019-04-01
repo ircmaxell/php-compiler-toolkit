@@ -6,6 +6,7 @@ error_reporting(~0);
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use PHPCompilerToolkit\Context;
+use PHPCompilerToolkit\Printer;
 use PHPCompilerToolkit\Builder\GlobalBuilder;
 use PHPCompilerToolkit\IR\Parameter;
 use PHPCompilerToolkit\Type\Primitive;
@@ -42,6 +43,7 @@ $ifFalse->returnValue($ifFalse->add($func->arg(1), $builder->const()->long_long(
 
 $builder->finish();
 
+file_put_contents(__DIR__ . '/example.ir', (new Printer)->print($context));
 
 
 use PHPCompilerToolkit\Backend;

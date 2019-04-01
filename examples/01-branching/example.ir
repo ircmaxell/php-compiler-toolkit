@@ -1,0 +1,18 @@
+long long add1or2(long long $0<shouldAdd1>, long long $1<a>) {
+
+    main():
+        #2 = GT($0, (long long) 0);
+        IF (#2):
+            BlockCall(ifTrue, $1);
+        ELSE:
+            BlockCall(ifFalse, $1);
+
+    ifTrue(@3):
+        #4 = Add(@3, (long long) 1);
+        ReturnValue #4;
+
+    ifFalse(@5):
+        #6 = Add(@5, (long long) 2);
+        ReturnValue #6;
+
+}
