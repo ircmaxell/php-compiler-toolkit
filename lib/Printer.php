@@ -105,8 +105,8 @@ class Printer {
     }
 
     protected function printBlockCall(IR\Op\BlockCall $op, SplObjectStorage $scope): string {
-        $return = 'BlockCall(';
-        $args = [$op->block->name];
+        $return = 'jump ' . $op->block->name . '(';
+        $args = [];
         foreach ($op->arguments as $arg) {
             $args[] = $scope[$arg];
         }

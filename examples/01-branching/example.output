@@ -1,7 +1,7 @@
 Compiled Timers: 
-  libjit compiled in: 0.0006711483001709 seconds
-  libgccjit compiled in: 0.026448011398315 seconds
-  llvm compiled in: 0.00066494941711426 seconds
+  libjit compiled in: 0.00066494941711426 seconds
+  libgccjit compiled in: 0.027116060256958 seconds
+  llvm compiled in: 0.00069499015808105 seconds
 Add1or2 Function:
     long long add1or2(long long shouldAdd1, long long a) {
        if (shouldAdd > 0) {
@@ -27,8 +27,8 @@ Add1or2 Function:
 
 
 Benchmarked as:
-  libjit executed in 0.12902092933655 seconds
-  libgccjit executed in 0.12995910644531 seconds
-  llvm executed in 0.12447905540466 seconds
-  native php executed in 0.027216911315918 seconds
+  libjit executed in 0.12565302848816 seconds
+  libgccjit executed in 0.12500500679016 seconds
+  llvm executed in 0.12258100509644 seconds
+  native php executed in 0.025868892669678 seconds
 
