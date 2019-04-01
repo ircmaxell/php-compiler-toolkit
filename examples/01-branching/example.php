@@ -99,7 +99,7 @@ foreach ($add1or2 as $compiler => $callable) {
 
 $timers = [];
 $start = microtime(true);
-foreach ($add as $compiler => $callable) {
+foreach ($add1or2 as $compiler => $callable) {
     for ($i = 0; $i < 1000000; $i++) {
         $callable($i, $i);
     }

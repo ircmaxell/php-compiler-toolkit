@@ -1,0 +1,523 @@
+function add(l1 : long, l2 : long) : long
+	incoming_reg(l1, rdi)
+	incoming_reg(l2, rsi)
+.L:
+.L0:
+	l5 = l1 + l2
+	return_long(l5)
+	ends_in_dead
+.L:
+.L:
+end
+
+function add100(l285 : long, l286 : long) : long
+	incoming_reg(l285, rdi)
+	incoming_reg(l286, rsi)
+.L:
+.L0:
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l285, rdi)
+	call add
+.L:
+	return_reg(l291, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l291, rdi)
+	call add
+.L:
+	return_reg(l295, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l295, rdi)
+	call add
+.L:
+	return_reg(l298, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l298, rdi)
+	call add
+.L:
+	return_reg(l301, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l301, rdi)
+	call add
+.L:
+	return_reg(l304, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l304, rdi)
+	call add
+.L:
+	return_reg(l307, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l307, rdi)
+	call add
+.L:
+	return_reg(l310, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l310, rdi)
+	call add
+.L:
+	return_reg(l313, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l313, rdi)
+	call add
+.L:
+	return_reg(l316, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l316, rdi)
+	call add
+.L:
+	return_reg(l319, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l319, rdi)
+	call add
+.L:
+	return_reg(l322, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l322, rdi)
+	call add
+.L:
+	return_reg(l325, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l325, rdi)
+	call add
+.L:
+	return_reg(l328, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l328, rdi)
+	call add
+.L:
+	return_reg(l331, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l331, rdi)
+	call add
+.L:
+	return_reg(l334, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l334, rdi)
+	call add
+.L:
+	return_reg(l337, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l337, rdi)
+	call add
+.L:
+	return_reg(l340, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l340, rdi)
+	call add
+.L:
+	return_reg(l343, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l343, rdi)
+	call add
+.L:
+	return_reg(l346, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l346, rdi)
+	call add
+.L:
+	return_reg(l349, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l349, rdi)
+	call add
+.L:
+	return_reg(l352, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l352, rdi)
+	call add
+.L:
+	return_reg(l355, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l355, rdi)
+	call add
+.L:
+	return_reg(l216, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l216, rdi)
+	call add
+.L:
+	return_reg(l219, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l219, rdi)
+	call add
+.L:
+	return_reg(l222, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l222, rdi)
+	call add
+.L:
+	return_reg(l225, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l225, rdi)
+	call add
+.L:
+	return_reg(l228, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l228, rdi)
+	call add
+.L:
+	return_reg(l231, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l231, rdi)
+	call add
+.L:
+	return_reg(l234, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l234, rdi)
+	call add
+.L:
+	return_reg(l237, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l237, rdi)
+	call add
+.L:
+	return_reg(l240, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l240, rdi)
+	call add
+.L:
+	return_reg(l243, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l243, rdi)
+	call add
+.L:
+	return_reg(l246, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l246, rdi)
+	call add
+.L:
+	return_reg(l249, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l249, rdi)
+	call add
+.L:
+	return_reg(l252, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l252, rdi)
+	call add
+.L:
+	return_reg(l255, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l255, rdi)
+	call add
+.L:
+	return_reg(l258, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l258, rdi)
+	call add
+.L:
+	return_reg(l261, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l261, rdi)
+	call add
+.L:
+	return_reg(l264, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l264, rdi)
+	call add
+.L:
+	return_reg(l267, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l267, rdi)
+	call add
+.L:
+	return_reg(l270, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l270, rdi)
+	call add
+.L:
+	return_reg(l273, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l273, rdi)
+	call add
+.L:
+	return_reg(l276, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l276, rdi)
+	call add
+.L:
+	return_reg(l279, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l279, rdi)
+	call add
+.L:
+	return_reg(l282, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l282, rdi)
+	call add
+.L:
+	return_reg(l143, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l143, rdi)
+	call add
+.L:
+	return_reg(l146, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l146, rdi)
+	call add
+.L:
+	return_reg(l149, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l149, rdi)
+	call add
+.L:
+	return_reg(l152, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l152, rdi)
+	call add
+.L:
+	return_reg(l155, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l155, rdi)
+	call add
+.L:
+	return_reg(l158, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l158, rdi)
+	call add
+.L:
+	return_reg(l161, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l161, rdi)
+	call add
+.L:
+	return_reg(l164, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l164, rdi)
+	call add
+.L:
+	return_reg(l167, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l167, rdi)
+	call add
+.L:
+	return_reg(l170, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l170, rdi)
+	call add
+.L:
+	return_reg(l173, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l173, rdi)
+	call add
+.L:
+	return_reg(l176, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l176, rdi)
+	call add
+.L:
+	return_reg(l179, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l179, rdi)
+	call add
+.L:
+	return_reg(l182, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l182, rdi)
+	call add
+.L:
+	return_reg(l185, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l185, rdi)
+	call add
+.L:
+	return_reg(l188, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l188, rdi)
+	call add
+.L:
+	return_reg(l191, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l191, rdi)
+	call add
+.L:
+	return_reg(l194, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l194, rdi)
+	call add
+.L:
+	return_reg(l197, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l197, rdi)
+	call add
+.L:
+	return_reg(l200, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l200, rdi)
+	call add
+.L:
+	return_reg(l203, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l203, rdi)
+	call add
+.L:
+	return_reg(l206, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l206, rdi)
+	call add
+.L:
+	return_reg(l209, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l209, rdi)
+	call add
+.L:
+	return_reg(l212, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l212, rdi)
+	call add
+.L:
+	return_reg(l73, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l73, rdi)
+	call add
+.L:
+	return_reg(l76, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l76, rdi)
+	call add
+.L:
+	return_reg(l79, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l79, rdi)
+	call add
+.L:
+	return_reg(l82, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l82, rdi)
+	call add
+.L:
+	return_reg(l85, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l85, rdi)
+	call add
+.L:
+	return_reg(l88, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l88, rdi)
+	call add
+.L:
+	return_reg(l91, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l91, rdi)
+	call add
+.L:
+	return_reg(l94, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l94, rdi)
+	call add
+.L:
+	return_reg(l97, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l97, rdi)
+	call add
+.L:
+	return_reg(l100, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l100, rdi)
+	call add
+.L:
+	return_reg(l103, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l103, rdi)
+	call add
+.L:
+	return_reg(l106, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l106, rdi)
+	call add
+.L:
+	return_reg(l109, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l109, rdi)
+	call add
+.L:
+	return_reg(l112, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l112, rdi)
+	call add
+.L:
+	return_reg(l115, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l115, rdi)
+	call add
+.L:
+	return_reg(l118, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l118, rdi)
+	call add
+.L:
+	return_reg(l121, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l121, rdi)
+	call add
+.L:
+	return_reg(l124, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l124, rdi)
+	call add
+.L:
+	return_reg(l127, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l127, rdi)
+	call add
+.L:
+	return_reg(l130, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l130, rdi)
+	call add
+.L:
+	return_reg(l133, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l133, rdi)
+	call add
+.L:
+	return_reg(l136, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l136, rdi)
+	call add
+.L:
+	return_reg(l139, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l139, rdi)
+	call add
+.L:
+	return_reg(l142, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l142, rdi)
+	call add
+.L:
+	return_reg(l3, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l3, rdi)
+	call add
+.L:
+	return_reg(l6, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l6, rdi)
+	call add
+.L:
+	return_reg(l9, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l9, rdi)
+	call add
+.L:
+	return_reg(l12, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l12, rdi)
+	call add
+.L:
+	return_reg(l15, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l15, rdi)
+	call add
+.L:
+	return_reg(l18, rax)
+	outgoing_reg(l286, rsi)
+	outgoing_reg(l18, rdi)
+	call add
+.L:
+	return_reg(l21, rax)
+	return_long(l21)
+	ends_in_dead
+.L:
+.L:
+end
+

@@ -1,7 +1,6 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-set_time_limit(2);
 
 $libjit = new FFIMe\FFIMe('/opt/lib/libjit.so.0');
 $libjit->include('/opt/include/jit/jit.h');

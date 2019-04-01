@@ -1,5 +1,5 @@
 	.text
-	.file	"/tmp/llvm1cXQqW.bc"
+	.file	"/tmp/llvmpCXn5f.bc"
 	.globl	add
 	.p2align	4, 0x90
 	.type	add,@function
@@ -10,15 +10,16 @@ add:                                    # @add
 .Lfunc_end0:
 	.size	add, .Lfunc_end0-add
 
-	.globl	add2
+	.globl	add100
 	.p2align	4, 0x90
-	.type	add2,@function
-add2:                                   # @add2
+	.type	add100,@function
+add100:                                 # @add100
 # BB#0:                                 # %main
-	leaq	(%rdi,%rsi,2), %rax
+	imulq	$100, %rsi, %rax
+	addq	%rdi, %rax
 	retq
 .Lfunc_end1:
-	.size	add2, .Lfunc_end1-add2
+	.size	add100, .Lfunc_end1-add100
 
 
 	.section	".note.GNU-stack","",@progbits
