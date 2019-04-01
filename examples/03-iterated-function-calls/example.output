@@ -1,7 +1,7 @@
 Compiled Timers: 
-  libjit compiled in: 0.0014710426330566 seconds
-  libgccjit compiled in: 0.040103912353516 seconds
-  llvm compiled in: 0.0010890960693359 seconds
+  libjit compiled in: 0.0014040470123291 seconds
+  libgccjit compiled in: 0.0382399559021 seconds
+  llvm compiled in: 0.0010750293731689 seconds
 Add2 Function:
     long long add(long long a, long long b) {
         return a + b;
@@ -30,8 +30,8 @@ Add2 Function:
 
 
 Benchmarked as:
-  libjit executed in 0.33051800727844 seconds
-  libgccjit executed in 0.34424805641174 seconds
-  llvm executed in 0.2781810760498 seconds
-  native php executed in 2.3212180137634 seconds
+  libjit executed in 0.32719302177429 seconds
+  libgccjit executed in 0.33348393440247 seconds
+  llvm executed in 0.26501703262329 seconds
+  native php executed in 2.8156199455261 seconds
 

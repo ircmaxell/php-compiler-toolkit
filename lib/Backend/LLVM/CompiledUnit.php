@@ -9,6 +9,8 @@ use PHPCompilerToolkit\CompiledUnit as CoreCompiledUnit;
 use llvm\LLVMExecutionEngineRef;
 use llvm\LLVMModuleRef;
 use llvm\string_ptr;
+use llvm\llvm as lib;
+use llvm\LLVMCodeGenFileType;
 
 class CompiledUnit implements CoreCompiledUnit {
 
@@ -47,12 +49,11 @@ class CompiledUnit implements CoreCompiledUnit {
     }
 
     public function dumpCompiledToFile(string $filename): void {
-        $tmp = tempnam('/tmp', 'llvm');
-        $tmp_source = $tmp . '.bc';
-        $this->dumpToFile($tmp_source);
-        $output = [];
-        $return = 0;
-        exec('clang++ -O' . $this->optimizationlevel . ' -S ' . escapeshellarg($tmp_source) . ' -o ' . escapeshellarg($filename) . ' 2>&1', $output, $return);
-        @unlink($tmp_source);
+        $error = new string_ptr(FFI::addr(FFI::new('char*')));
+        $cgft = $this->backend->lib->getFFI()->new('LLVMCodeGenFileType');
+        $cgft = lib::LLVMAssemblyFile;
+        $codegen = new LLVMCodeGenFileType($cgft);
+        $machine = $this->backend->lib->LLVMGetExecutionEngineTargetMachine($this->engine);
+        $this->backend->lib->LLVMTargetMachineEmitToFile($machine, $this->module, $filename, $codegen, $error);
     }
 }
