@@ -1,5 +1,5 @@
 	.text
-	.file	"/tmp/llvmfeI5M3.bc"
+	.file	"/tmp/llvmFOpfxM.bc"
 	.globl	add1or2
 	.p2align	4, 0x90
 	.type	add1or2,@function

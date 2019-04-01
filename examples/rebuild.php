@@ -8,7 +8,7 @@ foreach ($it as $file) {
     $example = $file->getPathname() . '/example.php';
     if (file_exists($example)) {
         ob_start();
-        require $example;
+        passthru(escapeshellcmd(PHP_BINARY) . ' ' . escapeshellarg($example));
         file_put_contents($file->getPathname() . '/example.output', ob_get_clean());
     }
 }
