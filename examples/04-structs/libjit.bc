@@ -1,0 +1,20 @@
+function add(l1 : long, l2 : long) : long
+	incoming_reg(l1, rdi)
+	incoming_reg(l2, rsi)
+.L:
+.L0:
+	l6 = &s5
+	store_relative_long(l6, l1, 0)
+	l8 = &s5
+	store_relative_long(l8, l2, 8)
+	l10 = &s5
+	l11 = load_relative_long(l10, 0)
+	l12 = &s5
+	l14 = load_relative_long(l12, 8)
+	l15 = l11 + l14
+	return_long(l15)
+	ends_in_dead
+.L:
+.L:
+end
+

@@ -6,6 +6,10 @@ namespace PHPCompilerToolkit;
 abstract class TypeAbstract implements Type {
 
     public Context $context;
+    protected ?Type $pointer = null;
+    protected ?Type $const = null;
+    protected ?Type $volatile = null;
+    protected $array = array();
 
     public function __construct(Context $context) {
         $this->context = $context;
@@ -17,19 +21,31 @@ abstract class TypeAbstract implements Type {
     }
     
     public function getPointer(): Type {
-        return new Type\Pointer($this->context, $this);
+        if ($this->pointer === null) {
+            $this->pointer = new Type\Pointer($this->context, $this);
+        }
+        return $this->pointer;
     }
 
     public function getConst(): Type {
-        return new Type\Const_($this->context, $this);
+        if ($this->const === null) {
+            $this->const = new Type\Const_($this->context, $this);
+        }
+        return $this->const; 
     }
 
     public function getVolatile(): Type {
-        return new Type\Volatile($this->context, $this);
+        if ($this->volatile === null) {
+            $this->volatile = new Type\Volatile($this->context, $this);
+        }
+        return $this->volatile;
     }
 
     public function newArrayType(int $numElements): Type {
-        return new Type\ArrayType($this->context, $this, $numElements);
+        if (!isset($this->array[$numElements])) {
+            $this->array[$numElements] = new Type\ArrayType($this->context, $this, $numElements);
+        }
+        return $this->array[$numElements];
     }
 
     public function isSigned(): bool {

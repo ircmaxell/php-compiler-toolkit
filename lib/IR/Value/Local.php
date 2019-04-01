@@ -4,19 +4,22 @@ declare(strict_types=1);
 namespace PHPCompilerToolkit\IR\Value;
 use PHPCompilerToolkit\Type;
 use PHPCompilerToolkit\IR\Block;
+use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Value as CoreValue;
 
-class Value extends CoreValue {
+class Local extends CoreValue {
 
-    public Block $block;
+    public string $name;
+    public Function_ $function;
 
-    public function __construct(Block $block, Type $type) {
+    public function __construct(Function_ $function, string $name, Type $type) {
         parent::__construct($type);
-        $this->block = $block;
+        $this->name = $name;
+        $this->function = $function;
     }
     
     public function isOwnedBy(Block $block): bool {
-        return $this->block === $block;
+        return true;
     }
 
     public function isConstant(): bool {

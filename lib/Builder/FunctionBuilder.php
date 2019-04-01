@@ -4,6 +4,7 @@ namespace PHPCompilerToolkit\Builder;
 use SplObjectStorage;
 use PHPCompilerToolkit\Builder;
 use PHPCompilerToolkit\Context;
+use PHPCompilerToolkit\Type;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Value;
 
@@ -25,6 +26,12 @@ class FunctionBuilder extends Builder {
 
     public function arg(int $index): Value {
         return $this->function->parameters[$index]->value;
+    }
+
+    public function createLocal(string $name, Type $type): Value {
+        $local = new Value\Local($this->function, $name, $type);
+        $this->function->locals[] = $local;
+        return $local;
     }
 
     public function finish(): void {

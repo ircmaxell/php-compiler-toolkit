@@ -5,6 +5,7 @@ use SplObjectStorage;
 
 use PHPCompilerToolkit\Builder;
 use PHPCompilerToolkit\Context;
+use PHPCompilerToolkit\Type;
 use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Block;
 use PHPCompilerToolkit\IR\Value;
@@ -137,6 +138,27 @@ class BlockBuilder extends Builder {
 
     public function callNoReturn(FunctionBuilder $function, Value ... $args): void {
         $this->block->addOp(new Op\CallNoReturn($function->function, ...$args));
+    }
+
+    public function readField(Value $struct, string $name): Value {
+        if (!$struct->type instanceof Type\Struct) {
+            throw new \LogicException("Attempting to read a field from a non-struct");
+        }
+        $field = $struct->type->field($name);
+        $result = new Value\Value($this->block, $field->type);
+        $this->block->addOp(new Op\FieldRead($this->hoistToArg($struct), $field, $result));
+        return $result;
+    }
+
+    public function writeField(Value $struct, string $name, Value $value): void {
+        if (!$struct->type instanceof Type\Struct) {
+            throw new \LogicException("Attempting to write a field from a non-struct");
+        }
+        $field = $struct->type->field($name);
+        if ($field->type !== $value->type) {
+            throw new \LogicException("Attempting to write a field of different types");
+        }
+        $this->block->addOp(new Op\FieldWrite($this->hoistToArg($struct), $field, $value));
     }
 
     public function jump(BlockBuilder $block): void {

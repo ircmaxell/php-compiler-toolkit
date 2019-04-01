@@ -96,6 +96,19 @@ class LLVM extends BackendAbstract {
                 case Type\Primitive::T_SIZE_T:
                     return $this->lib->LLVMInt64TypeInContext($this->context);
             }
+        } elseif ($type instanceof Type\Struct) {
+            $struct = $this->lib->LLVMStructCreateNamed($this->context, $type->name);
+            $fieldWrapper = $this->lib->makeArray(
+                LLVMTypeRef_ptr::class,
+                array_map(
+                    function(Type\Struct\Field $field) {
+                        return $this->typeMap[$field->type];
+                    }, 
+                    $type->fields
+                )
+            );
+            $this->lib->LLVMStructSetBody($struct, $fieldWrapper, count($type->fields), $this->bool(false));
+            return $struct;
         }
         throw new \LogicException("Type " . get_class($type) . " not implemented yet");
     }
@@ -141,6 +154,10 @@ class LLVM extends BackendAbstract {
             $this->blockMap[$block] = $this->lib->LLVMAppendBasicBlock($func, $block->name);
             if ($index === 0) {
                 $this->lib->LLVMPositionBuilderAtEnd($builder, $this->blockMap[$block]);
+                foreach ($function->locals as $local) {
+                    $this->localMap[$local] = $this->lib->LLVMBuildAlloca($builder, $this->typeMap[$local->type], $local->name);
+                    $this->valueMap[$local] = $this->localMap[$local];
+                }
             }
             foreach ($block->arguments as $idx => $argument) {
                 $this->localMap[$argument] = $this->lib->LLVMBuildAlloca($builder, $this->typeMap[$argument->type], $block->name . '_arg_' . $idx);
@@ -175,6 +192,28 @@ class LLVM extends BackendAbstract {
             $this->valueMap[$op->return] = $this->doCall($builder, $op);
         } elseif ($op instanceof Op\CallNoReturn) {
             $this->doCall($builder, $op);
+        } elseif ($op instanceof Op\FieldRead) {
+            $this->valueMap[$op->return] = $this->lib->LLVMBuildLoad(
+                $builder,
+                $this->lib->LLVMBuildStructGEP(
+                    $builder,
+                    $this->valueMap[$op->struct],
+                    $op->struct->type->fieldOffset($op->field),
+                    $op->field->name
+                ),
+                $op->field->name
+            );
+        } elseif ($op instanceof Op\FieldWrite) {
+            $this->lib->LLVMBuildStore(
+                $builder,
+                $this->valueMap[$op->value],
+                $this->lib->LLVMBuildStructGEP(
+                    $builder,
+                    $this->valueMap[$op->struct],
+                    $op->struct->type->fieldOffset($op->field),
+                    $op->field->name
+                )
+            );
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($builder, $op);
         } elseif ($op instanceof Op\ConditionalBlockCall) {

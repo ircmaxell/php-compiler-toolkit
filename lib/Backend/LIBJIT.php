@@ -25,6 +25,7 @@ use libjit\jit_value_t;
 use libjit\jit_value_t_ptr;
 use libjit\jit_long;
 use libjit\jit_float64;
+use libjit\jit_nint;
 
 class LIBJIT extends BackendAbstract {
 
@@ -91,6 +92,17 @@ class LIBJIT extends BackendAbstract {
                 case Type\Primitive::T_SIZE_T:
                     return $this->lib->jit_type_nuint;
             }
+        } elseif ($type instanceof Type\Struct) {
+            $fieldWrapper = $this->lib->makeArray(
+                jit_type_t_ptr::class,
+                array_map(
+                    function(Type\Struct\Field $field) {
+                        return $this->typeMap[$field->type];
+                    }, 
+                    $type->fields
+                )
+            );
+            return $this->lib->jit_type_create_struct($fieldWrapper, count($type->fields), 1);
         }
         throw new \LogicException("Type " . get_class($type) . " not implemented yet");
     }
@@ -143,6 +155,9 @@ class LIBJIT extends BackendAbstract {
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->jit_value_get_param($func, $index);
         }
+        foreach ($function->locals as $local) {
+            $this->valueMap[$local] = $this->lib->jit_value_create($func, $this->typeMap[$local->type]);
+        }
         foreach ($function->blocks as $block) {
             $this->blockMap[$block] = $this->lib->jit_function_reserve_label($func);
             foreach ($block->arguments as $argument) {
@@ -178,6 +193,24 @@ class LIBJIT extends BackendAbstract {
             $this->valueMap[$op->return] = $this->doCall($func, $op);
         } elseif ($op instanceof Op\CallNoReturn) {
             $this->doCall($func, $op);
+        } elseif ($op instanceof Op\FieldRead) {
+            $tmp = $this->lib->jit_type_get_offset($this->typeMap[$op->struct->type], $op->struct->type->fieldOffset($op->field));
+            $offset = new jit_nint($tmp->getData());
+            $this->valueMap[$op->return] = $this->lib->jit_insn_load_relative(
+                $func,
+                $this->lib->jit_insn_address_of($func, $this->valueMap[$op->struct]),
+                $offset,
+                $this->typeMap[$op->field->type]
+            );
+        } elseif ($op instanceof Op\FieldWrite) {
+            $tmp = $this->lib->jit_type_get_offset($this->typeMap[$op->struct->type], $op->struct->type->fieldOffset($op->field));
+            $offset = new jit_nint($tmp->getData());
+            $this->lib->jit_insn_store_relative(
+                $func,
+                $this->lib->jit_insn_address_of($func, $this->valueMap[$op->struct]),
+                $offset,
+                $this->valueMap[$op->value]
+            );
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($func, $op);
         } elseif ($op instanceof Op\ConditionalBlockCall) {

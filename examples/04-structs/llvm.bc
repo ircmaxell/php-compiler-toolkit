@@ -1,0 +1,20 @@
+; ModuleID = 'test_0'
+source_filename = "test_0"
+target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
+
+%testA = type { i64, i64 }
+
+define i64 @add(i64, i64) {
+main:
+  %c = alloca %testA
+  %a = getelementptr inbounds %testA, %testA* %c, i32 0, i32 0
+  store i64 %0, i64* %a
+  %b = getelementptr inbounds %testA, %testA* %c, i32 0, i32 1
+  store i64 %1, i64* %b
+  %a1 = getelementptr inbounds %testA, %testA* %c, i32 0, i32 0
+  %a2 = load i64, i64* %a1
+  %b3 = getelementptr inbounds %testA, %testA* %c, i32 0, i32 1
+  %b4 = load i64, i64* %b3
+  %var_0 = add i64 %a2, %b4
+  ret i64 %var_0
+}

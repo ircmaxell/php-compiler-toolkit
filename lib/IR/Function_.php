@@ -14,7 +14,8 @@ class Function_ {
     public array $parametersByName = [];
     public string $name;
     public bool $isVariadic;
-    public array $blocks;
+    public array $blocks = [];
+    public array $locals = [];
 
     public function __construct(Context $context, string $name, Type $returnType, bool $isVariadic, Parameter ... $parameters) {
         $this->context = $context;

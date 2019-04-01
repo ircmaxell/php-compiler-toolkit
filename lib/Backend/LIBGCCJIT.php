@@ -24,11 +24,14 @@ use libgccjit\gcc_jit_function_ptr;
 use libgccjit\gcc_jit_param_ptr_ptr;
 use libgccjit\gcc_jit_rvalue_ptr;
 use libgccjit\gcc_jit_rvalue_ptr_ptr;
+use libgccjit\gcc_jit_field_ptr_ptr;
 
 class LIBGCCJIT extends BackendAbstract {
 
     public lib $lib;
     public gcc_jit_context_ptr $context;
+    private SplObjectStorage $fieldMap;
+    private SplObjectStorage $structMap;
 
     const PRIMITIVE_TYPE_MAP = [
         Type\Primitive::T_VOID => lib::GCC_JIT_TYPE_VOID,
@@ -57,6 +60,8 @@ class LIBGCCJIT extends BackendAbstract {
 
     protected function beforeCompile(Context $context, int $optimizationLevel): void {
         $this->parameterMap = [];
+        $this->fieldMap = new SplObjectStorage;
+        $this->structMap = new SplObjectStorage;
         $this->context = $this->lib->gcc_jit_context_acquire();
         $this->lib->gcc_jit_context_set_int_option($this->context, lib::GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL, $optimizationLevel);
     }
@@ -64,11 +69,28 @@ class LIBGCCJIT extends BackendAbstract {
     protected function afterCompile(Context $context): void {
         unset($this->parameterMap);
         unset($this->context);
+        unset($this->fieldMap);
+        unset($this->structMap);
     }
 
     protected function compileType(Type $type) {
         if ($type instanceof Type\Primitive) {
             return $this->lib->gcc_jit_context_get_type($this->context, self::PRIMITIVE_TYPE_MAP[$type->kind]);
+        } elseif ($type instanceof Type\Struct) {
+            $fieldWrapper = $this->lib->makeArray(
+                gcc_jit_field_ptr_ptr::class,
+                array_map(
+                    function(Type\Struct\Field $field) {
+                        $fieldPtr = $this->lib->gcc_jit_context_new_field($this->context, null, $this->typeMap[$field->type], $field->name);
+                        $this->fieldMap[$field] = $fieldPtr;
+                        return $fieldPtr;
+                    }, 
+                    $type->fields
+                )
+            );
+            $struct = $this->lib->gcc_jit_context_new_struct_type($this->context, null, $type->name, count($type->fields), $fieldWrapper);
+            $this->structMap[$type] = $struct;
+            return $this->lib->gcc_jit_struct_as_type($struct);
         }
         throw new \LogicException("Not implemented type for gcc_jit: " . get_class($type));
     }
@@ -125,6 +147,10 @@ class LIBGCCJIT extends BackendAbstract {
         foreach ($function->parameters as $index => $parameter) {
             $this->valueMap[$parameter->value] = $this->lib->gcc_jit_param_as_rvalue($this->parameterMap[$function->name][$index]);
         }
+        foreach ($function->locals as $local) {
+            $this->localMap[$local] = $this->lib->gcc_jit_function_new_local($func, null, $this->typeMap[$local->type], $local->name);
+            $this->valueMap[$local] = $this->lib->gcc_jit_lvalue_as_rvalue($this->localMap[$local]);
+        }
         foreach ($function->blocks as $block) {
             $this->blockMap[$block] = $this->lib->gcc_jit_function_new_block($func, $block->name);
             foreach ($block->arguments as $idx => $argument) {
@@ -159,6 +185,19 @@ class LIBGCCJIT extends BackendAbstract {
             $this->valueMap[$op->return] = $this->doCall($func, $op);
         } elseif ($op instanceof Op\CallNoReturn) {
             $this->lib->gcc_jit_block_add_eval($block, null, $this->doCall($func, $op));
+        } elseif ($op instanceof Op\FieldRead) {
+            $this->valueMap[$op->return] = $this->lib->gcc_jit_rvalue_access_field($this->valueMap[$op->struct], null, $this->fieldMap[$op->field]);
+        } elseif ($op instanceof Op\FieldWrite) {
+            if ($this->localMap->contains($op->struct)) {
+                $this->lib->gcc_jit_block_add_assignment(
+                    $block,
+                    null,
+                    $this->lib->gcc_jit_lvalue_access_field($this->localMap[$op->struct], null, $this->fieldMap[$op->field]),
+                    $this->valueMap[$op->value]
+                );
+            } else {
+                throw new \LogicException("Cannot write to rvalue");
+            }
         } elseif ($op instanceof Op\BlockCall) {
             $this->compileBlockCall($block, $op);
         } elseif ($op instanceof Op\ConditionalBlockCall) {

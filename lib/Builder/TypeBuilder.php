@@ -10,6 +10,8 @@ class TypeBuilder extends Builder {
 
     private array $primitives = [];
 
+    private array $structs = [];
+
     public function __construct(Context $context, GlobalBuilder $parent) {
         parent::__construct($context, $parent);
     }
@@ -91,6 +93,13 @@ class TypeBuilder extends Builder {
             $this->primitives[$kind] = new Type\Primitive($this->context, $kind);
         }
         return $this->primitives[$kind];
+    }
+
+    public function struct(string $name): Type {
+        if (!isset($this->structs[$name])) {
+            $this->structs[$name] = new Type\Struct($this->context, $name);
+        }
+        return $this->structs[$name];
     }
 
     
