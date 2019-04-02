@@ -1,8 +1,4 @@
-Compiled Timers: 
-  libjit compiled in: 0.0015578269958496 seconds
-  libgccjit compiled in: 0.038998126983643 seconds
-  llvm compiled in: 0.001072883605957 seconds
-Add2 Function:
+Add100 Function:
     long long add(long long a, long long b) {
         return a + b;
     }
@@ -12,26 +8,35 @@ Add2 Function:
         // 100 of these
         return a;
     }
-    Compiler libjit: 
-      add100(1, 2) = 201
-      add100(2, 4) = 402
-      add100(10, 10) = 1010
-      add100(1, add100(0, 99)) = 990001
-    Compiler libgccjit: 
-      add100(1, 2) = 201
-      add100(2, 4) = 402
-      add100(10, 10) = 1010
-      add100(1, add100(0, 99)) = 990001
-    Compiler llvm: 
-      add100(1, 2) = 201
-      add100(2, 4) = 402
-      add100(10, 10) = 1010
-      add100(1, add100(0, 99)) = 990001
+Time to Compile: 
+    libjit: 0.001505 seconds
+ libgccjit: 0.038494 seconds
+      llvm: 0.001052 seconds
 
 
-Benchmarked as:
-  libjit executed in 0.31617403030396 seconds
-  libgccjit executed in 0.33608603477478 seconds
-  llvm executed in 0.28125 seconds
-  native php executed in 2.3572318553925 seconds
+Testing add100:
+  Compiler libjit
+    add100(1, 1) = 101
+    add100(1, 2) = 201
+    add100(99, 1) = 199
+    add100(add100(1, 2), 3) = 501
+  Compiler libgccjit
+    add100(1, 1) = 101
+    add100(1, 2) = 201
+    add100(99, 1) = 199
+    add100(add100(1, 2), 3) = 501
+  Compiler llvm
+    add100(1, 1) = 101
+    add100(1, 2) = 201
+    add100(99, 1) = 199
+    add100(add100(1, 2), 3) = 501
+
+Benchmarking
+Done
+
+Benchmark Results:
+          libjit: 0.32725 seconds
+       libgccjit: 0.34705 seconds
+            llvm: 0.27182 seconds
+     php closure: 2.30483 seconds
 

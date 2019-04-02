@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace PHPCompilerToolkit\IR;
+namespace PHPCompilerToolkit\IR\Function_;
+
 use PHPCompilerToolkit\Context;
 use PHPCompilerToolkit\Type;
 
-
-interface Function_ {
+class AlwaysInline extends Implemented {
 
 }

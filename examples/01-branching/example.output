@@ -1,7 +1,3 @@
-Compiled Timers: 
-  libjit compiled in: 0.00066494941711426 seconds
-  libgccjit compiled in: 0.027116060256958 seconds
-  llvm compiled in: 0.00069499015808105 seconds
 Add1or2 Function:
     long long add1or2(long long shouldAdd1, long long a) {
        if (shouldAdd > 0) {
@@ -9,26 +5,35 @@ Add1or2 Function:
        }
        return a + 2;
    }
-    Compiler libjit: 
-      add1or2(0, 1) = 3
-      add1or2(0, 2) = 4
-      add1or2(1, 99) = 100
-      add1or2(1, add1or2(0, 99)) = 102
-    Compiler libgccjit: 
-      add1or2(0, 1) = 3
-      add1or2(0, 2) = 4
-      add1or2(1, 99) = 100
-      add1or2(1, add1or2(0, 99)) = 102
-    Compiler llvm: 
-      add1or2(0, 1) = 3
-      add1or2(0, 2) = 4
-      add1or2(1, 99) = 100
-      add1or2(1, add1or2(0, 99)) = 102
+Time to Compile: 
+    libjit: 0.000620 seconds
+ libgccjit: 0.025813 seconds
+      llvm: 0.000610 seconds
 
 
-Benchmarked as:
-  libjit executed in 0.12565302848816 seconds
-  libgccjit executed in 0.12500500679016 seconds
-  llvm executed in 0.12258100509644 seconds
-  native php executed in 0.025868892669678 seconds
+Testing add1or2:
+  Compiler libjit
+    add1or2(1, 1) = 2
+    add1or2(1, 2) = 3
+    add1or2(99, 1) = 2
+    add1or2(add1or2(1, 2), 3) = 4
+  Compiler libgccjit
+    add1or2(1, 1) = 2
+    add1or2(1, 2) = 3
+    add1or2(99, 1) = 2
+    add1or2(add1or2(1, 2), 3) = 4
+  Compiler llvm
+    add1or2(1, 1) = 2
+    add1or2(1, 2) = 3
+    add1or2(99, 1) = 2
+    add1or2(add1or2(1, 2), 3) = 4
+
+Benchmarking
+Done
+
+Benchmark Results:
+          libjit: 0.13639 seconds
+       libgccjit: 0.14372 seconds
+            llvm: 0.14037 seconds
+     php closure: 0.04651 seconds
 

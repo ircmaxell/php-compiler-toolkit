@@ -53,7 +53,7 @@ class Printer {
             $return .= '    ' . $block->name . '(';
             $args = [];
             foreach ($block->arguments as $argument) {
-                $scope[$argument] = '@' . (count($scope) - $constantOffset);
+                $scope[$argument] = '#' . (count($scope) - $constantOffset);
                 $args[] = $scope[$argument];
             }
             $return .= implode(', ', $args) . "):\n";

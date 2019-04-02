@@ -130,14 +130,56 @@ class BlockBuilder extends Builder {
         return $result;
     }
 
+    public function minus(Value $value): Value {
+        $result = $this->computeUnaryNumericResult($value);
+        $this->block->addOp(new Op\UnaryOp\Minus($this->hoistToArg($value), $result));
+        return $result;
+    }
+
+    public function bitwiseNot(Value $value): Value {
+        $result = $this->computeUnaryNumericResult($value);
+        $this->block->addOp(new Op\UnaryOp\BitwiseNot($this->hoistToArg($value), $result));
+        return $result;
+    }
+
+    public function LogicalNot(Value $value): Value {
+        $result = $this->computeUnaryLogicalResult($value);
+        $this->block->addOp(new Op\UnaryOp\LogicalNot($this->hoistToArg($value), $result));
+        return $result;
+    }
+
+    public function cast(Value $value, Type $type): Value {
+        // todo: type check the cast to ensure it's from/to correct pointers
+        $result = new Value\Value($this->block, $type);
+        $this->block->addOp(new Op\UnaryOp\Cast($this->hoistToArg($value), $result));
+        return $result;
+    }  
+
     public function call(FunctionBuilder $function, Value ... $args): Value {
         $result = new Value\Value($this->block, $function->function->returnType);
         $this->block->addOp(new Op\Call($function->function, $result, ...$args));
         return $result;
-    }
+    } 
 
     public function callNoReturn(FunctionBuilder $function, Value ... $args): void {
         $this->block->addOp(new Op\CallNoReturn($function->function, ...$args));
+    }
+
+    public function malloc(Type $type): Value {
+        $result = new Value\Value($this->block, $type);
+        $this->block->addOp(new Op\Malloc($result));
+        return $result;
+    }
+
+    public function realloc(Value $value, Type $type): Value {
+        // Todo: typecheck value->type and new->type are compatible pointers
+        $result = new Value\Value($this->block, $newType);
+        $this->block->addOp(new Op\Realloc($this->hoistToArg($value), $result));
+        return $result;
+    }
+
+    public function free(Value $value): void {
+        $this->block->addOp(new Op\Free($this->hoistToArg($value)));
     }
 
     public function readField(Value $struct, string $name): Value {
@@ -200,6 +242,15 @@ class BlockBuilder extends Builder {
     }
 
     private function computeBinaryLogicalResult(Value $left, Value $right): Value {
+        return new Value\Value($this->block, $this->type()->bool());
+    }
+
+    private function computeUnaryNumericResult(Value $value): Value {
+        // all types are numeric types, so :D
+        return new Value\Value($this->block, $value->type);
+    }
+
+    private function computeUnaryLogicalResult(Value $value): Value {
         return new Value\Value($this->block, $this->type()->bool());
     }
 

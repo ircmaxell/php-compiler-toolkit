@@ -18,11 +18,59 @@ class GlobalBuilder extends Builder {
         $this->const = new ConstBuilder($this->context, $this);
     }
 
-    public function createFunction(string $name, Type $returnType, bool $isVariadic, Parameter ...$parameters): FunctionBuilder {
+    public function exportFunction(string $name, Type $returnType, bool $isVariadic, Parameter ...$parameters): FunctionBuilder {
         $function = new FunctionBuilder(
             $this->context,
             $this,
-            new Function_(
+            new Function_\Exported(
+                $this->context,
+                $name,
+                $returnType,
+                $isVariadic,
+                ...$parameters
+            )
+        );
+        $this->functions[$name] = $function;
+        return $function;
+    }
+
+    public function staticFunction(string $name, Type $returnType, bool $isVariadic, Parameter ...$parameters): FunctionBuilder {
+        $function = new FunctionBuilder(
+            $this->context,
+            $this,
+            new Function_\Static_(
+                $this->context,
+                $name,
+                $returnType,
+                $isVariadic,
+                ...$parameters
+            )
+        );
+        $this->functions[$name] = $function;
+        return $function;
+    }
+
+    public function alwaysInlineFunction(string $name, Type $returnType, bool $isVariadic, Parameter ...$parameters): FunctionBuilder {
+        $function = new FunctionBuilder(
+            $this->context,
+            $this,
+            new Function_\AlwaysInline(
+                $this->context,
+                $name,
+                $returnType,
+                $isVariadic,
+                ...$parameters
+            )
+        );
+        $this->functions[$name] = $function;
+        return $function;
+    }
+
+    public function importFunction(string $name, Type $returnType, bool $isVariadic, Parameter ...$parameters): FunctionBuilder {
+        $function = new FunctionBuilder(
+            $this->context,
+            $this,
+            new Function_\Imported(
                 $this->context,
                 $name,
                 $returnType,

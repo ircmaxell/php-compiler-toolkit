@@ -7,12 +7,12 @@ long long add1or2(long long $0<shouldAdd1>, long long $1<a>) {
         ELSE:
             jump ifFalse($1);
 
-    ifTrue(@3):
-        #4 = Add(@3, (long long) 1);
+    ifTrue(#3):
+        #4 = Add(#3, (long long) 1);
         ReturnValue #4;
 
-    ifFalse(@5):
-        #6 = Add(@5, (long long) 2);
+    ifFalse(#5):
+        #6 = Add(#5, (long long) 2);
         ReturnValue #6;
 
 }

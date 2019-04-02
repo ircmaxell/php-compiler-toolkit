@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 namespace Example_04;
 error_reporting(~0);
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../common.php';
 
 
 use PHPCompilerToolkit\Context;
@@ -26,7 +26,7 @@ $struct->createField('a', $long)->createField('b', $long);
 //     return c.a + c.b;
 // }
 
-$add = $builder->createFunction('add', $long, false, new Parameter($long, 'a'), new Parameter($long, 'b'));
+$add = $builder->exportFunction('add', $long, false, new Parameter($long, 'a'), new Parameter($long, 'b'));
 $local = $add->createLocal('c', $struct);
 
 $main = $add->createBlock('main');
@@ -40,83 +40,29 @@ $main->returnValue($result);
 
 $builder->finish();
 
-file_put_contents(__DIR__ . '/example.ir', (new Printer)->print($context));
-
-
-use PHPCompilerToolkit\Backend;
-
-$libjit = new Backend\LIBJIT;
-$libgccjit = new Backend\LIBGCCJIT;
-$llvm = new Backend\LLVM;
-
-$timers = [];
-
-$results = [];
-$start = microtime(true);
-
-$results['libjit'] = $libjit->compile($context, Backend::O3);
-$timers["libjit"] = microtime(true);
- 
-$results['libgccjit'] = $libgccjit->compile($context, Backend::O3);
-$timers['libgccjit'] = microtime(true);
-
-$results['llvm'] =  $llvm->compile($context, Backend::O3);
-$timers['llvm'] = microtime(true);
-
-
-echo "Compiled Timers: \n";
-foreach ($timers as $name => $time) {
-    echo "  $name compiled in: " . ($time - $start) . " seconds\n";
-    $start = $time;
-}
-
-foreach ($results as $name => $result) {
-    $result->dumpToFile(__DIR__ . '/' . $name . '.bc');
-    $result->dumpCompiledToFile(__DIR__ . '/' . $name . '.s');
-}
-
 echo "Add Function:
     long long add(long long a, long long b) {
         return a + b;
     }
 ";
 
-$callbacks = [];
-foreach ($results as $name => $result) {
-    $callbacks[$name] = $result->getCallable('add');
-}
-
-foreach ($callbacks as $compiler => $callable) {
-    echo "    Compiler $compiler: \n";
-    echo "      add(1, 1) = " . $callable(1, 1) . "\n";
-    echo "      add(1, 2) = " . $callable(1, 2) . "\n";
-    echo "      add(99, 1) = " . $callable(99, 1) . "\n";
-    echo "      add(add(1, 2), 3) = " . $callable($callable(1, 2), 3) . "\n";
-}
-
-$timers = [];
-$start = microtime(true);
-foreach ($callbacks as $compiler => $callable) {
-    for ($i = 0; $i < 1000000; $i++) {
-        $callable($i, $i);
+generateResults(
+    $context,
+    // current directory
+    __DIR__,
+    // fn name
+    'add',
+    // tests
+    [[1, 1], [1, 2], [99, 1], [[1, 2], 3]],
+    // benchmark iterations
+    1000000,
+    // baseline implementation
+    function(int $a, int $b): int {
+        $struct = new \StdClass;
+        $struct->a = $a;
+        $struct->b = $b;
+        return $struct->a + $struct->b;
     }
-    $timers[$compiler] = microtime(true);
-}
-for ($i = 0; $i < 1000000; $i++) {
-    add($i, $i);
-}
-$timers["native php"] = microtime(true);
+);
 
-echo "\n\nBenchmarked as:\n";
-foreach ($timers as $compiler => $time) {
-    echo "  $compiler executed in " . ($time - $start) . " seconds\n";
-    $start = $time;
-}
-echo "\n";
 
-function add(int $a, int $b): int {
-    $struct = new \StdClass;
-    $struct->a = $a;
-    $struct->b = $b;
-    return $struct->a + $struct->b;
-}

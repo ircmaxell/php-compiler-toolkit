@@ -9,7 +9,11 @@ use PHPCompilerToolkit\IR\Function_;
 use PHPCompilerToolkit\IR\Value;
 
 class FunctionBuilder extends Builder {
+
     public Function_ $function;
+
+    public int $kind;
+
     public array $blocks = [];
 
     public function __construct(Context $context, Builder $parent, Function_ $function) {
@@ -18,6 +22,9 @@ class FunctionBuilder extends Builder {
     }
 
     public function createBlock(string $name): BlockBuilder {
+        if (!$this->function instanceof Function_\Implemented) {
+            throw new \LogicException("Cannot create blocks on imported functions");
+        }
         $block = $this->function->createBlock($name);
         $blockBuilder = new BlockBuilder($this->context, $this, $block);
         $this->blocks[] = $blockBuilder;
@@ -25,10 +32,16 @@ class FunctionBuilder extends Builder {
     }
 
     public function arg(int $index): Value {
+        if (!$this->function instanceof Function_\Implemented) {
+            throw new \LogicException("Cannot extract args on imported functions");
+        }
         return $this->function->parameters[$index]->value;
     }
 
     public function createLocal(string $name, Type $type): Value {
+        if (!$this->function instanceof Function_\Implemented) {
+            throw new \LogicException("Cannot create locals on imported functions");
+        }
         $local = new Value\Local($this->function, $name, $type);
         $this->function->locals[] = $local;
         return $local;
