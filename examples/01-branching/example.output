@@ -6,9 +6,10 @@ Add1or2 Function:
        return a + 2;
    }
 Time to Compile: 
-    libjit: 0.000620 seconds
- libgccjit: 0.025813 seconds
-      llvm: 0.000610 seconds
+    libjit: 0.000567 seconds
+ libgccjit: 0.026251 seconds
+      llvm: 0.000758 seconds
+       php: 0.000201 seconds
 
 
 Testing add1or2:
@@ -27,13 +28,19 @@ Testing add1or2:
     add1or2(1, 2) = 3
     add1or2(99, 1) = 2
     add1or2(add1or2(1, 2), 3) = 4
+  Compiler php
+    add1or2(1, 1) = 2
+    add1or2(1, 2) = 3
+    add1or2(99, 1) = 2
+    add1or2(add1or2(1, 2), 3) = 4
 
 Benchmarking
 Done
 
 Benchmark Results:
-          libjit: 0.13639 seconds
-       libgccjit: 0.14372 seconds
-            llvm: 0.14037 seconds
-     php closure: 0.04651 seconds
+          libjit: 0.13598 seconds
+       libgccjit: 0.13580 seconds
+            llvm: 0.13389 seconds
+             php: 0.09462 seconds
+     php closure: 0.04644 seconds
 

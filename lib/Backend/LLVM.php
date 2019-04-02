@@ -18,8 +18,10 @@ use PHPCompilerToolkit\IR\Value\Constant;
 use PHPCompilerToolkit\Type;
 
 use llvm\llvm as lib;
+use llvm\LLVMAttributeIndex;
 use llvm\LLVMModuleRef;
 use llvm\LLVMContextRef;
+use llvm\LLVMLinkage;
 use llvm\LLVMBool;
 use llvm\LLVMBuilderRef;
 use llvm\LLVMExecutionEngineRef;
@@ -121,6 +123,24 @@ class LLVM extends BackendAbstract {
         return $this->lib->LLVMConstInt($this->typeMap[$constant->type], $constant->value, $this->bool(false));
     }
 
+    protected function importFunction(Function_ $function) {
+        $paramWrapper = $this->lib->makeArray(
+            LLVMTypeRef_ptr::class,
+            array_map(
+                function(Parameter $parameter) {
+                    return $this->typeMap[$parameter->type];
+                }, 
+                $function->parameters
+            )
+        );
+        $type = $this->lib->LLVMFunctionType($this->typeMap[$function->returnType], $paramWrapper, count($function->parameters), $this->bool($function->isVariadic));
+        $func = $this->lib->LLVMAddFunction($this->module, $function->name, $type);
+        // $link = $this->lib->getFFI()->new('LLVMLinkage');
+        // $link = lib::LLVMDLLImportLinkage;
+        // $this->lib->LLVMSetLinkage($func, new LLVMLinkage($link));
+        return $func;
+    }
+
     protected function declareFunction(Function_ $function) {
         $paramWrapper = $this->lib->makeArray(
             LLVMTypeRef_ptr::class,
@@ -132,7 +152,19 @@ class LLVM extends BackendAbstract {
             )
         );
         $type = $this->lib->LLVMFunctionType($this->typeMap[$function->returnType], $paramWrapper, count($function->parameters), $this->bool($function->isVariadic));
-        return $this->lib->LLVMAddFunction($this->module, $function->name, $type);
+        $func = $this->lib->LLVMAddFunction($this->module, $function->name, $type);
+
+        if ($function instanceof Function_\AlwaysInline) {
+            $index = new LLVMAttributeIndex(lib::LLVMAttributeFunctionIndex);
+            $attr = $this->lib->LLVMCreateStringAttribute($this->context, "alwaysinline", 12, "", 0);
+            $this->lib->LLVMAddAttributeAtIndex($func, $index, $attr);
+        } elseif ($function instanceof Function_\Static_) {
+            $link = $this->lib->getFFI()->new('LLVMLinkage');
+            $link = lib::LLVMInternalLinkage;
+
+            $this->lib->LLVMSetLinkage($func, new LLVMLinkage($link));
+        }
+        return $func;
     }
 
     private SplObjectStorage $localMap;

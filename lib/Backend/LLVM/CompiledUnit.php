@@ -45,7 +45,7 @@ class CompiledUnit implements CoreCompiledUnit {
 
     public function dumpToFile(string $filename): void {
         $error = new string_ptr(FFI::addr(FFI::new('char*')));
-        $this->backend->lib->LLVMPrintModuleToFile($this->module, $filename, $error);
+        $this->backend->lib->LLVMPrintModuleToFile($this->module, $filename . '.bc', $error);
     }
 
     public function dumpCompiledToFile(string $filename): void {
@@ -54,6 +54,6 @@ class CompiledUnit implements CoreCompiledUnit {
         $cgft = lib::LLVMAssemblyFile;
         $codegen = new LLVMCodeGenFileType($cgft);
         $machine = $this->backend->lib->LLVMGetExecutionEngineTargetMachine($this->engine);
-        $this->backend->lib->LLVMTargetMachineEmitToFile($machine, $this->module, $filename, $codegen, $error);
+        $this->backend->lib->LLVMTargetMachineEmitToFile($machine, $this->module, $filename . '.s', $codegen, $error);
     }
 }

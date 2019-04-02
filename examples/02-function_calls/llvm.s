@@ -1,6 +1,5 @@
 	.text
 	.file	"test_0"
-	.globl	add
 	.p2align	4, 0x90
 	.type	add,@function
 add:

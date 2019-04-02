@@ -1,0 +1,9 @@
+external int abs(int n);
+
+int test(int $0<a>) {
+
+    main():
+        #1 = Call(abs, $0);
+        ReturnValue #1;
+
+}

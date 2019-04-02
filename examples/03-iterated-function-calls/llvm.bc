@@ -2,7 +2,7 @@
 source_filename = "test_0"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 
-define i64 @add(i64, i64) {
+define i64 @add(i64, i64) #0 {
 main:
   %var_0 = add i64 %0, %1
   ret i64 %var_0
@@ -112,3 +112,5 @@ main:
   %add99 = call i64 @add(i64 %add98, i64 %1)
   ret i64 %add99
 }
+
+attributes #0 = { "alwaysinline" }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace PHPCompilerToolkit\IR\Function_;
 
 use PHPCompilerToolkit\IR\Function_;
+use PHPCompilerToolkit\IR\Parameter;
 use PHPCompilerToolkit\Context;
 use PHPCompilerToolkit\Type;
 

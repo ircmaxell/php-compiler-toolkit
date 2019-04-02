@@ -21,10 +21,32 @@ class Printer {
         foreach ($context->constants as $constant) {
             $constantMap[$constant] = '(' . $this->printType($constant->type) . ') ' . $constant->value;
         }
+        foreach ($context->imports as $import) {
+            $results[] = "external " . $this->printFunctionDeclaration($import, new SplObjectStorage, 0) . ';';
+        }
+        $results[] = '';
         foreach ($context->functions as $function) {
             $results[] = $this->printFunction($function, $constantMap);
         }
         return implode("\n", $results);
+    }
+
+    public function printFunctionDeclaration(IR\Function_ $function, SplObjectStorage $scope, int $constantOffset) {
+        $return = $this->printType($function->returnType) . ' ' . $function->name . '(';
+        $params = []; 
+        foreach ($function->parameters as $param) {
+            if ($function instanceof IR\Function_\Implemented) {
+                $scope[$param->value] = '$' . (count($scope) - $constantOffset);
+                $params[] = $this->printType($param->type) . ' ' . $scope[$param->value] . "<{$param->name}>";
+            } else {
+                $params[] = $this->printType($param->type) . ' ' . $param->name;
+            }
+        }
+        if ($function->isVariadic) {
+            $params[] = "...";
+        }
+        $return .= implode(', ', $params) . ")";
+        return $return;
     }
 
     public function printFunction(IR\Function_ $function, SplObjectStorage $constantMap): string {
@@ -33,16 +55,8 @@ class Printer {
             $scope[$constant] = $constantMap[$constant];
         }
         $constantOffset = count($constantMap);
-        $return = $this->printType($function->returnType) . ' ' . $function->name . '(';
-        $params = []; 
-        foreach ($function->parameters as $param) {
-            $scope[$param->value] = '$' . (count($scope) - $constantOffset);
-            $params[] = $this->printType($param->type) . ' ' . $scope[$param->value] . "<{$param->name}>";
-        }
-        if ($function->isVariadic) {
-            $params[] = "...";
-        }
-        $return .= implode(', ', $params) . ") {\n";
+        $return = $this->printFunctionDeclaration($function, $scope, $constantOffset) . " {\n";
+
         foreach ($function->locals as $local) {
             $scope[$local] = '$' . (count($scope) - $constantOffset);
 

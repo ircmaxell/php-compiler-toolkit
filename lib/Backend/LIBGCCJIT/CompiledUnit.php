@@ -39,11 +39,11 @@ class CompiledUnit implements CoreCompiledUnit {
     }
 
     public function dumpToFile(string $filename): void {
-        $this->backend->lib->gcc_jit_context_dump_to_file($this->context, $filename, 1);
+        $this->backend->lib->gcc_jit_context_dump_to_file($this->context, $filename . '.c', 1);
     }
 
     public function dumpCompiledToFile(string $filename): void {
-        $this->backend->lib->gcc_jit_context_compile_to_file($this->context, lib::GCC_JIT_OUTPUT_KIND_ASSEMBLER, $filename);
+        $this->backend->lib->gcc_jit_context_compile_to_file($this->context, lib::GCC_JIT_OUTPUT_KIND_ASSEMBLER, $filename . '.s');
     }
 
 }

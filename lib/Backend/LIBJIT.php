@@ -113,6 +113,10 @@ class LIBJIT extends BackendAbstract {
         $this->constants[] = $constant;
     }
 
+    protected function importFunction(Function_ $function) {
+        throw new \LogicException("Function importing is not implemented yet for libjit");
+    }
+
     protected function declareFunction(Function_ $function) {
         $paramWrapper = $this->lib->makeArray(
             jit_type_t_ptr::class,
@@ -123,8 +127,6 @@ class LIBJIT extends BackendAbstract {
                 $function->parameters
             )
         );
-
-
         $type = $this->lib->jit_type_create_signature(
             $this->abi,
             $this->typeMap[$function->returnType], 

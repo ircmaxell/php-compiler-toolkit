@@ -25,9 +25,14 @@ abstract class BackendAbstract implements Backend {
         foreach ($context->constants as $constant) {
             $this->constantMap[$constant] = $this->compileConstant($constant);
         }
+        foreach ($context->imports as $import) {
+            $this->functionMap[$import->name] = $this->importFunction($import);
+        }
         foreach ($context->functions as $function) {
             $this->functionMap[$function->name] = $this->declareFunction($function);
-            $this->signatureMap[$function->name] = $this->generateSignature($function);
+            if ($function instanceof Function_\Exported) {
+                $this->signatureMap[$function->name] = $this->generateSignature($function);
+            }
         }
         foreach ($context->functions as $function) {
             $this->compileFunction($function, $this->functionMap[$function->name]);
@@ -41,6 +46,7 @@ abstract class BackendAbstract implements Backend {
 
     abstract protected function compileType(Type $type);
     abstract protected function compileConstant(Constant $constant);
+    abstract protected function importFunction(Function_ $function);
     abstract protected function declareFunction(Function_ $function);
     abstract protected function compileFunction(Function_ $function, $func): void;
     abstract protected function buildResult(): CompiledUnit;

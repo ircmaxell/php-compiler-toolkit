@@ -1,0 +1,11 @@
+; ModuleID = 'test_0'
+source_filename = "test_0"
+target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
+
+declare i16 @abs(i16)
+
+define i16 @test(i16) {
+main:
+  %abs = call i16 @abs(i16 %0)
+  ret i16 %abs
+}

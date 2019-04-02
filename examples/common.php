@@ -6,24 +6,43 @@ use PHPCompilerToolkit\Backend;
 use PHPCompilerToolkit\Context;
 use PHPCompilerToolkit\Printer;
 
-function compile(Context $context): array {
+function getCompilerSet(): StdClass {
+    return (object) [
+        "libjit" => true,
+        "libgccjit" => true,
+        "llvm" => true,
+        "php" => true,
+    ];
+}
+
+function compile(Context $context, StdClass $compilerSet): array {
     $libjit = new Backend\LIBJIT;
     $libgccjit = new Backend\LIBGCCJIT;
     $llvm = new Backend\LLVM;
+    $php = new Backend\PHP;
 
     $timers = [];
 
     $results = [];
     $start = microtime(true);
 
-    $results['libjit'] = $libjit->compile($context, Backend::O3);
-    $timers["libjit"] = microtime(true);
-     
-    $results['libgccjit'] = $libgccjit->compile($context, Backend::O3);
-    $timers['libgccjit'] = microtime(true);
+    if ($compilerSet->libjit) {
+        $results['libjit'] = $libjit->compile($context, Backend::O3);
+        $timers["libjit"] = microtime(true);
+    }
+    if ($compilerSet->libgccjit) {
+        $results['libgccjit'] = $libgccjit->compile($context, Backend::O3);
+        $timers['libgccjit'] = microtime(true);
+    }
+    if ($compilerSet->llvm) {
+        $results['llvm'] =  $llvm->compile($context, Backend::O3);
+        $timers['llvm'] = microtime(true);
+    }
 
-    $results['llvm'] =  $llvm->compile($context, Backend::O3);
-    $timers['llvm'] = microtime(true);
+    if ($compilerSet->php) {
+        $results['php'] =  $php->compile($context, Backend::O3);
+        $timers['php'] = microtime(true);
+    }
 
     echo "Time to Compile: \n";
     foreach ($timers as $name => $time) {
@@ -37,8 +56,8 @@ function compile(Context $context): array {
 function writeResultsFiles(Context $context, array $results, string $dir): void {
     file_put_contents($dir . '/example.ir', (new Printer)->print($context));
     foreach ($results as $name => $result) {
-        $result->dumpToFile($dir . '/' . $name . '.bc');
-        $result->dumpCompiledToFile($dir . '/' . $name . '.s');
+        $result->dumpToFile($dir . '/' . $name);
+        $result->dumpCompiledToFile($dir . '/' . $name);
     }
 }
 
@@ -108,8 +127,9 @@ function benchmark(array $callbacks, callable $closureBaseline, int $times, arra
     echo "\n";
 }
 
-function generateResults(Context $context, string $dir, string $fnName, array $tests, int $iterations, callable $baseline) {
-    $results = compile($context);
+function generateResults(Context $context, string $dir, string $fnName, array $tests, int $iterations, callable $baseline, ?StdClass $compilerSet = null) {
+    $compilerSet = $compilerSet ?? getCompilerSet();
+    $results = compile($context, $compilerSet);
     writeResultsFiles($context, $results, $dir);
     $callbacks = getCallbacks($results, $fnName);
 

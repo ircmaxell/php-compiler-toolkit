@@ -103,6 +103,32 @@ class LIBGCCJIT extends BackendAbstract {
         return $this->lib->gcc_jit_context_new_rvalue_from_long($this->context, $this->typeMap[$constant->type], $constant->value);
     }
 
+    protected function importFunction(Function_ $function) {
+        $params = $this->lib->makeArray(
+            gcc_jit_param_ptr_ptr::class,
+            array_map(
+                function(Parameter $param) {
+                    return $this->lib->gcc_jit_context_new_param($this->context, null, $this->typeMap[$param->type], $param->name);
+                }, 
+                $function->parameters
+            )
+        );
+        $func = $this->lib->gcc_jit_context_new_function(
+            $this->context,
+            null,
+            lib::GCC_JIT_FUNCTION_IMPORTED,
+            $this->typeMap[$function->returnType],
+            $function->name,
+            count($function->parameters),
+            $params,
+            $function->isVariadic ? 1 : 0
+        );
+        if ($func === null) {
+            throw new \LogicException("Func shouldn't be null");
+        }
+        return $func;
+    }
+
     protected array $parameterMap;
 
     protected function declareFunction(Function_ $function) {
@@ -116,11 +142,17 @@ class LIBGCCJIT extends BackendAbstract {
             gcc_jit_param_ptr_ptr::class,
             $this->parameterMap[$function->name]
         );
-
+        if ($function instanceof Function_\AlwaysInline) {
+            $type = lib::GCC_JIT_FUNCTION_ALWAYS_INLINE;
+        } elseif ($function instanceof Function_\Static_) {
+            $type = lib::GCC_JIT_FUNCTION_INTERNAL;
+        } else {
+            $type = lib::GCC_JIT_FUNCTION_EXPORTED;
+        }
         $func = $this->lib->gcc_jit_context_new_function(
             $this->context,
             null,
-            lib::GCC_JIT_FUNCTION_EXPORTED,
+            $type,
             $this->typeMap[$function->returnType],
             $function->name,
             count($function->parameters),

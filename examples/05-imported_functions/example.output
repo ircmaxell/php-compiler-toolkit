@@ -1,0 +1,36 @@
+Test Function:
+    int test(int a) {
+        return abs(a);
+    }
+Time to Compile: 
+ libgccjit: 0.025177 seconds
+      llvm: 0.000586 seconds
+       php: 0.000177 seconds
+
+
+Testing test:
+  Compiler libgccjit
+    test(1) = 1
+    test(-1) = 1
+    test(10) = 10
+    test(-10) = 10
+  Compiler llvm
+    test(1) = 1
+    test(-1) = 1
+    test(10) = 10
+    test(-10) = 10
+  Compiler php
+    test(1) = 1
+    test(-1) = 1
+    test(10) = 10
+    test(-10) = 10
+
+Benchmarking
+Done
+
+Benchmark Results:
+       libgccjit: 0.10114 seconds
+            llvm: 0.10150 seconds
+             php: 0.07039 seconds
+     php closure: 0.04780 seconds
+

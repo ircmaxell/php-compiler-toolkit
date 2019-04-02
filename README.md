@@ -6,6 +6,8 @@ This attempts to be a pretty heavy abstraction on top of (initially) three libra
  * [ligjit](https://www.gnu.org/software/libjit/)
  * [llvm](https://llvm.org/docs/)
 
+It also includes a PHP backend for compiling to PHP itself (though this will be slower than native PHP and should only really be used for debug purposes).
+
 As each project differs quite a bit once you get beyond the initial level, I'm not sure how useful a high level abstraction will be.
 
 However, this project aims to be a pluggable backend for [PHP-Compiler](https://github.com/ircmaxell/php-compiler). The primary goal is to assess performance of each compiler and resulting code.

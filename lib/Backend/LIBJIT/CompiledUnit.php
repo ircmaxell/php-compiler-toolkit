@@ -37,7 +37,7 @@ class CompiledUnit implements CoreCompiledUnit {
     }
 
     public function dumpCompiledToFile(string $filename): void {
-        $file = $this->backend->lib->fopen($filename, 'w');
+        $file = $this->backend->lib->fopen($filename . '.s', 'w');
         foreach ($this->functions as $name => $func) {
             $this->compile($name);
             $this->backend->lib->jit_dump_function($file, $func, $name);
@@ -46,7 +46,7 @@ class CompiledUnit implements CoreCompiledUnit {
     }
 
     public function dumpToFile(string $filename): void {
-        $file = $this->backend->lib->fopen($filename, 'w');
+        $file = $this->backend->lib->fopen($filename . '.bc', 'w');
         foreach ($this->functions as $name => $func) {
             if (isset($this->compiledFunctions[$name])) {
                 throw new \LogicException("Function is already compiled, cannot dump");
