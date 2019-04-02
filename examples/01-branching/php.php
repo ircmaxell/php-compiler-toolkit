@@ -1,4 +1,4 @@
-<?php declare(strict_types=1); namespace ct_27142;
+<?php declare(strict_types=1); namespace ct_22481;
 function add1or2(int $p_0, int $p_1): int {
 main:
     $t_5 = $p_0 > 0;

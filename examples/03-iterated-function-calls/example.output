@@ -9,10 +9,10 @@ Add100 Function:
         return a;
     }
 Time to Compile: 
-    libjit: 0.001405 seconds
- libgccjit: 0.030672 seconds
-      llvm: 0.001055 seconds
-       php: 0.000438 seconds
+    libjit: 0.001262 seconds
+ libgccjit: 0.030333 seconds
+      llvm: 0.001038 seconds
+       php: 0.000414 seconds
 
 
 Testing add100:
@@ -41,9 +41,9 @@ Benchmarking
 Done
 
 Benchmark Results:
-          libjit: 0.32836 seconds
-       libgccjit: 0.13312 seconds
-            llvm: 0.27324 seconds
-             php: 3.75514 seconds
-     php closure: 2.26959 seconds
+          libjit: 0.35324 seconds
+       libgccjit: 0.14231 seconds
+            llvm: 0.38155 seconds
+             php: 4.49203 seconds
+     php closure: 2.61538 seconds
 

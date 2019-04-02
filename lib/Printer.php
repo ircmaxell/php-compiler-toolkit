@@ -60,7 +60,7 @@ class Printer {
         foreach ($function->locals as $local) {
             $scope[$local] = '$' . (count($scope) - $constantOffset);
 
-            $return .= '    ' . $this->printType($local->type) . ' ' . $scope[$local] . '<' . $local->name . ">\n";
+            $return .= '    ' . $this->printType($local->type) . ' ' . $scope[$local] . '<' . $local->name . ">;\n";
         }
         $return .= "\n";
         foreach ($function->blocks as $block) {

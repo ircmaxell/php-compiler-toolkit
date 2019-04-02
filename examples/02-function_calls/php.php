@@ -1,4 +1,4 @@
-<?php declare(strict_types=1); namespace ct_67301;
+<?php declare(strict_types=1); namespace ct_64245;
 function add(int $p_0, int $p_1): int {
 main:
     $t_2 = $p_0 + $p_1;

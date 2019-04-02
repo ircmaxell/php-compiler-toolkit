@@ -1,10 +1,10 @@
-<?php declare(strict_types=1); namespace ct_92027;
+<?php declare(strict_types=1); namespace ct_57595;
 class testA {
     public int $a;
     public int $b;
 }
 function add(int $p_0, int $p_1): int {
-    $l_0 = new \ct_92027\testA;
+    $l_0 = new \ct_57595\testA;
 main:
     $l_0->a = $p_0;
     $l_0->b = $p_1;

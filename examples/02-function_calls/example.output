@@ -6,10 +6,10 @@ Add2 Function:
         return add(add(a, b), b);
     }
 Time to Compile: 
-    libjit: 0.000568 seconds
- libgccjit: 0.025797 seconds
-      llvm: 0.000678 seconds
-       php: 0.000188 seconds
+    libjit: 0.000527 seconds
+ libgccjit: 0.025149 seconds
+      llvm: 0.000596 seconds
+       php: 0.000244 seconds
 
 
 Testing add2:
@@ -38,9 +38,9 @@ Benchmarking
 Done
 
 Benchmark Results:
-          libjit: 0.13679 seconds
-       libgccjit: 0.13497 seconds
-            llvm: 0.13737 seconds
-             php: 0.15896 seconds
-     php closure: 0.11099 seconds
+          libjit: 0.16521 seconds
+       libgccjit: 0.18040 seconds
+            llvm: 0.24001 seconds
+             php: 0.21692 seconds
+     php closure: 0.15103 seconds
 

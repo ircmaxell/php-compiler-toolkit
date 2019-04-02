@@ -3,10 +3,10 @@ Add Function:
         return a + b;
     }
 Time to Compile: 
-    libjit: 0.000561 seconds
- libgccjit: 0.025275 seconds
-      llvm: 0.000606 seconds
-       php: 0.000201 seconds
+    libjit: 0.000952 seconds
+ libgccjit: 0.038853 seconds
+      llvm: 0.000832 seconds
+       php: 0.000283 seconds
 
 
 Testing add:
@@ -35,9 +35,9 @@ Benchmarking
 Done
 
 Benchmark Results:
-          libjit: 0.14105 seconds
-       libgccjit: 0.13679 seconds
-            llvm: 0.14205 seconds
-             php: 0.15566 seconds
-     php closure: 0.13603 seconds
+          libjit: 0.19674 seconds
+       libgccjit: 0.16837 seconds
+            llvm: 0.17368 seconds
+             php: 0.20833 seconds
+     php closure: 0.17697 seconds
 

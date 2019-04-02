@@ -3,9 +3,9 @@ Test Function:
         return abs(a);
     }
 Time to Compile: 
- libgccjit: 0.025177 seconds
-      llvm: 0.000586 seconds
-       php: 0.000177 seconds
+ libgccjit: 0.030630 seconds
+      llvm: 0.000716 seconds
+       php: 0.000188 seconds
 
 
 Testing test:
@@ -29,8 +29,8 @@ Benchmarking
 Done
 
 Benchmark Results:
-       libgccjit: 0.10114 seconds
-            llvm: 0.10150 seconds
-             php: 0.07039 seconds
-     php closure: 0.04780 seconds
+       libgccjit: 0.14208 seconds
+            llvm: 0.14868 seconds
+             php: 0.09192 seconds
+     php closure: 0.04973 seconds
 
